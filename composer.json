@@ -4,8 +4,8 @@
     "type": "library",
     "autoload": {
         "psr-4": {
-            "NAV\\OnlineInvoice": "lib/",
-            "NAV\\OnlineInvoiceTests": "tests/"
+            "NAV\\OnlineInvoice\\": "lib/",
+            "NAV\\OnlineInvoiceTests\\": "tests/"
         }
     },
     "require": {
