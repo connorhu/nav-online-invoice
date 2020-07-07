@@ -1,0 +1,14 @@
+{
+    "name": "connorhu/nav-online-invoice",
+    "description": "PHP Library for NAV Online Invoice API",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "NAV\\OnlineInvoice": "lib/",
+            "NAV\\OnlineInvoiceTests": "tests/"
+        }
+    },
+    "require": {
+        "php": "^7.2"
+    }
+}
