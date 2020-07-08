@@ -3,6 +3,7 @@
 namespace NAV\OnlineInvoice\Entity;
 
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Serialize\XMLSerialize;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -234,7 +235,7 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setSupplierAddress(Address $value): InvoiceInterface
+    public function setSupplierAddress(AddressInterface $value): InvoiceInterface
     {
         $this->supplierAddress = $value;
         return $this;
@@ -245,7 +246,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for 
      */
-    public function getSupplierAddress(): Address
+    public function getSupplierAddress(): AddressInterface
     {
         return $this->supplierAddress;
     }
