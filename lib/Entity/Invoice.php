@@ -40,8 +40,8 @@ class Invoice implements InvoiceInterface
      *                </supplierTaxNumber>
      * </code>
      *
-     * @Assert\NotBlank(groups="v2.0")
-     * @NavAssert\TaxNumber(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
+     * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected $supplierTaxNumber;
     
@@ -85,7 +85,7 @@ class Invoice implements InvoiceInterface
                     <countyCode>42</countyCode>
                 </groupMemberTaxNumber>
      *
-     * @NavAssert\TaxNumber(groups="v2.0")
+     * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected $supplierGroupMemberTaxNumber;
     
@@ -312,8 +312,8 @@ class Invoice implements InvoiceInterface
 					<countyCode>02</countyCode>
 				</customerTaxNumber>
      *
-     * @Assert\NotBlank(groups="v2.0")
-     * @NavAssert\TaxNumber(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
+     * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected $customerTaxNumber;
     
@@ -357,7 +357,7 @@ class Invoice implements InvoiceInterface
 					<countyCode>02</countyCode>
 				</groupMemberTaxNumber>
      *
-     * @NavAssert\TaxNumber(groups="v2.0")
+     * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected $customerGroupMemberTaxNumber;
     
@@ -439,7 +439,7 @@ class Invoice implements InvoiceInterface
 			<customerInfo>
 				<customerName>Vevő Kft</customerName>
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $customerName;
     
@@ -488,8 +488,8 @@ class Invoice implements InvoiceInterface
 					</detailedAddress>
 				</customerAddress>
      *
-     * @Assert\NotBlank(groups="v2.0")
-     * @NavAssert\Valid(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
+     * @NavAssert\Valid(groups={"v2.0"})
      */
     protected $customerAddress;
     
@@ -569,7 +569,7 @@ class Invoice implements InvoiceInterface
 			<invoiceData>
 				<invoiceNumber>T20190001</invoiceNumber>
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceNumber;
     
@@ -614,7 +614,7 @@ class Invoice implements InvoiceInterface
 			<invoiceData>
 				<invoiceCategory>NORMAL</invoiceCategory>
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceCategory;
     
@@ -845,7 +845,7 @@ class Invoice implements InvoiceInterface
 			<invoiceData>
 				<currencyCode>HUF</currencyCode>
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $currencyCode;
     
@@ -1089,7 +1089,7 @@ class Invoice implements InvoiceInterface
 			<invoiceData>
 				<invoiceAppearance>PAPER</invoiceAppearance>
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceAppearance;
     
@@ -1207,8 +1207,8 @@ class Invoice implements InvoiceInterface
 	<invoiceExchange>
 		<invoiceLines>
      *
-     * @Assert\NotBlank(groups="v2.0")
-     * @NavAssert\Valid(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
+     * @NavAssert\Valid(groups={"v2.0"})
      */
     protected $items = [];
     
@@ -1322,7 +1322,7 @@ class Invoice implements InvoiceInterface
      * pattern: 
 
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceNetAmount;
     
@@ -1359,7 +1359,7 @@ class Invoice implements InvoiceInterface
      * pattern: 
 
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceNetAmountHUF;
     
@@ -1395,7 +1395,7 @@ class Invoice implements InvoiceInterface
      * pattern: 
 
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceVatAmount;
     
@@ -1431,7 +1431,7 @@ class Invoice implements InvoiceInterface
      * pattern: 
 
      *
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceVatAmountHUF;
     
@@ -1458,7 +1458,7 @@ class Invoice implements InvoiceInterface
     }
     
     /**
-     * @Assert\NotBlank(groups="v2.0")
+     * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $vatRateSummaries = [];
     
