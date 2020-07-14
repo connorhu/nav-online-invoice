@@ -1070,11 +1070,6 @@ class Invoice implements InvoiceInterface
         return $this->cashAccountingIndicator;
     }
     
-    const INVOCE_APPEARANCE_PAPER = 'PAPER';
-    const INVOCE_APPEARANCE_ELECTRONIC = 'ELECTRONIC';
-    const INVOCE_APPEARANCE_EDI = 'EDI';
-    const INVOCE_APPEARANCE_UNKNOWN = 'UNKNOWN';
-    
     /*
      * A számla vagy módosító okirat megjelenési formája.
      *
@@ -1091,6 +1086,7 @@ class Invoice implements InvoiceInterface
 				<invoiceAppearance>PAPER</invoiceAppearance>
      *
      * @Assert\NotBlank(groups={"v2.0"})
+     * @Assert\Choice(choices=Invoice::INVOCE_APPEARANCES, message="Invalid Invoice appearance value.")
      */
     protected $invoiceAppearance;
     
@@ -1100,7 +1096,7 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setInvoiceAppearance($value)
+    public function setInvoiceAppearance(int $value): InvoiceInterface
     {
         $this->invoiceAppearance = $value;
         return $this;
@@ -1111,7 +1107,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for 
      */
-    public function getInvoiceAppearance()
+    public function getInvoiceAppearance(): ?int
     {
         return $this->invoiceAppearance;
     }
