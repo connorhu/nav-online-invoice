@@ -223,34 +223,5 @@ trait VatRate
     {
         return $this->vatRateMarginSchemeNoVat;
     }
-    
-    protected function serializeVatRate()
-    {
-        $buffer = [];
-        
-        $buffer['vatPercentage'] = $this->vatRatePercentage;
-
-        if ($this->vatRateExemption) {
-            $buffer['vatExemption'] = $this->vatRateExemption;
-        }
-
-        if ($this->vatRateOutOfScope) {
-            $buffer['vatOutOfScope'] = XMLSerialize::formatBoolean($this->vatRateOutOfScope);
-        }
-
-        if ($this->vatRateDomesticReverseCharge) {
-            $buffer['vatDomesticReverseCharge'] = XMLSerialize::formatBoolean($this->vatRateDomesticReverseCharge);
-        }
-
-        if ($this->vatRateMarginSchemeVat) {
-            $buffer['marginSchemeVat'] = XMLSerialize::formatBoolean($this->vatRateMarginSchemeVat);
-        }
-
-        if ($this->vatRateMarginSchemeNoVat) {
-            $buffer['marginSchemeNoVat'] = XMLSerialize::formatBoolean($this->vatRateMarginSchemeNoVat);
-        }
-        
-        return $buffer;
-    }
 }
 
