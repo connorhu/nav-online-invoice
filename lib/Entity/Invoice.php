@@ -2,9 +2,9 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
-use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
-use NAV\OnlineInvoice\Serialize\XMLSerialize;
+use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -1214,7 +1214,7 @@ class Invoice implements InvoiceInterface
      *
      * @param AppBundle\Document\item item
      */
-    public function addItem(InvoiceItem $item)
+    public function addItem(InvoiceItemInterface $item): InvoiceInterface
     {
         $this->items[] = $item;
         return $this;
@@ -1225,7 +1225,7 @@ class Invoice implements InvoiceInterface
      *
      * @param AppBundle\Document\Item item
      */
-    public function removeItem(InvoiceItem $item)
+    public function removeItem(InvoiceItemInterface $item): InvoiceInterface
     {
         $this->items->removeElement($item);
         return $this;
@@ -1236,7 +1236,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
-    public function getItems()
+    public function getItems(): iterable
     {
         return $this->items;
     }

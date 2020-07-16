@@ -51,4 +51,8 @@ interface InvoiceInterface
     
     public function setInvoiceAppearance(int $value): InvoiceInterface;
     public function getInvoiceAppearance(): ?int;
+    
+    public function addItem(InvoiceItemInterface $item): InvoiceInterface;
+    public function removeItem(InvoiceItemInterface $item): InvoiceInterface;
+    public function getItems(): iterable;
 }
