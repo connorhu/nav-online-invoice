@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\OnlineInvoice\Entity\Interface;
+namespace NAV\OnlineInvoice\Entity\Interfaces;
 
 interface VatRateSummaryInterface extends VatRateInterface
 {
