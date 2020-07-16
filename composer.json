@@ -2,7 +2,7 @@
     "name": "connorhu/nav-online-invoice",
     "description": "PHP Library for NAV Online Invoice API",
     "type": "library",
-    "licence": "MIT",
+    "license": "MIT",
     "autoload": {
         "psr-4": {
             "NAV\\OnlineInvoice\\": "lib/",
