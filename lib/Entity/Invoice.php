@@ -4,14 +4,14 @@ namespace NAV\OnlineInvoice\Entity;
 
 use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
-use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ node_name invoice
  */
-class Invoice implements InvoiceInterface
+class Invoice implements InvoiceItemInterface
 {
     public function __construct()
     {

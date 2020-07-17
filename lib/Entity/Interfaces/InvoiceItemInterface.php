@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Entity\Interfaces;
 
-interface InvoiceItem extends VatRateInterface
+interface InvoiceItemInterface extends VatRateInterface
 {
     public function setItemNumber($value);
     public function getItemNumber();
