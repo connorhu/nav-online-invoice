@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<constraint-mapping xmlns="http://symfony.com/schema/dic/constraint-mapping"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/dic/constraint-mapping
+        https://symfony.com/schema/dic/constraint-mapping/constraint-mapping-1.0.xsd">
+
+    <class name="NAV\OnlineInvoice\Http\Request\Software">
+        <property name="id">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^[0-9A-Z\-]{18}$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="name">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="max">50</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^.*[^\s].*$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="operation">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Choice">
+                <option name="choices">
+                    <value>LOCAL_SOFTWARE</value>
+                    <value>ONLINE_SERVICE</value>
+                </option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="mainVersion">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="max">15</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^.*[^\s].*$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="devName">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="max">512</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^.*[^\s].*$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="devContact">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="max">200</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^.*[^\s].*$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="devCountryCode">
+            <constraint name="Length">
+                <option name="max">2</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Country">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            
+        </property>
+        <property name="devTaxNumber">
+            <constraint name="Length">
+                <option name="max">50</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^.*[^\s].*$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+</constraint-mapping>
