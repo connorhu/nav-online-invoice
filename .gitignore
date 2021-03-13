@@ -1,0 +1,8 @@
+/phpunit.xml
+.phpunit.result.cache
+/vendor/
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###

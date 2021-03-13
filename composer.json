@@ -6,10 +6,19 @@
     "autoload": {
         "psr-4": {
             "NAV\\OnlineInvoice\\": "lib/",
-            "NAV\\OnlineInvoiceTests\\": "tests/"
+            "NAV\\Tests\\OnlineInvoice\\": "tests/"
         }
     },
     "require": {
-        "php": "^7.2"
+        "php": "^7.2",
+        "symfony/intl": "^5.2"
+    },
+    "require-dev": {
+        "symfony/serializer": "^5.2",
+        "symfony/validator": "^5.2",
+        "symfony/var-dumper": "^5.2",
+        "symfony/http-client": "^5.2",
+        "symfony/phpunit-bridge": "^5.0",
+        "symfony/config": "^5.2"
     }
 }
