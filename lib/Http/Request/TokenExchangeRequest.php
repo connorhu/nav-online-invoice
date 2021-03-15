@@ -4,14 +4,15 @@ namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
 
-class TokenExchangeRequest extends Request
+class TokenExchangeRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
-    public function getRootNodeName()
-    {
-        return 'TokenExchangeRequest';
-    }
+    use HeaderAwareTrait;
+    use SoftwareAwareTrait;
+    use UserAwareTrait;
     
-    public function getEndpointPath()
+    public const ROOT_NODE_NAME = 'TokenExchangeRequest';
+    
+    public function getEndpointPath(): string
     {
         return '/tokenExchange';
     }
