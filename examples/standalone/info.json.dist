@@ -13,7 +13,8 @@
         "login": "generatedlogin",
         "password": "password",
         "taxNumber": "00000000-0-00",
-        "signKey": "signkey"
+        "signKey": "signkey",
+        "xmlExhangeKey": ""
     },
     "requestPrefix": "CT",
     "test": true

@@ -6,7 +6,7 @@ use NAV\OnlineInvoice\Http\Response;
 
 class ResponseClassProvider
 {
-    public function getResponseClass(string $content, string $type = 'xml'): string
+    public static function getResponseClass(string $content, string $type = 'xml'): string
     {
         $matchCount = preg_match('|<([A-Za-z0-9]*\:)?([A-Za-z0-9]*Response)|', $content, $match);
         

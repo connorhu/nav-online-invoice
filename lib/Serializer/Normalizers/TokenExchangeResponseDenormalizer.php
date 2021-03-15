@@ -5,13 +5,9 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class TokenExchangeResponseDenormalizer implements ContextAwareDenormalizerInterface, SerializerAwareInterface
+class TokenExchangeResponseDenormalizer implements ContextAwareDenormalizerInterface
 {
-    private $serializer;
-    
     private $cryptoTools;
     
     public function __construct(CryptoToolsProviderInterface $cryptoTools)
@@ -19,21 +15,38 @@ class TokenExchangeResponseDenormalizer implements ContextAwareDenormalizerInter
         $this->cryptoTools = $cryptoTools;
     }
     
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
-    }
-
     public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
-        $exchangeToken = $this->cryptoTools->decodeExchangeToken($data['encodedExchangeToken']);
-
-        $response = new TokenExchangeResponse();
-        $response->setExchangeToken($exchangeToken);
-        $response->setValidFrom(new \DateTime($data['tokenValidityFrom']));
-        $response->setValidTo(new \DateTime($data['tokenValidityTo']));
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, 6) !== '@xmlns') {
+                continue;
+            }
+            
+            if ($value === 'http://schemas.nav.gov.hu/OSA/3.0/api') {
+                $responseVersion = 'v3.0';
+                $namespaceName = substr($key, 7);
+                if ($namespaceName === false) {
+                    $namespaceName = '';
+                }
+                else {
+                    $namespaceName .= ':';
+                }
+                break;
+            }
+        }
         
-        return $response;
+        if ($responseVersion === 'v3.0') {
+            $exchangeToken = $this->cryptoTools->decodeExchangeToken($data[$namespaceName.'encodedExchangeToken']);
+
+            $response = new TokenExchangeResponse();
+            $response->setExchangeToken($exchangeToken);
+            $response->setValidFrom(new \DateTime($data[$namespaceName.'tokenValidityFrom']));
+            $response->setValidTo(new \DateTime($data[$namespaceName.'tokenValidityTo']));
+            
+            return $response;
+        }
+        
+        throw new \LogicException('Unsupported namespace');
     }
 
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
