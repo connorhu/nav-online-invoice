@@ -23,7 +23,7 @@ class UserNormalizer implements ContextAwareNormalizerInterface
                 'common:login' => $user->getLogin(),
                 'common:passwordHash' => [
                     '@cryptoType' => $this->cryptoTools->getUserPasswordHashAlgo($user),
-                    '#' => $this->cryptoTools->getUserPasswordHash($user->getRequest()),
+                    '#' => $this->cryptoTools->getUserPasswordHash($user),
                 ],
                 'common:taxNumber' => $user->getTaxNumber(),
             ];

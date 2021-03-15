@@ -9,4 +9,9 @@ use NAV\OnlineInvoice\Http\Request\HeaderAwareTrait;
 class HeaderAwareRequest extends Request implements HeaderAwareRequestInterface
 {
     use HeaderAwareTrait;
+    
+    public function getEndpointPath(): string
+    {
+        return '';
+    }
 }
