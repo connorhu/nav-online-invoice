@@ -4,6 +4,33 @@ namespace NAV\OnlineInvoice\Http\Request;
 
 class User
 {
+    protected $request;
+    
+    /**
+     * setter for request
+     *
+     * @param mixed 
+     * @return self
+     */
+    public function setRequest(UserAwareRequest $value): self
+    {
+        if ($this->request !== $value) {
+            $this->request = $value;
+        }
+        
+        return $this;
+    }
+    
+    /**
+     * getter for request
+     * 
+     * @return mixed return value for 
+     */
+    public function getRequest(): UserAwareRequest
+    {
+        return $this->request;
+    }
+    
     protected $login;
     
     /**
@@ -12,7 +39,7 @@ class User
      * @param mixed 
      * @return self
      */
-    public function setLogin($value)
+    public function setLogin(string $value): self
     {
         $this->login = $value;
         return $this;
@@ -36,7 +63,7 @@ class User
      * @param mixed 
      * @return self
      */
-    public function setPassword($value)
+    public function setPassword(string $value): self
     {
         $this->password = $value;
         return $this;
@@ -47,7 +74,7 @@ class User
      * 
      * @return mixed return value for 
      */
-    public function getPassword()
+    public function getPassword(): string
     {
         return $this->password;
     }
@@ -60,7 +87,7 @@ class User
      * @param mixed 
      * @return self
      */
-    public function setTaxNumber($value)
+    public function setTaxNumber(string $value): self
     {
         $this->taxNumber = substr($value, 0, 8);
         return $this;
@@ -71,7 +98,7 @@ class User
      * 
      * @return mixed return value for 
      */
-    public function getTaxNumber()
+    public function getTaxNumber(): string
     {
         return $this->taxNumber;
     }
@@ -84,7 +111,7 @@ class User
      * @param mixed 
      * @return self
      */
-    public function setSignKey($value)
+    public function setSignKey(string $value): self
     {
         $this->signKey = $value;
         return $this;
@@ -95,7 +122,7 @@ class User
      * 
      * @return mixed return value for 
      */
-    public function getSignKey()
+    public function getSignKey(): string
     {
         return $this->signKey;
     }
