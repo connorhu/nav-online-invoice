@@ -9,12 +9,14 @@ use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class RequestNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
+    use SerializerAwareTrait;
+
     private $softwareNormalizer;
-    private $serializer;
     private $cryptoTools;
     
     public function __construct(CryptoToolsProviderInterface $cryptoTools)
@@ -72,10 +74,5 @@ class RequestNormalizer implements ContextAwareNormalizerInterface, SerializerAw
         }
         
         return $data instanceof Request;
-    }
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }
