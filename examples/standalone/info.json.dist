@@ -1,0 +1,20 @@
+{
+    "software": {
+        "id": "HU00000000-TEST001",
+        "name": "Test Software",
+        "operation": "ONLINE_SERVICE",
+        "mainVersion": "0.1",
+        "devName": "Developer Company Ltd.",
+        "devContact": "connor@connor.hu",
+        "devCountryCode": "HU",
+        "devTaxNumber": "00000000"
+    },
+    "user": {
+        "login": "generatedlogin",
+        "password": "password",
+        "taxNumber": "00000000-0-00",
+        "signKey": "signkey"
+    },
+    "requestPrefix": "CT",
+    "test": true
+}
