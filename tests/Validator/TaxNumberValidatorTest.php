@@ -1,9 +1,9 @@
 <?php
 
-namespace Nav\Tests\Validator;
+namespace NAV\Test\OnlineInvoice\Validator;
 
-use Nav\Validator\Constraints\TaxNumber;
-use Nav\Validator\Constraints\TaxNumberValidator;
+use NAV\OnlineInvoice\Validator\Constraints\TaxNumber;
+use NAV\OnlineInvoice\Validator\Constraints\TaxNumberValidator;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class TaxNumberValidatorTest extends ConstraintValidatorTestCase
