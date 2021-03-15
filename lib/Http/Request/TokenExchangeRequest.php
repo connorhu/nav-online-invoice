@@ -4,7 +4,7 @@ namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
 
-class TokenExchangeRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
+class TokenExchangeRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
 {
     use HeaderAwareTrait;
     use SoftwareAwareTrait;
