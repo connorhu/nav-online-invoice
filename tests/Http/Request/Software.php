@@ -192,7 +192,7 @@ class SoftwareTest extends TestCase
         $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
 
         // valid
-        $software->setDevContact('v1.0');
+        $software->setDevContact('connor at connor dot hu');
         $errors = $this->validator->validateProperty($software, 'devContact', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
         $this->assertEquals(0, count($errors));
         $this->assertEquals($software->getDevContact(), 'v1.0');
@@ -241,7 +241,7 @@ class SoftwareTest extends TestCase
         $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
 
         // valid
-        $software->setDevTaxNumber('v1.0');
+        $software->setDevTaxNumber('69061864-1-33');
         $errors = $this->validator->validateProperty($software, 'devTaxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
         $this->assertEquals(0, count($errors));
         $this->assertEquals($software->getDevTaxNumber(), 'v1.0');
