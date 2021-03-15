@@ -3,14 +3,26 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
+use NAV\OnlineInvoice\Http\Request\User;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class QueryTaxpayerRequest extends Request
+class QueryTaxpayerRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
 {
-    public function __construct()
+    use HeaderAwareTrait;
+    use SoftwareAwareTrait;
+    use UserAwareTrait;
+    
+    public const ROOT_NODE_NAME = 'QueryTaxpayerRequest';
+    
+    public function getEndpointPath(): string
     {
-        parent::__construct();
+        return '/queryTaxpayer';
     }
     
+    /**
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     * @Assert\Regex("/^\d{8}$/", groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     */
     protected $taxNumber;
     
     /**
@@ -19,7 +31,7 @@ class QueryTaxpayerRequest extends Request
      * @param mixed 
      * @return self
      */
-    public function setTaxNumber($value)
+    public function setTaxNumber(string $value): self
     {
         $this->taxNumber = substr($value, 0, 8);
         return $this;
@@ -30,18 +42,8 @@ class QueryTaxpayerRequest extends Request
      * 
      * @return mixed return value for 
      */
-    public function getTaxNumber()
+    public function getTaxNumber(): string
     {
         return $this->taxNumber;
-    }
-    
-    public function getRootNodeName(): string
-    {
-        return 'QueryTaxpayerRequest';
-    }
-    
-    public function getEndpointPath(): string
-    {
-        return '/queryTaxpayer';
     }
 }
