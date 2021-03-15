@@ -189,4 +189,109 @@
             </constraint>
         </property>
     </class>
+    <class name="NAV\OnlineInvoice\Http\Request\User">
+        <property name="taxNumber">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="min">8</option>
+                <option name="max">8</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^\d{8}$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+
+        <property name="signKey">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+
+        <property name="password">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+
+        <property name="login">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+    <class name="NAV\OnlineInvoice\Http\Request\Header">
+        <property name="timestamp">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
+    <class name="NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest">
+        <property name="taxNumber">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Length">
+                <option name="min">8</option>
+                <option name="max">8</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+            <constraint name="Regex">
+                <option name="pattern">/^\d{8}$/</option>
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
 </constraint-mapping>

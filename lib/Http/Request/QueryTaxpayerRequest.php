@@ -21,6 +21,7 @@ class QueryTaxpayerRequest extends Request implements HeaderAwareRequest, UserAw
     
     /**
      * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     * @Assert\Length(max=8, min=8, groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      * @Assert\Regex("/^\d{8}$/", groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
     protected $taxNumber;

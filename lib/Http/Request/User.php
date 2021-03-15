@@ -2,6 +2,8 @@
 
 namespace NAV\OnlineInvoice\Http\Request;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 class User
 {
     protected $request;
@@ -31,6 +33,9 @@ class User
         return $this->request;
     }
     
+    /**
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     */
     protected $login;
     
     /**
@@ -55,6 +60,9 @@ class User
         return $this->login;
     }
     
+    /**
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     */
     protected $password;
     
     /**
@@ -79,6 +87,10 @@ class User
         return $this->password;
     }
     
+    /**
+     * @Assert\NotBlank(groups={"v2.0", "v3.0"})
+     * @Assert\Length(max=8, min=8, groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     */
     protected $taxNumber;
     
     /**
@@ -103,6 +115,9 @@ class User
         return $this->taxNumber;
     }
     
+    /**
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     */
     protected $signKey;
     
     /**
