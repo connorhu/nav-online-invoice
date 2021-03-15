@@ -50,7 +50,7 @@ class User
      * 
      * @return mixed return value for 
      */
-    public function getLogin()
+    public function getLogin(): string
     {
         return $this->login;
     }
