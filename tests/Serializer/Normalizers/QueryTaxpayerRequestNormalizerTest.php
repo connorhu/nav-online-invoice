@@ -10,6 +10,7 @@ use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Serializer\Encoder\RequestEncoder;
 use NAV\OnlineInvoice\Serializer\Normalizers\RequestNormalizer;
+use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
 use NAV\OnlineInvoice\Serializer\Normalizers\QueryTaxpayerRequestNormalizer;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use NAV\OnlineInvoice\Serializer\Normalizers\UserNormalizer;
@@ -24,10 +25,11 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
         $cryptoToolProvider = new CryptoToolsProvider();
         
         $softwareNormalizer = new SoftwareNormalizer();
+        $headerNormalizer = new HeaderNormalizer();
         $userNormalizer = new UserNormalizer($cryptoToolProvider);
         $requestNormalizer = new RequestNormalizer($cryptoToolProvider);
         $tokenExchangeNormalizer = new QueryTaxpayerRequestNormalizer($requestNormalizer);
-        $normalizers = [$softwareNormalizer, $requestNormalizer, $tokenExchangeNormalizer, $userNormalizer];
+        $normalizers = [$softwareNormalizer, $requestNormalizer, $tokenExchangeNormalizer, $userNormalizer, $headerNormalizer];
         $encoders = [
             new RequestEncoder(new XmlEncoder()),
         ];
@@ -83,6 +85,12 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
             '@xmlns' => 'http://schemas.nav.gov.hu/OSA/3.0/api',
             '@xmlns:common' => 'http://schemas.nav.gov.hu/NTCA/1.0/common',
             '@root_node_name' => 'QueryTaxpayerRequest',
+            'common:header' => [
+                'common:requestId' => 'abc',
+                'common:timestamp' => '2020-01-01T11:12:12.000Z',
+                'common:requestVersion' => '3.0',
+                'common:headerVersion' => '1.0',
+            ],
             'common:user' => [
                 'common:login' => 'testuserlogin',
                 'common:passwordHash' => [
@@ -129,6 +137,12 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
         $output = <<<EOS
 <?xml version="1.0"?>
 <QueryTaxpayerRequest xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common">
+  <common:header>
+    <common:requestId>abc</common:requestId>
+    <common:timestamp>2020-01-01T11:12:12.000Z</common:timestamp>
+    <common:requestVersion>3.0</common:requestVersion>
+    <common:headerVersion>1.0</common:headerVersion>
+  </common:header>
   <common:user>
     <common:login>testuserlogin</common:login>
     <common:passwordHash cryptoType="SHA-512">C70B5DD9EBFB6F51D09D4132B7170C9D20750A7852F00680F65658F0310E810056E6763C34C9A00B0E940076F54495C169FC2302CCEB312039271C43469507DC</common:passwordHash>

@@ -3,7 +3,7 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request;
-use NAV\OnlineInvoice\Http\Request\HeaderAwareInterface;
+use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
 use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
 use NAV\OnlineInvoice\Http\Request\SignableContentInterface;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
@@ -44,7 +44,7 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
             throw new \LogicException('Only request format supported');
         }
         
-        if ($request instanceof HeaderAwareInterface) {
+        if ($request instanceof HeaderAwareRequest) {
             $buffer[$commonNamespace.'header'] = $this->serializer->normalize($request->getHeader());
         }
         

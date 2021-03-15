@@ -20,6 +20,9 @@ use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceStatusRequest;
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
 use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
+use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
+use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
+use NAV\OnlineInvoice\Http\Request\UserAwareRequest;
 
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\Exception\ClientException;
@@ -35,8 +38,9 @@ class OnlineInvoiceRestClient
     const VERSION_10 = 'v1.0';
     const VERSION_11 = 'v1.1';
     const VERSION_20 = 'v2.0';
+    const VERSION_30 = 'v3.0';
     
-    private $version = 'v2.0';
+    private $version = 'v3.0';
     
     public function __construct(SoftwareProviderInterface $softwareProvider, ValidatorInterface $validator, SerializerInterface $serializer, RequestIdProviderInterface $requestIdProvider, UserProviderInterface $userProvider, ApiEndpointUrlProviderInterface $urlProvider, LoggerInterface $logger = null)
     {
@@ -56,28 +60,40 @@ class OnlineInvoiceRestClient
     
     public function sendRequest($request)
     {
-        $request->setSoftware($this->softwareProvider->getSoftware());
+        if ($request instanceof SoftwareAwareRequest) {
+            $request->setSoftware($this->softwareProvider->getSoftware());
+        }
 
-        // basic request type :: basic header type
-        $header = new Header();
-        $header->setTimestamp(new \DateTime());
+        if ($request instanceof HeaderAwareRequest) {
+            // basic request type :: basic header type
+            $header = new Header();
+            $header->setTimestamp(new \DateTime());
+            $request->setHeader($header);
+        }
         
+        if ($request instanceof UserAwareRequest) {
+            $request->setUser($this->userProvider->getUser());
+        }
+
         if ($this->version === self::VERSION_10) {
-            $header->setRequestVersion(Header::REQUEST_VERSION_V10);
+            $request->setRequestVersion(Request::REQUEST_VERSION_V10);
         }
         elseif ($this->version === self::VERSION_11) {
-            $header->setRequestVersion(Header::REQUEST_VERSION_V11);
+            $request->setRequestVersion(Request::REQUEST_VERSION_V11);
         }
         elseif ($this->version === self::VERSION_20) {
-            $header->setRequestVersion(Header::REQUEST_VERSION_V20);
+            $request->setRequestVersion(Request::REQUEST_VERSION_V20);
+        }
+        elseif ($this->version === self::VERSION_30) {
+            $request->setRequestVersion(Request::REQUEST_VERSION_V30);
         }
         
-        $request->setHeader($header);
+        $request->setRequestId($this->requestIdProvider->getRequestId());
         
         $errors = $this->validator->validate($request, null, [$this->version]);
         
         if (count($errors) > 0) {
-            throw new ConstraintViolationException('the request is invalid', $errors);
+            throw new ConstraintViolationException('The request is invalid', $errors);
         }
 
         if ($request instanceof ExhangeTokenAwareRequest) {
@@ -85,15 +101,15 @@ class OnlineInvoiceRestClient
             $request->setExchangeToken($token);
         }
 
-        $xmlStringBody = $this->serializer->serialize($request, 'xml', [
-            'xml_root_node_name' => $request->getRootNodeName(),
-        ]);
+        $xmlStringBody = $this->serializer->serialize($request, 'request', $options);
 
         try {
             $endpointUrl = $this->urlProvider->getEndpointUrl($request);
             
-            $this->logger->info('Request will send: '. $endpointUrl);
-            $this->logger->info('Request body: '. $xmlStringBody);
+            if ($this->logger) {
+                $this->logger->info('Request will send: '. $endpointUrl);
+                $this->logger->info('Request body: '. $xmlStringBody);
+            }
 
             $client = HttpClient::create();
             $response = $client->request('POST', $endpointUrl, [
@@ -114,22 +130,27 @@ class OnlineInvoiceRestClient
         }
         catch (ServerException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
+            if ($this->logger) {
+                $this->logger->info('ServerException: '. $responseXmlString);
+            }
 
             $responseClass = ResponseClassProvider::getResponseClass($responseXmlString, 'xml');
             $response = $this->serializer->deserialize($responseXmlString, $responseClass, 'xml');
-
-            $this->logger->info('ServerException: '. $responseXmlString);
         }
         catch (ClientException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
 
+            if ($this->logger) {
+                $this->logger->info('ClientException: '. $responseXmlString);
+            }
+
             $responseClass = ResponseClassProvider::getResponseClass($responseXmlString, 'xml');
             $response = $this->serializer->deserialize($responseXmlString, $responseClass, 'xml');
-
-            $this->logger->info('ClientException: '. $responseXmlString);
         }
         catch (\Exception $e) {
-            $this->logger->info('Unknown exception: '. $e->getMessage());
+            if ($this->logger) {
+                $this->logger->info('Unknown exception: '. $e->getMessage());
+            }
             
             dump($e);
             exit;
