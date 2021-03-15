@@ -10,7 +10,7 @@ trait SoftwareAwareTrait
     
     public function setSoftware(Software $value): SoftwareAwareRequest
     {
-        $this->software = $software;
+        $this->software = $value;
         
         return $this;
     }
