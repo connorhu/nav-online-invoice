@@ -1,6 +1,6 @@
 <?php
 
-namespace Nav;
+namespace NAV\OnlineInvoice;
 
 use Psr\Log\LoggerInterface;
 use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
