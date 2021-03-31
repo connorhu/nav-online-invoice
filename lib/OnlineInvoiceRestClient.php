@@ -157,14 +157,14 @@ class OnlineInvoiceRestClient
             ]);
             $statusCode = $response->getStatusCode();
             $content = $response->getContent();
-            
-            $responseClass = ResponseClassProvider::getResponseClass($content, 'xml');
-            $response = $this->serializer->deserialize($content, $responseClass, 'request');
 
             if ($this->logger) {
                 $this->logger->info('Request did send: '. $endpointUrl);
                 $this->logger->info('Response body: '. $content);
             }
+
+            $responseClass = ResponseClassProvider::getResponseClass($content, 'xml');
+            $response = $this->serializer->deserialize($content, $responseClass, 'request');
         }
         catch (ServerException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
