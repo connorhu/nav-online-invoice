@@ -8,11 +8,14 @@ use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
 class RequestEncoder implements EncoderInterface, DecoderInterface
 {
-    private $xmlEncoder;
+    /**
+     * @var XmlEncoder
+     */
+    private XmlEncoder $xmlEncoder;
     
-    public function __construct(XmlEncoder $xmlEncoder)
+    public function __construct()
     {
-        $this->xmlEncoder = $xmlEncoder;
+        $this->xmlEncoder = new XmlEncoder();
     }
     
     public function encode($data, string $format, array $context = [])

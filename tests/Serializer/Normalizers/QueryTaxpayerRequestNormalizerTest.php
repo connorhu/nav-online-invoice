@@ -31,7 +31,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
         $tokenExchangeNormalizer = new QueryTaxpayerRequestNormalizer($requestNormalizer);
         $normalizers = [$softwareNormalizer, $requestNormalizer, $tokenExchangeNormalizer, $userNormalizer, $headerNormalizer];
         $encoders = [
-            new RequestEncoder(new XmlEncoder()),
+            new RequestEncoder(),
         ];
         
         $this->serializer = new Serializer($normalizers, $encoders);

@@ -31,7 +31,7 @@ class TokenExchangeRequestNormalizerTest extends TestCase
         $tokenExchangeNormalizer = new TokenExchangeRequestNormalizer($requestNormalizer);
         $normalizers = [$softwareNormalizer, $requestNormalizer, $tokenExchangeNormalizer, $userNormalizer, $headerNormalizer];
         $encoders = [
-            new RequestEncoder(new XmlEncoder()),
+            new RequestEncoder(),
         ];
         
         $this->serializer = new Serializer($normalizers, $encoders);
