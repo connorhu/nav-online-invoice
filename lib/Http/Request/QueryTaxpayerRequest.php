@@ -3,7 +3,6 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
-use NAV\OnlineInvoice\Http\Request\User;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class QueryTaxpayerRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
