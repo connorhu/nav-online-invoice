@@ -17,14 +17,27 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
     
     public const REQUEST_CONTENT_KEY = '_request_content';
 
-    private $cryptoTools;
-    
+    /**
+     * @var CryptoToolsProviderInterface
+     */
+    private CryptoToolsProviderInterface $cryptoTools;
+
+    /**
+     * RequestNormalizer constructor.
+     * @param CryptoToolsProviderInterface $cryptoTools
+     */
     public function __construct(CryptoToolsProviderInterface $cryptoTools)
     {
         $this->cryptoTools = $cryptoTools;
     }
-    
-    public function normalize($request, $format = null, array $context = [])
+
+    /**
+     * @param mixed $request
+     * @param string|null $format
+     * @param array $context
+     * @return array
+     */
+    public function normalize($request, string $format = null, array $context = [])
     {
         $buffer = [];
         
@@ -71,7 +84,12 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
 
         return $buffer + $normalizedRequestContent;
     }
-    
+
+    /**
+     * @param mixed $data
+     * @param string|null $format
+     * @return bool
+     */
     public function supportsNormalization($data, string $format = null)
     {
         return false;
