@@ -15,7 +15,9 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
     {
         $buffer = [];
     
-        $buffer['vatPercentage'] = $item->getVatRatePercentage();
+        if ($item->getVatRatePercentage()) {
+            $buffer['vatPercentage'] = $item->getVatRatePercentage();
+        }
 
         if ($item->getVatRateExemption()) {
             $buffer['vatExemption'] = $item->getVatRateExemption();

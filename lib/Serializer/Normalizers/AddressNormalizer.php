@@ -15,58 +15,58 @@ class AddressNormalizer implements ContextAwareNormalizerInterface, SerializerAw
         $buffer = [];
         
         if ($address->getCountryCode()) {
-            $addressData['countryCode'] = $address->getCountryCode();
+            $addressData['base:countryCode'] = $address->getCountryCode();
         }
 
         if ($address->getRegion()) {
-            $addressData['region'] = $address->getRegion();
+            $addressData['base:region'] = $address->getRegion();
         }
 
         if ($address->getPostalCode()) {
-            $addressData['postalCode'] = $address->getPostalCode();
+            $addressData['base:postalCode'] = $address->getPostalCode();
         }
 
         if ($address->getCity()) {
-            $addressData['city'] = $address->getCity();
+            $addressData['base:city'] = $address->getCity();
         }
 
         if ($address->getAdditionalAddressDetail()) {
-            $addressData['additionalAddressDetail'] = $address->getAdditionalAddressDetail();
+            $addressData['base:additionalAddressDetail'] = $address->getAdditionalAddressDetail();
         }
 
         if ($address->getStreetName()) {
-            $addressData['streetName'] = $address->getStreetName();
+            $addressData['base:streetName'] = $address->getStreetName();
         }
 
         if ($address->getPublicPlaceCategory()) {
-            $addressData['publicPlaceCategory'] = $address->getPublicPlaceCategory();
+            $addressData['base:publicPlaceCategory'] = $address->getPublicPlaceCategory();
         }
 
         if ($address->getNumber()) {
-            $addressData['number'] = $address->getNumber();
+            $addressData['base:number'] = $address->getNumber();
         }
 
         if ($address->getFloor()) {
-            $addressData['floor'] = $address->getFloor();
+            $addressData['base:floor'] = $address->getFloor();
         }
 
         if ($address->getDoor()) {
-            $addressData['door'] = $address->getDoor();
+            $addressData['base:door'] = $address->getDoor();
         }
 
         if ($address->getBuilding()) {
-            $addressData['building'] = $address->getBuilding();
+            $addressData['base:building'] = $address->getBuilding();
         }
 
         if ($address->getLotNumber()) {
-            $addressData['lotNumber'] = $address->getLotNumber();
+            $addressData['base:lotNumber'] = $address->getLotNumber();
         }
 
         if ($address->getAdditionalAddressDetail()) {
-            $buffer['simpleAddress'] = $addressData;
+            $buffer['base:simpleAddress'] = $addressData;
         }
         else {
-            $buffer['detailedAddress'] = $addressData;
+            $buffer['base:detailedAddress'] = $addressData;
         }
         
         return $buffer;

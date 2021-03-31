@@ -3,31 +3,35 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
+    use SerializerAwareTrait;
+
     protected function normalizeSupplierInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
         $taxNumber = $invoice->getSupplierTaxNumber();
         
         $supplierInfo = [];
         $supplierInfo['supplierTaxNumber'] = [
-            'taxpayerId' => substr($taxNumber, 0, 8),
-            'vatCode' => substr($taxNumber, 8, 1),
-            'countyCode' => substr($taxNumber, 9, 2),
+            'base:taxpayerId' => substr($taxNumber, 0, 8),
+            'base:vatCode' => substr($taxNumber, 8, 1),
+            'base:countyCode' => substr($taxNumber, 9, 2),
         ];
 
         if ($groupMemberTaxNumber = $invoice->getSupplierGroupMemberTaxNumber()) {
             $supplierInfo['groupMemberTaxNumber'] = [
-                'taxpayerId' => substr($groupMemberTaxNumber, 0, 8),
-                'vatCode' => substr($groupMemberTaxNumber, 8, 1),
-                'countyCode' => substr($groupMemberTaxNumber, 9, 2),
+                'base:taxpayerId' => substr($groupMemberTaxNumber, 0, 8),
+                'base:vatCode' => substr($groupMemberTaxNumber, 8, 1),
+                'base:  countyCode' => substr($groupMemberTaxNumber, 9, 2),
             ];
         }
         
@@ -48,20 +52,42 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
     
     protected function normalizeCustomerInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
-        $taxNumber = $invoice->getCustomerTaxNumber();
-
         $customerInfo = [];
-        $customerInfo['customerTaxNumber'] = [
-            'taxpayerId' => substr($taxNumber, 0, 8),
-            'vatCode' => substr($taxNumber, 8, 1),
-            'countyCode' => substr($taxNumber, 9, 2),
-        ];
+
+        $customerInfo['customerVatStatus'] = $invoice->getCustomerVatStatus();
+        if ($invoice->getCustomerVatStatus() === Invoice::CUSTOMER_VAT_STATUS_PRIVATE_PERSON) {
+            return $customerInfo;
+        }
+
+        if ($invoice->getCustomerTaxNumber() !== null) {
+            $taxNumber = $invoice->getCustomerTaxNumber();
+
+            $customerInfo['customerVatData'] = [
+                'customerTaxNumber' => [
+                    'base:taxpayerId' => substr($taxNumber, 0, 8),
+                    'base:vatCode' => substr($taxNumber, 8, 1),
+                    'base:countyCode' => substr($taxNumber, 9, 2),
+                ],
+            ];
+        }
+
+        if ($invoice->getThirdStateTaxId() !== null) {
+            $customerInfo['customerVatData'] = [
+                'thirdStateTaxId' => $invoice->getThirdStateTaxId(),
+            ];
+        }
+
+        if ($invoice->getCustomerCommunityVatNumber() !== null) {
+            $customerInfo['customerVatData'] = [
+                'communityVatNumber' => $invoice->getCustomerCommunityVatNumber(),
+            ];
+        }
 
         if ($groupMemberTaxNumber = $invoice->getCustomerGroupMemberTaxNumber()) {
             $customerInfo['groupMemberTaxNumber'] = [
-                'taxpayerId' => substr($groupMemberTaxNumber, 0, 8),
-                'vatCode' => substr($groupMemberTaxNumber, 8, 1),
-                'countyCode' => substr($groupMemberTaxNumber, 9, 2),
+                'base:taxpayerId' => substr($groupMemberTaxNumber, 0, 8),
+                'base:vatCode' => substr($groupMemberTaxNumber, 8, 1),
+                'base:countyCode' => substr($groupMemberTaxNumber, 9, 2),
             ];
         }
         
@@ -177,28 +203,55 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
         
         $buffer = [];
         
-        if ($format === 'xml' && $context['request_version'] === Header::REQUEST_VERSION_V20) {
+        if ($format === 'xml' && $context['request_version'] === Request::REQUEST_VERSION_V20) {
             $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/2.0/data';
             $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
             $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/2.0/data invoiceData.xsd';
+        }
+        elseif ($format === 'xml' && $context['request_version'] === Request::REQUEST_VERSION_V20) {
+            $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/3.0/data';
+            $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+            $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/3.0/data invoiceData.xsd';
+            $buffer['@xsi:common'] = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
+            $buffer['@xsi:base'] = 'http://schemas.nav.gov.hu/OSA/3.0/base';
         }
         
         $supplierInfo = [];
         
         $buffer['invoiceNumber'] = $invoice->getInvoiceNumber();
+        $buffer['completenessIndicator'] = $invoice->isCompletenessIndicator();
         $buffer['invoiceIssueDate'] = $this->serializer->normalize($invoice->getInvoiceIssueDate(), $format, $context);
+
+        $invoiceNode = [];
+
+        if ($invoice->getOriginalInvoiceNumber()) {
+            $reference = [
+                'originalInvoiceNumber' => $invoice->getOriginalInvoiceNumber(),
+            ];
+            
+            if ($invoice->getModifyWithoutMaster() !== null) {
+                $reference['modifyWithoutMaster'] = $invoice->getModifyWithoutMaster();
+            }
+            
+            if ($invoice->getModificationIndex() !== null) {
+                $reference['modificationIndex'] = $invoice->getModificationIndex();
+            }
+            
+            $invoiceNode['invoiceReference'] = $reference;
+        }
+        
+        $invoiceNode['invoiceHead'] = [
+            'supplierInfo' => $this->normalizeSupplierInfo($invoice, $format, $context),
+            'customerInfo' => $this->normalizeCustomerInfo($invoice, $format, $context),
+            'invoiceDetail' => $this->normalizeDetailInfo($invoice, $format, $context),
+        ];
+        $invoiceNode['invoiceLines'] = [
+            'line' => $this->normalizeLines($invoice, $format, $context),
+        ];
+        $invoiceNode['invoiceSummary'] = $this->normalizeSummary($invoice, $format, $context);
+        
         $buffer['invoiceMain'] = [
-            'invoice' => [
-                'invoiceHead' => [
-                    'supplierInfo' => $this->normalizeSupplierInfo($invoice, $format, $context),
-                    'customerInfo' => $this->normalizeCustomerInfo($invoice, $format, $context),
-                    'invoiceDetail' => $this->normalizeDetailInfo($invoice, $format, $context),
-                ],
-                'invoiceLines' => [
-                    'line' => $this->normalizeLines($invoice, $format, $context),
-                ],
-                'invoiceSummary' => $this->normalizeSummary($invoice, $format, $context),
-            ],
+            'invoice' => $invoiceNode,
         ];
         
         return $buffer;
@@ -207,10 +260,5 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
     public function supportsNormalization($data, $format = null, array $context = [])
     {
         return $data instanceof Invoice;
-    }
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }

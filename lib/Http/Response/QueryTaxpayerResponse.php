@@ -17,6 +17,8 @@ class QueryTaxpayerResponse extends Response
     
     private $vatGroupMembership;
 
+    // TODO incoproration in api namespace
+
     /**
      * @var int|null
      */

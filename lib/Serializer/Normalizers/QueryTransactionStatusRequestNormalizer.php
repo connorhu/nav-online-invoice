@@ -9,14 +9,14 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class QueryTransactionStatusRequestNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
-    public function normalize($request, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = [])
     {
         $buffer = [
-            'transactionId' => $request->getTransactionId(),
+            'transactionId' => $object->getTransactionId(),
         ];
         
-        if ($request->getReturnOriginalRequest() === true) {
-            $buffer['returnOriginalRequest'] = $request->getReturnOriginalRequest();
+        if ($object->getReturnOriginalRequest() === true) {
+            $buffer['returnOriginalRequest'] = $object->getReturnOriginalRequest();
         }
         
         return $buffer;

@@ -3,12 +3,11 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
-use NAV\OnlineInvoice\Serializer\Normalizers\RequestNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class TokenExchangeRequestNormalizer implements ContextAwareNormalizerInterface
 {
-    private $requestNormalizer;
+    private RequestNormalizer $requestNormalizer;
     
     public function __construct(RequestNormalizer $requestNormalizer)
     {

@@ -2,16 +2,15 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
-use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
-use NAV\OnlineInvoice\Entity\Interfaces\InvoiceItemInterface;
+use NAV\OnlineInvoice\Serialize\XMLSerialize;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ node_name invoice
  */
-class Invoice implements InvoiceItemInterface
+class Invoice implements InvoiceInterface
 {
     public function __construct()
     {
@@ -235,7 +234,7 @@ class Invoice implements InvoiceItemInterface
      * @param mixed 
      * @return self
      */
-    public function setSupplierAddress(AddressInterface $value): InvoiceInterface
+    public function setSupplierAddress(Address $value): InvoiceInterface
     {
         $this->supplierAddress = $value;
         return $this;
@@ -246,7 +245,7 @@ class Invoice implements InvoiceItemInterface
      * 
      * @return mixed return value for 
      */
-    public function getSupplierAddress(): AddressInterface
+    public function getSupplierAddress(): Address
     {
         return $this->supplierAddress;
     }
@@ -294,6 +293,28 @@ class Invoice implements InvoiceItemInterface
     {
         return $this->supplierBankAccountNumber;
     }
+
+    const CUSTOMER_VAT_STATUS_DOMESTIC = 'DOMESTIC';
+    const CUSTOMER_VAT_STATUS_OTHER = 'OTHER';
+    const CUSTOMER_VAT_STATUS_PRIVATE_PERSON = 'PRIVATE_PERSON';
+
+    private $customerVatStatus = self::CUSTOMER_VAT_STATUS_DOMESTIC;
+
+    /**
+     * @return string
+     */
+    public function getCustomerVatStatus(): string
+    {
+        return $this->customerVatStatus;
+    }
+
+    /**
+     * @param string $customerVatStatus
+     */
+    public function setCustomerVatStatus(string $customerVatStatus): void
+    {
+        $this->customerVatStatus = $customerVatStatus;
+    }
     
     /*
      * Adószám, amely alatt a számlán szereplő termékbeszerzés vagy szolgáltatás igénybevétele történt. Lehet csoportazonosító szám is.
@@ -339,6 +360,24 @@ class Invoice implements InvoiceItemInterface
     {
         return $this->customerTaxNumber;
     }
+
+    protected $thirdStateTaxId;
+
+    /**
+     * @return mixed
+     */
+    public function getThirdStateTaxId()
+    {
+        return $this->thirdStateTaxId;
+    }
+
+    /**
+     * @param mixed $thirdStateTaxId
+     */
+    public function setThirdStateTaxId($thirdStateTaxId): void
+    {
+        $this->thirdStateTaxId = $thirdStateTaxId;
+    }
     
     /*
      * Csoport tag adószáma, ha a termékértékesítés vagy szolgáltatásnyújtás csoportazonosító szám alatt történt.
@@ -358,7 +397,7 @@ class Invoice implements InvoiceItemInterface
 					<countyCode>02</countyCode>
 				</groupMemberTaxNumber>
      *
-     * @NavAssert\TaxNumber(groups={"v2.0"})
+     * @NavAssert\TaxNumber(groups="v2.0")
      */
     protected $customerGroupMemberTaxNumber;
     
@@ -440,7 +479,7 @@ class Invoice implements InvoiceItemInterface
 			<customerInfo>
 				<customerName>Vevő Kft</customerName>
      *
-     * @Assert\NotBlank(groups={"v2.0"})
+     * @Assert\NotBlank(groups="v2.0")
      */
     protected $customerName;
     
@@ -489,8 +528,8 @@ class Invoice implements InvoiceItemInterface
 					</detailedAddress>
 				</customerAddress>
      *
-     * @Assert\NotBlank(groups={"v2.0"})
-     * @NavAssert\Valid(groups={"v2.0"})
+     * @Assert\NotBlank(groups="v2.0")
+     * @NavAssert\Valid(groups="v2.0")
      */
     protected $customerAddress;
     
@@ -570,7 +609,7 @@ class Invoice implements InvoiceItemInterface
 			<invoiceData>
 				<invoiceNumber>T20190001</invoiceNumber>
      *
-     * @Assert\NotBlank(groups={"v2.0"})
+     * @Assert\NotBlank(groups="v2.0")
      */
     protected $invoiceNumber;
     
@@ -585,7 +624,7 @@ class Invoice implements InvoiceItemInterface
         $this->invoiceNumber = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceNumber
      * 
@@ -595,7 +634,25 @@ class Invoice implements InvoiceItemInterface
     {
         return $this->invoiceNumber;
     }
-    
+
+    protected $completenessIndicator = false;
+
+    /**
+     * @param bool $completenessIndicator
+     */
+    public function setCompletenessIndicator(bool $completenessIndicator): void
+    {
+        $this->completenessIndicator = $completenessIndicator;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCompletenessIndicator(): bool
+    {
+        return $this->completenessIndicator;
+    }
+
     const INVOCE_CATEGORY_NORMAL = 'NORMAL';
     const INVOCE_CATEGORY_SIMPLIFIED = 'SIMPLIFIED';
     const INVOCE_CATEGORY_AGGREGATE = 'AGGREGATE';
@@ -615,7 +672,7 @@ class Invoice implements InvoiceItemInterface
 			<invoiceData>
 				<invoiceCategory>NORMAL</invoiceCategory>
      *
-     * @Assert\NotBlank(groups={"v2.0"})
+     * @Assert\NotBlank(groups="v2.0")
      */
     protected $invoiceCategory;
     
@@ -846,7 +903,7 @@ class Invoice implements InvoiceItemInterface
 			<invoiceData>
 				<currencyCode>HUF</currencyCode>
      *
-     * @Assert\NotBlank(groups={"v2.0"})
+     * @Assert\NotBlank(groups="v2.0")
      */
     protected $currencyCode;
     
@@ -1070,6 +1127,11 @@ class Invoice implements InvoiceItemInterface
         return $this->cashAccountingIndicator;
     }
     
+    const INVOCE_APPEARANCE_PAPER = 'PAPER';
+    const INVOCE_APPEARANCE_ELECTRONIC = 'ELECTRONIC';
+    const INVOCE_APPEARANCE_EDI = 'EDI';
+    const INVOCE_APPEARANCE_UNKNOWN = 'UNKNOWN';
+    
     /*
      * A számla vagy módosító okirat megjelenési formája.
      *
@@ -1085,8 +1147,7 @@ class Invoice implements InvoiceItemInterface
 			<invoiceData>
 				<invoiceAppearance>PAPER</invoiceAppearance>
      *
-     * @Assert\NotBlank(groups={"v2.0"})
-     * @Assert\Choice(choices=Invoice::INVOCE_APPEARANCES, message="Invalid Invoice appearance value.")
+     * @Assert\NotBlank(groups="v2.0")
      */
     protected $invoiceAppearance;
     
@@ -1096,7 +1157,7 @@ class Invoice implements InvoiceItemInterface
      * @param mixed 
      * @return self
      */
-    public function setInvoiceAppearance(int $value): InvoiceInterface
+    public function setInvoiceAppearance($value)
     {
         $this->invoiceAppearance = $value;
         return $this;
@@ -1107,7 +1168,7 @@ class Invoice implements InvoiceItemInterface
      * 
      * @return mixed return value for 
      */
-    public function getInvoiceAppearance(): ?int
+    public function getInvoiceAppearance()
     {
         return $this->invoiceAppearance;
     }
@@ -1214,7 +1275,7 @@ class Invoice implements InvoiceItemInterface
      *
      * @param AppBundle\Document\item item
      */
-    public function addItem(InvoiceItemInterface $item): InvoiceInterface
+    public function addItem(InvoiceItem $item)
     {
         $this->items[] = $item;
         return $this;
@@ -1225,7 +1286,7 @@ class Invoice implements InvoiceItemInterface
      *
      * @param AppBundle\Document\Item item
      */
-    public function removeItem(InvoiceItemInterface $item): InvoiceInterface
+    public function removeItem(InvoiceItem $item)
     {
         $this->items->removeElement($item);
         return $this;
@@ -1236,7 +1297,7 @@ class Invoice implements InvoiceItemInterface
      * 
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
-    public function getItems(): iterable
+    public function getItems()
     {
         return $this->items;
     }
@@ -1515,78 +1576,6 @@ class Invoice implements InvoiceItemInterface
         return $this->originalInvoiceNumber;
     }
     
-    protected $modificationIssueDate;
-    
-    /**
-     * setter for modificationIssueDate
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setModificationIssueDate($value)
-    {
-        $this->modificationIssueDate = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for modificationIssueDate
-     * 
-     * @return mixed return value for 
-     */
-    public function getModificationIssueDate()
-    {
-        return $this->modificationIssueDate;
-    }
-    
-    protected $modificationTimestamp;
-    
-    /**
-     * setter for modificationTimestamp
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setModificationTimestamp($value)
-    {
-        $this->modificationTimestamp = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for modificationTimestamp
-     * 
-     * @return mixed return value for 
-     */
-    public function getModificationTimestamp()
-    {
-        return $this->modificationTimestamp;
-    }
-    
-    protected $lastModificationReference;
-    
-    /**
-     * setter for lastModificationReference
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setLastModificationReference($value)
-    {
-        $this->lastModificationReference = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for lastModificationReference
-     * 
-     * @return mixed return value for 
-     */
-    public function getLastModificationReference()
-    {
-        return $this->lastModificationReference;
-    }
-    
     protected $modifyWithoutMaster = false;
     
     /**
@@ -1609,6 +1598,30 @@ class Invoice implements InvoiceItemInterface
     public function getModifyWithoutMaster()
     {
         return $this->modifyWithoutMaster;
+    }
+
+    protected $modificationIndex;
+    
+    /**
+     * setter for modificationIndex
+     *
+     * @param mixed 
+     * @return self
+     */
+    public function setModificationIndex($value)
+    {
+        $this->modificationIndex = $value;
+        return $this;
+    }
+    
+    /**
+     * getter for modificationIndex
+     * 
+     * @return mixed return value for 
+     */
+    public function getModificationIndex()
+    {
+        return $this->modificationIndex;
     }
 }
 
