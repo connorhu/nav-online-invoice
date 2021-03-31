@@ -11,7 +11,10 @@ abstract class Request
 
     abstract public function getEndpointPath(): string;
 
-    protected $requestVersion = self::REQUEST_VERSION_V11;
+    /**
+     * @var string
+     */
+    protected string $requestVersion = self::REQUEST_VERSION_V11;
     
     /**
      * setter for requestVersion
