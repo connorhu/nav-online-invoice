@@ -4,18 +4,9 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Response\QueryTransactionStatusResponse;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class QueryTransactionStatusResponseDenormalizer implements ContextAwareDenormalizerInterface, SerializerAwareInterface
+class QueryTransactionStatusResponseDenormalizer implements ContextAwareDenormalizerInterface
 {
-    private $serializer;
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
-    }
-
     public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
         $response = new QueryTransactionStatusResponse();

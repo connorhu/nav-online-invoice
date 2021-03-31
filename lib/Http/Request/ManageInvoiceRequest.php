@@ -5,53 +5,45 @@ namespace NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\ExhangeTokenAwareRequest;
 use NAV\OnlineInvoice\Http\ExhangeTokenTrait;
 use NAV\OnlineInvoice\Http\Request;
-use NAV\OnlineInvoice\Token\RequestToken;
-use NAV\OnlineInvoice\Serialize\XMLSerialize;
 use NAV\OnlineInvoice\Entity\InvoiceOperation;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class ManageInvoiceRequest extends Request implements ExhangeTokenAwareRequest, SignableContentInterface
+class ManageInvoiceRequest extends Request implements ExhangeTokenAwareRequest, SignableContentInterface, HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
     use ExhangeTokenTrait;
-    
-    private $contentCompressed = false;
-    
+    use HeaderAwareTrait;
+    use UserAwareTrait;
+    use SoftwareAwareTrait;
+
+    const ROOT_NODE_NAME = 'ManageInvoiceRequest';
+
     /**
      * @Assert\NotBlank(groups="v2.0")
      * @Assert\Count(min=1, max=99, groups="v2.0")
      * @Assert\Valid()
      */
-    private $invoiceOperations = [];
-    
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    private array $invoiceOperations = [];
 
-    public function getRequiresExchangeToken(): bool
-    {
-        return true;
-    }
-    
-    public function getRootNodeName()
-    {
-        return 'ManageInvoiceRequest';
-    }
-
-    public function getEndpointPath()
+    public function getEndpointPath(): string
     {
         return '/manageInvoice';
     }
-    
+
+    /**
+     * @var bool
+     */
+    private bool $contentCompressed = false;
+
     public function isContentCompressed(): bool
     {
         return $this->contentCompressed;
     }
-    
+
     /**
      * Add invoiceOperation
      *
-     * @param AppBundle\Document\InvoiceOperation invoiceOperation
+     * @param InvoiceOperation $invoiceOperation
+     * @return ManageInvoiceRequest
      */
     public function addInvoiceOperation(InvoiceOperation $invoiceOperation)
     {
@@ -62,7 +54,8 @@ class ManageInvoiceRequest extends Request implements ExhangeTokenAwareRequest, 
     /**
      * Remove invoiceOperation
      *
-     * @param AppBundle\Document\InvoiceOperation invoiceOperation
+     * @param InvoiceOperation $invoiceOperation
+     * @return ManageInvoiceRequest
      */
     public function removeInvoiceOperation(InvoiceOperation $invoiceOperation)
     {
@@ -75,7 +68,7 @@ class ManageInvoiceRequest extends Request implements ExhangeTokenAwareRequest, 
      *
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
-    public function getInvoiceOperations()
+    public function getInvoiceOperations(): array
     {
         return $this->invoiceOperations;
     }
@@ -86,7 +79,7 @@ class ManageInvoiceRequest extends Request implements ExhangeTokenAwareRequest, 
      * @param mixed
      * @return self
      */
-    public function setInvoiceOperations($value)
+    public function setInvoiceOperations($value): ManageInvoiceRequest
     {
         $this->invoiceOperations = $value;
         return $this;
@@ -102,94 +95,4 @@ class ManageInvoiceRequest extends Request implements ExhangeTokenAwareRequest, 
         
         return $buffer;
     }
-
-    // protected $technicalAnnulment = false;
-    //
-    // /**
-    //  * setter for technicalAnnulment
-    //  *
-    //  * @param mixed
-    //  * @return self
-    //  */
-    // public function setTechnicalAnnulment(bool $value)
-    // {
-    //     if ($this->technicalAnnulment === $value) {
-    //         return;
-    //     }
-    //
-    //     $this->technicalAnnulment = $value;
-    //
-    //     foreach ($this->invoiceOperations as $operation) {
-    //         $this->validateOperationFlag($operation);
-    //     }
-    //
-    //     return $this;
-    // }
-    //
-    // /**
-    //  * getter for technicalAnnulment
-    //  *
-    //  * @return mixed return value for
-    //  */
-    // public function getTechnicalAnnulment()
-    // {
-    //     return $this->technicalAnnulment;
-    // }
-    //
-
-    //
-    // private function validateOperationFlag(InvoiceOperation $operation)
-    // {
-    //     if ($this->technicalAnnulment === true) {
-    //         if ($operation->getOperation() !== InvoiceOperation::OPERATION_ANNUL) {
-    //             throw new \Exception('invalid operation when technicalAnnulment is true');
-    //         }
-    //     }
-    //     else {
-    //         if ($operation->getOperation() === InvoiceOperation::OPERATION_ANNUL) {
-    //             throw new \Exception('invalid operation when technicalAnnulment is false');
-    //         }
-    //     }
-    // }
-    //
-    // protected function getCrcChecksums()
-    // {
-    //     $buffer = [];
-    //     $xmlSerialize = new XMLSerialize();
-    //
-    //     foreach ($this->invoiceOperations as $operation) {
-    //         $xmlBody = $xmlSerialize->serialize($operation->getInvoice());
-    //         $encodedBody = base64_encode($xmlBody);
-    //
-    //         $buffer[] = sprintf("%u", crc32($encodedBody));
-    //     }
-    //
-    //     return $buffer;
-    // }
-    //
-    // public function serialize()
-    // {
-    //     $serialized = parent::serialize();
-    //     $serialized['exchangeToken'] = $this->token->token;
-    //     $serialized['invoiceOperations'] = [
-    //         'technicalAnnulment' => XMLSerialize::formatBoolean($this->technicalAnnulment),
-    //         'compressedContent' => XMLSerialize::formatBoolean(false),
-    //         'invoiceOperation' => [],
-    //     ];
-    //
-    //     $xmlSerialize = new XMLSerialize();
-    //     $i = 1;
-    //     foreach ($this->invoiceOperations as $operation) {
-    //         $xmlBody = $xmlSerialize->serialize($operation->getInvoice());
-    //         $encodedBody = base64_encode($xmlBody);
-    //
-    //         $serialized['invoiceOperations']['invoiceOperation'][] = [
-    //             'index' => $i++,
-    //             'operation' => $operation->getOperation(),
-    //             'invoice' => $encodedBody,
-    //         ];
-    //     }
-    //
-    //     return $serialized;
-    // }
 }

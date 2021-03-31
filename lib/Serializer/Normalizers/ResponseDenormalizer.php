@@ -6,16 +6,12 @@ use NAV\OnlineInvoice\Http\Response;
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class ResponseDenormalizer implements ContextAwareDenormalizerInterface, SerializerAwareInterface
 {
-    private $serializer;
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
-    }
+    use SerializerAwareTrait;
 
     public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {

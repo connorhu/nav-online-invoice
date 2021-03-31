@@ -8,32 +8,14 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
 
 class QueryTaxpayerResponseDenormalizer implements ContextAwareDenormalizerInterface
 {
-    const API_SCHEMAS_URL_V30 = 'http://schemas.nav.gov.hu/OSA/3.0/api';
-    const DATA_SCHEMAS_URL_V30 = 'http://schemas.nav.gov.hu/OSA/3.0/data';
-    const COMMON_SCHEMAS_URL_V10 = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
-    const BASE_SCHEMAS_URL_V30 = 'http://schemas.nav.gov.hu/OSA/3.0/base';
-
-    protected static function getNamespaceWithUrl(string $url, array $data): ?string
-    {
-        foreach ($data as $key => $value) {
-            if (substr($key, 0, 6) !== '@xmlns') {
-                continue;
-            }
-
-            if ($value === $url) {
-                return substr($key, 6);
-            }
-        }
-
-        return null;
-    }
+    use ResponseDenormalizerTrait;
 
     protected function denormalizeV3($data): QueryTaxpayerResponse
     {
-        $namespace = self::getNamespaceWithUrl(self::API_SCHEMAS_URL_V30, $data);
+        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
         $apiKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
 
-        $namespace = self::getNamespaceWithUrl(self::BASE_SCHEMAS_URL_V30, $data);
+        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::BASE_SCHEMAS_URL_V30, $data);
         $baseKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
 
         $taxpayerResponse = new QueryTaxpayerResponse();
@@ -149,13 +131,13 @@ class QueryTaxpayerResponseDenormalizer implements ContextAwareDenormalizerInter
 
     public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
-        $namespace = self::getNamespaceWithUrl(self::API_SCHEMAS_URL_V30, $data);
+        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
 
         if ($namespace !== null) { // v3
             return $this->denormalizeV3($data);
         }
 
-
+        throw new \LogicException('Unknown respones interface.');
     }
 
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])

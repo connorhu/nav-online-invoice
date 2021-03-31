@@ -19,7 +19,7 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
     protected function normalizeSupplierInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
         $taxNumber = $invoice->getSupplierTaxNumber();
-        
+
         $supplierInfo = [];
         $supplierInfo['supplierTaxNumber'] = [
             'base:taxpayerId' => substr($taxNumber, 0, 8),
@@ -34,22 +34,22 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
                 'base:  countyCode' => substr($groupMemberTaxNumber, 9, 2),
             ];
         }
-        
+
         if ($communityVatNumber = $invoice->getSupplierCommunityVatNumber()) {
             $supplierInfo['communityVatNumber'] = $communityVatNumber;
         }
-        
+
         $supplierInfo['supplierName'] = $invoice->getSupplierName();
-        
+
         $supplierInfo['supplierAddress'] = $this->serializer->normalize($invoice->getSupplierAddress(), $format, $context);
 
         if ($bankAccountNumber = $invoice->getSupplierBankAccountNumber()) {
             $supplierInfo['supplierBankAccountNumber'] = $bankAccountNumber;
         }
-        
+
         return $supplierInfo;
     }
-    
+
     protected function normalizeCustomerInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
         $customerInfo = [];
@@ -90,27 +90,27 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
                 'base:countyCode' => substr($groupMemberTaxNumber, 9, 2),
             ];
         }
-        
+
         if ($communityVatNumber = $invoice->getCustomerCommunityVatNumber()) {
             $customerInfo['communityVatNumber'] = $communityVatNumber;
         }
-        
+
         $customerInfo['customerName'] = $invoice->getCustomerName();
-        
+
         $customerInfo['customerAddress'] = $this->serializer->normalize($invoice->getCustomerAddress(), $format, $context);;
 
         if ($bankAccountNumber = $invoice->getCustomerBankAccountNumber()) {
             $customerInfo['customerBankAccountNumber'] = $bankAccountNumber;
         }
-        
+
         return $customerInfo;
     }
-    
+
     protected function normalizeDetailInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
         $invoiceData = [];
         $invoiceData['invoiceCategory'] = $invoice->getInvoiceCategory();
-        
+
         if ($invoice->getInvoiceDeliveryDate()) {
             $invoiceData['invoiceDeliveryDate'] = $this->serializer->normalize($invoice->getInvoiceDeliveryDate(), $format, $context);
         }
@@ -158,24 +158,24 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
         if (count($invoice->getAdditionalInvoiceData()) > 0) {
             $invoiceData['additionalInvoiceData'] = $invoice->getAdditionalInvoiceData();
         }
-        
+
         return $invoiceData;
     }
-    
+
     protected function normalizeLines(Invoice $invoice, string $format = null, array $context = []): array
     {
         $lines = [];
         foreach ($invoice->getItems() as $item) {
             $lines[] = $this->serializer->normalize($item, $format, $context);
         }
-        
+
         return $lines;
     }
-    
+
     protected function normalizeSummary(Invoice $invoice, string $format = null, array $context = []): array
     {
         $invoiceSummary = [];
-        
+
         $invoiceSummary['summaryNormal'] = [
             'summaryByVatRate' => [],
 
@@ -189,35 +189,39 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
             'invoiceGrossAmount' => $invoice->getInvoiceGrossAmount(),
             'invoiceGrossAmountHUF' => $invoice->getInvoiceGrossAmountHUF(),
         ];
-        
+
         foreach ($invoice->getVatRateSummaries() as $summary) {
             $invoiceSummary['summaryNormal']['summaryByVatRate'][] = $this->serializer->normalize($summary, $format, $context);
         }
-        
+
         return $invoiceSummary;
     }
-    
+
     public function normalize($invoice, $format = null, array $context = [])
     {
         $context[DateTimeNormalizer::FORMAT_KEY] = 'Y-m-d';
-        
+
         $buffer = [];
-        
-        if ($format === 'xml' && $context['request_version'] === Request::REQUEST_VERSION_V20) {
+
+        if ($format === 'invoice_xml' && $context['request_version'] === Request::REQUEST_VERSION_V20) {
             $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/2.0/data';
             $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
             $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/2.0/data invoiceData.xsd';
         }
-        elseif ($format === 'xml' && $context['request_version'] === Request::REQUEST_VERSION_V20) {
+        elseif ($format === 'invoice_xml' && $context['request_version'] === Request::REQUEST_VERSION_V30) {
             $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/3.0/data';
             $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
             $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/3.0/data invoiceData.xsd';
             $buffer['@xsi:common'] = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
             $buffer['@xsi:base'] = 'http://schemas.nav.gov.hu/OSA/3.0/base';
         }
-        
+
+        if ($format === 'invoice_xml') {
+            $buffer['@root_node_name'] = 'InvoiceData';
+        }
+
         $supplierInfo = [];
-        
+
         $buffer['invoiceNumber'] = $invoice->getInvoiceNumber();
         $buffer['completenessIndicator'] = $invoice->isCompletenessIndicator();
         $buffer['invoiceIssueDate'] = $this->serializer->normalize($invoice->getInvoiceIssueDate(), $format, $context);
@@ -228,18 +232,18 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
             $reference = [
                 'originalInvoiceNumber' => $invoice->getOriginalInvoiceNumber(),
             ];
-            
+
             if ($invoice->getModifyWithoutMaster() !== null) {
                 $reference['modifyWithoutMaster'] = $invoice->getModifyWithoutMaster();
             }
-            
+
             if ($invoice->getModificationIndex() !== null) {
                 $reference['modificationIndex'] = $invoice->getModificationIndex();
             }
-            
+
             $invoiceNode['invoiceReference'] = $reference;
         }
-        
+
         $invoiceNode['invoiceHead'] = [
             'supplierInfo' => $this->normalizeSupplierInfo($invoice, $format, $context),
             'customerInfo' => $this->normalizeCustomerInfo($invoice, $format, $context),
@@ -249,14 +253,14 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
             'line' => $this->normalizeLines($invoice, $format, $context),
         ];
         $invoiceNode['invoiceSummary'] = $this->normalizeSummary($invoice, $format, $context);
-        
+
         $buffer['invoiceMain'] = [
             'invoice' => $invoiceNode,
         ];
-        
+
         return $buffer;
     }
-    
+
     public function supportsNormalization($data, $format = null, array $context = [])
     {
         return $data instanceof Invoice;

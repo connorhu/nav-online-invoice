@@ -70,17 +70,19 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
         if (!empty($context[self::REQUEST_CONTENT_KEY])) {
             $normalizedRequestContent = $context[self::REQUEST_CONTENT_KEY];
         }
-        
+
         if ($request instanceof SignableContentInterface) {
             $signableContent = $request->normalizedContentToSignableContent($normalizedRequestContent);
-            $buffer[$commonNamespace.'user']['common:requestSignature'] = $this->cryptoTools->signRequest($request, $signableContent);
+            $nodeText = $this->cryptoTools->signRequest($request, $signableContent);
         }
         else {
-            $buffer[$commonNamespace.'user'][$commonNamespace.'requestSignature'] = [
-                '@cryptoType' => $this->cryptoTools->getRequestSignatureHashAlgo($request),
-                '#' => $this->cryptoTools->signRequest($request),
-            ];
+            $nodeText = $this->cryptoTools->signRequest($request);
         }
+
+        $buffer[$commonNamespace.'user'][$commonNamespace.'requestSignature'] = [
+            '@cryptoType' => $this->cryptoTools->getRequestSignatureHashAlgo($request),
+            '#' => $nodeText,
+        ];
 
         return $buffer + $normalizedRequestContent;
     }

@@ -50,8 +50,6 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
                 'request_version' => $object->getRequestVersion(),
             ]);
 
-            dump($serializedInvoice);
-
             $encodedInvoiceData = $this->cryptoTools->encodeInvoiceData($serializedInvoice);
 
             $buffer['invoiceOperations']['invoiceOperation'][] = [
@@ -66,37 +64,32 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
 
     protected function normalizeV30($object, $format = null, array $context = []): array
     {
-        $buffer = $this->requestNormalizer->normalize($object, $format);
-
-        $buffer['exchangeToken'] = $object->getExchangeToken();
-        $buffer['invoiceOperations'] = [
-            'compressedContent' => RequestNormalizer::normalizeBool($object->isContentCompressed()),
-            'invoiceOperation' => [],
+        $contentToSign = [
+            'exchangeToken' => $object->getExchangeToken(),
+            'invoiceOperations' => [
+                'compressedContent' => $object->isContentCompressed(),
+                'invoiceOperation' => []
+            ],
         ];
-
-        if ($object->getHeader()->getRequestVersion() !== Header::REQUEST_VERSION_V20) {
-            throw new \Exception('request version not supported: '. $object->getHeader()->getRequestVersion());
-        }
 
         $operations = array_values($object->getInvoiceOperations());
         foreach ($operations as $index => $invoiceOperation) {
-            $serializedInvoice = $this->serializer->serialize($invoiceOperation->getInvoice(), $format, [
-                'xml_root_node_name' => 'InvoiceData',
-                'request_version' => $object->getHeader()->getRequestVersion(),
+            $serializedInvoice = $this->serializer->serialize($invoiceOperation->getInvoice(), 'invoice_xml', [
+                'request_version' => $object->getRequestVersion(),
             ]);
-
-            // dump($serializedInvoice); exit;
 
             $encodedInvoiceData = $this->cryptoTools->encodeInvoiceData($serializedInvoice);
 
-            $buffer['invoiceOperations']['invoiceOperation'][] = [
+            $contentToSign['invoiceOperations']['invoiceOperation'][] = [
                 'index' => $index + 1,
                 'invoiceOperation' => $invoiceOperation->getOperation(),
                 'invoiceData' => $encodedInvoiceData,
             ];
         }
 
-        return $buffer;
+        return $this->requestNormalizer->normalize($object, $format, [
+            RequestNormalizer::REQUEST_CONTENT_KEY => $contentToSign,
+        ]);
     }
 
     /**
