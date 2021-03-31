@@ -9,21 +9,21 @@ use Symfony\Component\Serializer\SerializerInterface;
 
 class ProductCodeNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
-    public function normalize($code, $format = null, array $context = [])
+    public function normalize($code, string $format = null, array $context = [])
     {
         $buffer = [];
         
         $buffer['productCodeCategory'] = $code->getProductCodeCategory();
         $buffer['productCodeValue'] = $code->getProductCodeValue();
     
-        if ($code->getProductCodeCategory() === self::PRODUCT_CODE_CATEGORY_OWN) {
+        if ($code->getProductCodeCategory() === ProductCode::PRODUCT_CODE_CATEGORY_OWN) {
             $buffer['productCodeOwnValue'] = $code->getProductCodeOwnValue();
         }
     
         return ['productCode' => $buffer];
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = [])
     {
         return $data instanceof ProductCode;
     }
