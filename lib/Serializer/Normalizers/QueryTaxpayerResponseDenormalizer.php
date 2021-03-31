@@ -51,8 +51,8 @@ class QueryTaxpayerResponseDenormalizer implements ContextAwareDenormalizerInter
                 $taxpayerResponse->setName($taxpayerData[$apiKeyPrefix.'taxpayerName']);
             }
 
-            if (isset($taxpayerData[$apiKeyPrefix.'ShortName'])) {
-                $taxpayerResponse->setShortName($taxpayerData[$apiKeyPrefix.'ShortName']);
+            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerShortName'])) {
+                $taxpayerResponse->setShortName($taxpayerData[$apiKeyPrefix.'taxpayerShortName']);
             }
 
             if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'])) {
