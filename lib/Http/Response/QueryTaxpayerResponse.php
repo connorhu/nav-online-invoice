@@ -16,11 +16,22 @@ class QueryTaxpayerResponse extends Response
     private $shortName;
     
     private $vatGroupMembership;
-    
-    private $taxpayerId;
-    
-    private $vatCode;
-    
+
+    /**
+     * @var int|null
+     */
+    private ?int $taxpayerId;
+
+    /**
+     * @var int|null
+     */
+    private ?int $vatCode;
+
+    /**
+     * @var int|null
+     */
+    private ?int $countryCode;
+
     private $addresses = [];
     
     public function setValidity(bool $validity)
@@ -71,6 +82,22 @@ class QueryTaxpayerResponse extends Response
     public function getVatCode(): ?int
     {
         return $this->vatCode;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCountryCode(): ?int
+    {
+        return $this->countryCode;
+    }
+
+    /**
+     * @param mixed $countryCode
+     */
+    public function setCountryCode(int $countryCode): void
+    {
+        $this->countryCode = $countryCode;
     }
     
     public function getAddresses(): array

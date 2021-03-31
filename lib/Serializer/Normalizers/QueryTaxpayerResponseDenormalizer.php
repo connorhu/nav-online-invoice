@@ -3,119 +3,159 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
+use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class QueryTaxpayerResponseDenormalizer implements ContextAwareDenormalizerInterface, SerializerAwareInterface
+class QueryTaxpayerResponseDenormalizer implements ContextAwareDenormalizerInterface
 {
-    private $serializer;
-    
-    public function setSerializer(SerializerInterface $serializer)
+    const API_SCHEMAS_URL_V30 = 'http://schemas.nav.gov.hu/OSA/3.0/api';
+    const DATA_SCHEMAS_URL_V30 = 'http://schemas.nav.gov.hu/OSA/3.0/data';
+    const COMMON_SCHEMAS_URL_V10 = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
+    const BASE_SCHEMAS_URL_V30 = 'http://schemas.nav.gov.hu/OSA/3.0/base';
+
+    protected static function getNamespaceWithUrl(string $url, array $data): ?string
     {
-        $this->serializer = $serializer;
+        foreach ($data as $key => $value) {
+            if (substr($key, 0, 6) !== '@xmlns') {
+                continue;
+            }
+
+            if ($value === $url) {
+                return substr($key, 6);
+            }
+        }
+
+        return null;
     }
 
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    protected function denormalizeV3($data): QueryTaxpayerResponse
     {
+        $namespace = self::getNamespaceWithUrl(self::API_SCHEMAS_URL_V30, $data);
+        $apiKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
+
+        $namespace = self::getNamespaceWithUrl(self::BASE_SCHEMAS_URL_V30, $data);
+        $baseKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
+
         $taxpayerResponse = new QueryTaxpayerResponse();
-        $taxpayerResponse->setValidity($data['taxpayerValidity'] === 'true');
-        
+        $taxpayerResponse->setValidity($data[$apiKeyPrefix.'taxpayerValidity'] === 'true');
+
         if ($taxpayerResponse->getValidity()) {
-            
+
             if (isset($data['infoDate'])) {
-                $taxpayerResponse->setLastUpdate(new \DateTime($data['infoDate']));
+                $taxpayerResponse->setLastUpdate(new \DateTime($data[$apiKeyPrefix.'infoDate']));
             }
 
-            if (isset($data['taxpayerData']['taxpayerName'])) {
-                $taxpayerResponse->setName($data['taxpayerData']['taxpayerName']);
+            $taxpayerData = $data[$apiKeyPrefix.'taxpayerData'];
+
+            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerName'])) {
+                $taxpayerResponse->setName($taxpayerData[$apiKeyPrefix.'taxpayerName']);
             }
 
-            if (isset($data['taxpayerData']['ShortName'])) {
-                $taxpayerResponse->setShortName($data['taxpayerData']['ShortName']);
+            if (isset($taxpayerData[$apiKeyPrefix.'ShortName'])) {
+                $taxpayerResponse->setShortName($taxpayerData[$apiKeyPrefix.'ShortName']);
             }
 
-            if (isset($data['taxpayerData']['taxNumberDetail']['ns2:taxpayerId'])) {
-                $value = (int) $data['taxpayerData']['taxNumberDetail']['ns2:taxpayerId'];
+            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'])) {
+                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'];
                 $taxpayerResponse->setTaxpayerId($value);
             }
 
-            if (isset($data['taxpayerData']['taxNumberDetail']['ns2:vatCode'])) {
-                $value = (int) $data['taxpayerData']['taxNumberDetail']['ns2:vatCode'];
+            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'vatCode'])) {
+                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'vatCode'];
                 $taxpayerResponse->setVatCode($value);
             }
 
-            if (isset($data['taxpayerData']['vatGroupMembership'])) {
-                $value = (int) $data['taxpayerData']['vatGroupMembership'];
+            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'countryCode'])) {
+                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'countryCode'];
+                $taxpayerResponse->setCountryCode($value);
+            }
+
+            if (isset($taxpayerData[$apiKeyPrefix.'vatGroupMembership'])) {
+                $value = (int) $taxpayerData[$apiKeyPrefix.'vatGroupMembership'];
                 $taxpayerResponse->setVatGroupMembership($value);
             }
-            
-            if (isset($data['taxpayerData']['taxpayerAddressList'])) {
-                $items = $data['taxpayerData']['taxpayerAddressList']['taxpayerAddressItem'];
-                
-                if (isset($items['taxpayerAddressType'])) {
+
+            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerAddressList'])) {
+                $items = $taxpayerData[$apiKeyPrefix.'taxpayerAddressList'][$apiKeyPrefix.'taxpayerAddressItem'];
+
+                if (isset($items[$apiKeyPrefix.'taxpayerAddressType'])) {
                     $items = [$items];
                 }
-                
+
                 foreach ($items as $item) {
                     $buffer = [
-                        'type' => $item['taxpayerAddressType'],
+                        'type' => $item[$apiKeyPrefix.'taxpayerAddressType'],
                     ];
-                    
-                    if (isset($item['taxpayerAddress']['ns2:countryCode'])) {
-                        $buffer['countryCode'] = $item['taxpayerAddress']['ns2:countryCode'];
+
+                    $address = $item[$apiKeyPrefix.'taxpayerAddress'];
+
+                    // TODO Address denormalizer
+
+                    if (isset($address[$baseKeyPrefix.'countryCode'])) {
+                        $buffer['countryCode'] = $address[$baseKeyPrefix.'countryCode'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:region'])) {
-                        $buffer['region'] = $item['taxpayerAddress']['ns2:region'];
+                    if (isset($address[$baseKeyPrefix.'region'])) {
+                        $buffer['region'] = $address[$baseKeyPrefix.'region'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:postalCode'])) {
-                        $buffer['postalCode'] = $item['taxpayerAddress']['ns2:postalCode'];
+                    if (isset($address[$baseKeyPrefix.'postalCode'])) {
+                        $buffer['postalCode'] = $address[$baseKeyPrefix.'postalCode'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:city'])) {
-                        $buffer['city'] = $item['taxpayerAddress']['ns2:city'];
+                    if (isset($address[$baseKeyPrefix.'city'])) {
+                        $buffer['city'] = $address[$baseKeyPrefix.'city'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:streetName'])) {
-                        $buffer['streetName'] = $item['taxpayerAddress']['ns2:streetName'];
+                    if (isset($address[$baseKeyPrefix.'streetName'])) {
+                        $buffer['streetName'] = $address[$baseKeyPrefix.'streetName'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:publicPlaceCategory'])) {
-                        $buffer['publicPlaceCategory'] = $item['taxpayerAddress']['ns2:publicPlaceCategory'];
+                    if (isset($address[$baseKeyPrefix.'publicPlaceCategory'])) {
+                        $buffer['publicPlaceCategory'] = $address[$baseKeyPrefix.'publicPlaceCategory'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:number'])) {
-                        $buffer['number'] = $item['taxpayerAddress']['ns2:number'];
+                    if (isset($address[$baseKeyPrefix.'number'])) {
+                        $buffer['number'] = $address[$baseKeyPrefix.'number'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:building'])) {
-                        $buffer['building'] = $item['taxpayerAddress']['ns2:building'];
+                    if (isset($address[$baseKeyPrefix.'building'])) {
+                        $buffer['building'] = $address[$baseKeyPrefix.'building'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:staircase'])) {
-                        $buffer['staircase'] = $item['taxpayerAddress']['ns2:staircase'];
+                    if (isset($address[$baseKeyPrefix.'staircase'])) {
+                        $buffer['staircase'] = $address[$baseKeyPrefix.'staircase'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:floor'])) {
-                        $buffer['floor'] = $item['taxpayerAddress']['ns2:floor'];
+                    if (isset($address[$baseKeyPrefix.'floor'])) {
+                        $buffer['floor'] = $address[$baseKeyPrefix.'floor'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:door'])) {
-                        $buffer['door'] = $item['taxpayerAddress']['ns2:door'];
+                    if (isset($address[$baseKeyPrefix.'door'])) {
+                        $buffer['door'] = $address[$baseKeyPrefix.'door'];
                     }
 
-                    if (isset($item['taxpayerAddress']['ns2:lotNumber'])) {
-                        $buffer['lotNumber'] = $item['taxpayerAddress']['ns2:lotNumber'];
+                    if (isset($address[$baseKeyPrefix.'lotNumber'])) {
+                        $buffer['lotNumber'] = $address[$baseKeyPrefix.'lotNumber'];
                     }
-                    
+
                     $taxpayerResponse->addAddress($buffer);
                 }
             }
         }
-        
+
         return $taxpayerResponse;
+    }
+
+    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    {
+        $namespace = self::getNamespaceWithUrl(self::API_SCHEMAS_URL_V30, $data);
+
+        if ($namespace !== null) { // v3
+            return $this->denormalizeV3($data);
+        }
+
+
     }
 
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
