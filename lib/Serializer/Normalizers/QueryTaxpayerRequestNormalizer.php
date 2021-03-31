@@ -3,22 +3,18 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
-use NAV\OnlineInvoice\Serializer\Normalizers\RequestNormalizer;
-use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class QueryTaxpayerRequestNormalizer implements ContextAwareNormalizerInterface
 {
-    private $requestNormalizer;
+    private RequestNormalizer $requestNormalizer;
     
     public function __construct(RequestNormalizer $requestNormalizer)
     {
         $this->requestNormalizer = $requestNormalizer;
     }
     
-    public function normalize($request, $format = null, array $context = [])
+    public function normalize($request, string $format = null, array $context = [])
     {
         $buffer = [
             'taxNumber' => $request->getTaxNumber(),
@@ -29,7 +25,7 @@ class QueryTaxpayerRequestNormalizer implements ContextAwareNormalizerInterface
         ]);
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = [])
     {
         return $data instanceof QueryTaxpayerRequest;
     }
