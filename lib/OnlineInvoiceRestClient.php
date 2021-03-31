@@ -4,7 +4,7 @@ namespace NAV\OnlineInvoice;
 
 use Psr\Log\LoggerInterface;
 use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
-use NAV\OnlineInvoice\Http\Response;
+use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Providers\ApiEndpointUrlProviderInterface;
 use NAV\OnlineInvoice\Providers\RequestIdProviderInterface;
 use NAV\OnlineInvoice\Providers\ResponseClassProvider;
@@ -16,9 +16,7 @@ use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\TokenExchange;
 use NAV\OnlineInvoice\NavRestClient;
 use NAV\OnlineInvoice\Entity\InvoiceInterface;
-use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceStatusRequest;
-use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
 use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
 use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
 use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
@@ -30,18 +28,52 @@ use Symfony\Component\HttpClient\Exception\ServerException;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
 class OnlineInvoiceRestClient
 {
-    private $validator;
-    private $serializer;
+    /**
+     * @var ValidatorInterface
+     */
+    private ValidatorInterface $validator;
+
+    /**
+     * @var SerializerInterface
+     */
+    private SerializerInterface $serializer;
     
     const VERSION_10 = 'v1.0';
     const VERSION_11 = 'v1.1';
     const VERSION_20 = 'v2.0';
     const VERSION_30 = 'v3.0';
-    
-    private $version = 'v3.0';
-    
+
+    private string $version = 'v3.0';
+
+    /**
+     * @var SoftwareProviderInterface
+     */
+    private SoftwareProviderInterface $softwareProvider;
+
+    /**
+     * @var RequestIdProviderInterface
+     */
+    private RequestIdProviderInterface $requestIdProvider;
+
+    /**
+     * @var UserProviderInterface
+     */
+    private UserProviderInterface $userProvider;
+
+    /**
+     * @var ApiEndpointUrlProviderInterface
+     */
+    private ApiEndpointUrlProviderInterface $urlProvider;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    private ?LoggerInterface $logger;
+
     public function __construct(SoftwareProviderInterface $softwareProvider, ValidatorInterface $validator, SerializerInterface $serializer, RequestIdProviderInterface $requestIdProvider, UserProviderInterface $userProvider, ApiEndpointUrlProviderInterface $urlProvider, LoggerInterface $logger = null)
     {
         $this->validator = $validator;
@@ -100,6 +132,10 @@ class OnlineInvoiceRestClient
             $token = $this->getExhangeToken();
             $request->setExchangeToken($token);
         }
+        
+        $options = [
+            XmlEncoder::FORMAT_OUTPUT => true,
+        ];
 
         $xmlStringBody = $this->serializer->serialize($request, 'request', $options);
 
@@ -123,13 +159,18 @@ class OnlineInvoiceRestClient
             $content = $response->getContent();
             
             $responseClass = ResponseClassProvider::getResponseClass($content, 'xml');
-            $response = $this->serializer->deserialize($content, $responseClass, 'xml');
+            $response = $this->serializer->deserialize($content, $responseClass, 'request');
 
-            $this->logger->info('Request did send: '. $endpointUrl);
-            $this->logger->info('Response body: '. $content);
+            if ($this->logger) {
+                $this->logger->info('Request did send: '. $endpointUrl);
+                $this->logger->info('Response body: '. $content);
+            }
         }
         catch (ServerException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
+            
+            dump($responseXmlString);
+            
             if ($this->logger) {
                 $this->logger->info('ServerException: '. $responseXmlString);
             }
@@ -139,6 +180,8 @@ class OnlineInvoiceRestClient
         }
         catch (ClientException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
+            
+            dump($responseXmlString);
 
             if ($this->logger) {
                 $this->logger->info('ClientException: '. $responseXmlString);
@@ -153,8 +196,7 @@ class OnlineInvoiceRestClient
             }
             
             dump($e);
-            exit;
-            
+
             throw $e;
         }
         
