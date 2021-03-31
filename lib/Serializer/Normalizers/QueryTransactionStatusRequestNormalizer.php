@@ -20,7 +20,7 @@ class QueryTransactionStatusRequestNormalizer implements ContextAwareNormalizerI
             'transactionId' => $object->getTransactionId(),
         ];
 
-        return $this->requestNormalizer->normalize($request, $format, [
+        return $this->requestNormalizer->normalize($object, $format, [
             RequestNormalizer::REQUEST_CONTENT_KEY => $buffer
         ]);
     }
