@@ -137,7 +137,7 @@ class QueryTaxpayerResponseDenormalizer implements ContextAwareDenormalizerInter
             return $this->denormalizeV3($data);
         }
 
-        throw new \LogicException('Unknown respones interface.');
+        throw new \LogicException('Unknown response interface.');
     }
 
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])

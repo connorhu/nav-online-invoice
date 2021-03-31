@@ -4,19 +4,15 @@ namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
 
-class QueryTransactionStatusRequest extends Request
+class QueryTransactionStatusRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
-    public function __construct()
-    {
-        parent::__construct();
-    }
-    
-    public function getRootNodeName()
-    {
-        return 'QueryTransactionStatusRequest';
-    }
+    use UserAwareTrait;
+    use HeaderAwareTrait;
+    use SoftwareAwareTrait;
 
-    public function getEndpointPath()
+    const ROOT_NODE_NAME = 'QueryTransactionStatusRequest';
+
+    public function getEndpointPath(): string
     {
         return '/queryTransactionStatus';
     }
@@ -45,7 +41,7 @@ class QueryTransactionStatusRequest extends Request
         return $this->transactionId;
     }
     
-    protected $returnOriginalRequest = false;
+    protected bool $returnOriginalRequest = false;
     
     /**
      * setter for returnOriginalRequest
@@ -53,9 +49,10 @@ class QueryTransactionStatusRequest extends Request
      * @param mixed 
      * @return self
      */
-    public function setReturnOriginalRequest(bool $value)
+    public function setReturnOriginalRequest(bool $value): QueryTransactionStatusRequest
     {
         $this->returnOriginalRequest = $value;
+
         return $this;
     }
     

@@ -14,13 +14,13 @@ class QueryTaxpayerRequestNormalizer implements ContextAwareNormalizerInterface
         $this->requestNormalizer = $requestNormalizer;
     }
     
-    public function normalize($request, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = [])
     {
         $buffer = [
-            'taxNumber' => $request->getTaxNumber(),
+            'taxNumber' => $object->getTaxNumber(),
         ];
 
-        return $this->requestNormalizer->normalize($request, $format, [
+        return $this->requestNormalizer->normalize($object, $format, [
             RequestNormalizer::REQUEST_CONTENT_KEY => $buffer
         ]);
     }
