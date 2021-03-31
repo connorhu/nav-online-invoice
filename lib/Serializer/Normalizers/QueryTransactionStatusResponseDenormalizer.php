@@ -9,7 +9,7 @@ class QueryTransactionStatusResponseDenormalizer implements ContextAwareDenormal
 {
     use ResponseDenormalizerTrait;
 
-    protected function denormalizeV3($data): array
+    protected function denormalizeV3($data): QueryTransactionStatusResponse
     {
         $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
         $apiKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
@@ -34,10 +34,50 @@ class QueryTransactionStatusResponseDenormalizer implements ContextAwareDenormal
 
         foreach ($processingResults as $processingResult) {
             $buffer = [
-                'validationResultCode' => $processingResult[$commonKeyPrefix.'validationResultCode'],
-                'validationErrorCode' => $processingResult[$commonKeyPrefix.'validationErrorCode'],
-                'message' => $processingResult[$commonKeyPrefix.'message'],
+                'index' => $processingResult[$apiKeyPrefix.'index'],
+                'invoiceStatus' => $processingResult[$apiKeyPrefix.'invoiceStatus'],
+                'technicalValidationMessages' => [],
+                'businessValidationMessages' => [],
             ];
+
+            if (isset($processingResult[$apiKeyPrefix.'technicalValidationMessages'])) {
+                foreach ($processingResult[$apiKeyPrefix.'technicalValidationMessages'] as $message) {
+                    $buffer['technicalValidationMessages'][] = [
+                        'validationResultCode' => $message[$commonKeyPrefix.'validationResultCode'],
+                        'validationErrorCode' => $message[$commonKeyPrefix.'validationErrorCode'],
+                        'message' => $message[$commonKeyPrefix.'message'],
+                    ];
+                }
+            }
+
+            if (isset($processingResult[$apiKeyPrefix.'businessValidationMessages'])) {
+                $businessValidationMessages = [];
+
+                if (isset($processingResult[$apiKeyPrefix.'businessValidationMessages'][$apiKeyPrefix.'validationResultCode'])) {
+                    $businessValidationMessages = [$processingResult[$apiKeyPrefix.'businessValidationMessages']];
+                }
+                else {
+                    $businessValidationMessages = $processingResult[$apiKeyPrefix.'businessValidationMessages'];
+                }
+
+                foreach ($businessValidationMessages as $message) {
+                    $pointer = [];
+
+                    if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'])) {
+                        $pointer['tag'] = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'];
+                    }
+                    if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'value'])) {
+                        $pointer['value'] = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'value'];
+                    }
+
+                    $buffer['businessValidationMessages'][] = [
+                        'validationResultCode' => $message[$apiKeyPrefix.'validationResultCode'],
+                        'validationErrorCode' => $message[$apiKeyPrefix.'validationErrorCode'],
+                        'message' => $message[$apiKeyPrefix.'message'],
+                        'pointer' => $pointer,
+                    ];
+                }
+            }
 
             $response->addProcessingResult($buffer);
         }

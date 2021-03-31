@@ -212,8 +212,8 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
             $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/3.0/data';
             $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
             $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/3.0/data invoiceData.xsd';
-            $buffer['@xsi:common'] = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
-            $buffer['@xsi:base'] = 'http://schemas.nav.gov.hu/OSA/3.0/base';
+            $buffer['@xmlns:common'] = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
+            $buffer['@xmlns:base'] = 'http://schemas.nav.gov.hu/OSA/3.0/base';
         }
 
         if ($format === 'invoice_xml') {
@@ -223,8 +223,8 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
         $supplierInfo = [];
 
         $buffer['invoiceNumber'] = $invoice->getInvoiceNumber();
-        $buffer['completenessIndicator'] = $invoice->isCompletenessIndicator();
         $buffer['invoiceIssueDate'] = $this->serializer->normalize($invoice->getInvoiceIssueDate(), $format, $context);
+        $buffer['completenessIndicator'] = $invoice->isCompletenessIndicator();
 
         $invoiceNode = [];
 
@@ -250,6 +250,7 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
             'invoiceDetail' => $this->normalizeDetailInfo($invoice, $format, $context),
         ];
         $invoiceNode['invoiceLines'] = [
+            'mergedItemIndicator' => false,
             'line' => $this->normalizeLines($invoice, $format, $context),
         ];
         $invoiceNode['invoiceSummary'] = $this->normalizeSummary($invoice, $format, $context);

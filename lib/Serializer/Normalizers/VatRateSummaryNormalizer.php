@@ -20,10 +20,20 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
         }
 
         if ($item->getVatRateExemption()) {
-            $buffer['vatExemption'] = $item->getVatRateExemption();
+            $excemption = strtolower($item->getVatRateExemption());
+            if ($excemption === 'aam') {
+                $buffer['vatExemption'] = [
+                    'case' => 'AAM',
+                    'reason' => 'Alanyi adómentes',
+                ];
+            }
+            else {
+                throw new \Exception('unimplemented vat rage exempltion');
+            }
         }
 
         if ($item->getVatRateOutOfScope()) {
+            throw new \Exception('unimplemented out of scope');
             $buffer['vatOutOfScope'] = $item->getVatRateOutOfScope();
         }
 
