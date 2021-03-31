@@ -26,7 +26,7 @@ class QueryTransactionStatusResponseDenormalizer implements ContextAwareDenormal
 
         $processingResults = [];
         if (isset($rawProcessingResults[$apiKeyPrefix.'processingResult'][$apiKeyPrefix.'index'])) {
-            $processingResults = [$rawProcessingResults['processingResult']];
+            $processingResults = [$rawProcessingResults[$apiKeyPrefix.'processingResult']];
         }
         elseif (isset($rawProcessingResults[$apiKeyPrefix.'processingResult'][0])) {
             $processingResults = $rawProcessingResults[$apiKeyPrefix.'processingResult'];
