@@ -10,7 +10,6 @@ use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
 {
