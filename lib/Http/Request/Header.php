@@ -34,8 +34,8 @@ class Header
     {
         return $this->request;
     }
-    
-    protected $headerVersion = self::HEADER_VERSION_V10;
+
+    protected string $headerVersion = self::HEADER_VERSION_V10;
     
     /**
      * setter for headerVersion
