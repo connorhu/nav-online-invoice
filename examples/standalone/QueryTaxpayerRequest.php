@@ -7,7 +7,8 @@ use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
 try {
     $request = new QueryTaxpayerRequest();
     $request->setTaxNumber('69061864133');
-    
+
+    $onlineInvoiceRestClient = initClient();
     $response = $onlineInvoiceRestClient->sendRequest($request);
 }
 catch (GeneralErrorResponse $exception) {

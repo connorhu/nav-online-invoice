@@ -2,18 +2,19 @@
 
 require __DIR__ .'/bootstrap.php';
 
-use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
+use NAV\OnlineInvoice\Http\Request\QueryTransactionStatusRequest;
 
 try {
-    $request = new TokenExchangeRequest();
+    $transactionId = SETTHIS;
+
+    $request = new QueryTransactionStatusRequest();
+    $request->setTransactionId($transactionId);
 
     $onlineInvoiceRestClient = initClient();
     $response = $onlineInvoiceRestClient->sendRequest($request);
-
-    dump($response->getExchangeToken(), $response->getValidFrom(), $response->getValidTo());
 }
 catch (GeneralErrorResponse $exception) {
-    
+
     dump($exception);
-    
+
 }
