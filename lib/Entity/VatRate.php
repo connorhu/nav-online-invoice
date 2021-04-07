@@ -121,7 +121,55 @@ trait VatRate
     {
         return $this->vatRateOutOfScope;
     }
-    
+
+    protected $vatRateOutOfScopeCase;
+
+    /**
+     * setter for vatRateOutOfScopeCase
+     *
+     * @param mixed
+     * @return self
+     */
+    public function setVatRateOutOfScopeCase($value)
+    {
+        $this->vatRateOutOfScopeCase = $value;
+        return $this;
+    }
+
+    /**
+     * getter for vatRateOutOfScopeCase
+     *
+     * @return mixed return value for
+     */
+    public function getVatRateOutOfScopeCase()
+    {
+        return $this->vatRateOutOfScopeCase;
+    }
+
+    protected $vatRateOutOfScopeReason;
+
+    /**
+     * setter for vatRateOutOfScopeReason
+     *
+     * @param mixed
+     * @return self
+     */
+    public function setVatRateOutOfScopeReason($value)
+    {
+        $this->vatRateOutOfScopeReason = $value;
+        return $this;
+    }
+
+    /**
+     * getter for vatRateOutOfScopeReason
+     *
+     * @return mixed return value for
+     */
+    public function getVatRateOutOfScopeReason()
+    {
+        return $this->vatRateOutOfScopeReason;
+    }
+
     /*
      * A belföldi fordított adózás jelölése - ÁFA tv. 142. §
      *
