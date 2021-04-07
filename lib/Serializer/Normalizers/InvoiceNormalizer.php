@@ -91,10 +91,6 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
             ];
         }
 
-        if ($communityVatNumber = $invoice->getCustomerCommunityVatNumber()) {
-            $customerInfo['communityVatNumber'] = $communityVatNumber;
-        }
-
         $customerInfo['customerName'] = $invoice->getCustomerName();
 
         $customerInfo['customerAddress'] = $this->serializer->normalize($invoice->getCustomerAddress(), $format, $context);;

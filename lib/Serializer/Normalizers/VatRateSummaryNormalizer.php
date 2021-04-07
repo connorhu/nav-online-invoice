@@ -32,9 +32,11 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
             }
         }
 
-        if ($item->getVatRateOutOfScope()) {
-            throw new \Exception('unimplemented out of scope');
-            $buffer['vatOutOfScope'] = $item->getVatRateOutOfScope();
+        if ($item->getVatRateOutOfScopeCase()) {
+            $buffer['vatOutOfScope'] = [
+                'case' => $item->getVatRateOutOfScope(),
+                'reason' => $item->getVatRateOutOfReason()
+            ];
         }
 
         if ($item->getVatRateDomesticReverseCharge()) {
