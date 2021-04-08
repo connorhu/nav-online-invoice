@@ -31,7 +31,9 @@ class InvoiceItemNormalizer implements ContextAwareNormalizerInterface, Serializ
         }
         
         if ($item->getAdvanceIndicator()) {
-            $buffer['advanceIndicator'] = $item->getAdvanceIndicator();
+            $buffer['advanceData'] = [
+                'advanceIndicator' => $item->getAdvanceIndicator(),
+            ];
         }
         
         foreach ($item->getProductCodes() as $code) {
