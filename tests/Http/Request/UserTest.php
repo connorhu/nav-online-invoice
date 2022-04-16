@@ -5,8 +5,6 @@ namespace NAV\Tests\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
-use Symfony\Component\Validator\Constraints\Choice;
-use Symfony\Component\Validator\Constraints\Country;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
@@ -22,75 +20,109 @@ class UserTest extends TestCase
             ->getValidator();
     }
 
-    public function testTaxNumberValidation()
+    public function testValidTaxNumberValidation()
     {
         $user = new User();
-        
-        // blank
-        $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
-        $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
-
-        // length < 8
-        $user->setTaxNumber(str_repeat('1', 7));
-        $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(2, count($errors));
-        $this->assertEquals(Length::TOO_SHORT_ERROR, $errors[0]->getCode());
-        $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[1]->getCode());
-
-        // length > 8
-        $user->setTaxNumber(str_repeat('1', 10));
-        $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
-
-        // notmatch
-        $user->setTaxNumber(str_repeat('a', 8));
-        $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
-        $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
-
-        // valid
         $user->setTaxNumber('69061864-1-33');
         $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
-        $this->assertEquals($user->getTaxNumber(), '69061864');
+        $this->assertCount(0, $errors);
+        $this->assertEquals('69061864', $user->getTaxNumber());
     }
-    
-    public function testNotBlankFieldsValidation()
+
+    /**
+     * @dataProvider invalidTaxNumberValidationDataProvider
+     */
+    public function testInvalidTaxNumberValidation(User $user, int $numberOfErrors, array $errorAsserts)
+    {
+        $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
+        $this->assertCount($numberOfErrors, $errors);
+        foreach ($errorAsserts as $errorAssert) {
+            $this->assertEquals($errorAssert[1], $errors[$errorAssert[0]]->getCode());
+        }
+    }
+
+    public function invalidTaxNumberValidationDataProvider(): \Generator
+    {
+        yield [
+            (new User()), 2, [
+                [0, Length::NOT_EQUAL_LENGTH_ERROR],
+                [1, NotBlank::IS_BLANK_ERROR],
+            ],
+        ];
+
+        yield [
+            (new User())->setTaxNumber(str_repeat('1', 7)), 2, [
+                [0, Length::NOT_EQUAL_LENGTH_ERROR],
+                [1, Regex::REGEX_FAILED_ERROR],
+            ],
+        ];
+
+        yield [
+            (new User())->setTaxNumber(str_repeat('1', 10)), 0, [
+            ],
+        ];
+
+        yield [
+            (new User())->setTaxNumber(str_repeat('a', 8)), 1, [
+                [0, Regex::REGEX_FAILED_ERROR],
+            ],
+        ];
+
+        yield [
+            (new User())->setTaxNumber(str_repeat('a', 8)), 1, [
+                [0, Regex::REGEX_FAILED_ERROR],
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider notBlankFieldsValidationDataProvider
+     */
+    public function testNotBlankFieldsValidation($propertyName)
     {
         $user = new User();
-        
-        // blank
-        $errors = $this->validator->validateProperty($user, 'signKey', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
+        $errors = $this->validator->validateProperty($user, $propertyName, ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
+        $this->assertCount(1, $errors);
         $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
-        
-        // blank
-        $errors = $this->validator->validateProperty($user, 'password', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
-        $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
-        
-        // blank
-        $errors = $this->validator->validateProperty($user, 'login', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
-        $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
-        
-        // valid
-        $user->setSignKey('abc');
-        $errors = $this->validator->validateProperty($user, 'signKey', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
-        $this->assertEquals($user->getSignKey(), 'abc');
-        
-        // valid
-        $user->setPassword('abc');
-        $errors = $this->validator->validateProperty($user, 'password', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
-        $this->assertEquals($user->getPassword(), 'abc');
-        
-        // valid
-        $user->setLogin('abc');
-        $errors = $this->validator->validateProperty($user, 'login', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
-        $this->assertEquals($user->getLogin(), 'abc');
+    }
+
+    public function notBlankFieldsValidationDataProvider(): \Generator
+    {
+        yield [
+            'signKey',
+        ];
+        yield [
+            'password',
+        ];
+        yield [
+            'login',
+        ];
+    }
+
+    /**
+     * @dataProvider validNotBlankFieldsValidationDataProvider
+     */
+    public function testValidNotBlankFieldsValidation(string $methodName, string $value, string $propertyName)
+    {
+        $user = new User();
+        $user->{'set'.$methodName}($value);
+        $errors = $this->validator->validateProperty($user, $propertyName, ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
+        $this->assertCount(0, $errors);
+        $this->assertEquals($value, $user->{'get'.$methodName}());
+    }
+
+    public function validNotBlankFieldsValidationDataProvider(): \Generator
+    {
+        yield [
+            'SignKey', 'abc', 'signKey'
+        ];
+
+        yield [
+            'Password', 'abc', 'password'
+        ];
+
+        yield [
+            'Login', 'abc', 'login'
+        ];
     }
 }

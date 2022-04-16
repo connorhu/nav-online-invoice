@@ -6,79 +6,84 @@ use NAV\OnlineInvoice\Entity\Address;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class AddressNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
-    public function normalize($address, $format = null, array $context = [])
+    use SerializerAwareTrait;
+
+    public function normalize($object, $format = null, array $context = []): array
     {
-        $buffer = [];
-        
-        if ($address->getCountryCode()) {
-            $addressData['base:countryCode'] = $address->getCountryCode();
+        $addressData = [];
+
+        if (!$object instanceof Address) {
+            throw new \Exception('');
         }
 
-        if ($address->getRegion()) {
-            $addressData['base:region'] = $address->getRegion();
+        if ($object->getCountryCode()) {
+            $addressData['base:countryCode'] = $object->getCountryCode();
         }
 
-        if ($address->getPostalCode()) {
-            $addressData['base:postalCode'] = $address->getPostalCode();
+        if ($object->getRegion()) {
+            $addressData['base:region'] = $object->getRegion();
         }
 
-        if ($address->getCity()) {
-            $addressData['base:city'] = $address->getCity();
+        if ($object->getPostalCode()) {
+            $addressData['base:postalCode'] = $object->getPostalCode();
         }
 
-        if ($address->getAdditionalAddressDetail()) {
-            $addressData['base:additionalAddressDetail'] = $address->getAdditionalAddressDetail();
+        if ($object->getCity()) {
+            $addressData['base:city'] = $object->getCity();
         }
 
-        if ($address->getStreetName()) {
-            $addressData['base:streetName'] = $address->getStreetName();
+        if ($object->getAdditionalAddressDetail()) {
+            $addressData['base:additionalAddressDetail'] = $object->getAdditionalAddressDetail();
         }
 
-        if ($address->getPublicPlaceCategory()) {
-            $addressData['base:publicPlaceCategory'] = $address->getPublicPlaceCategory();
+        if ($object->getStreetName()) {
+            $addressData['base:streetName'] = $object->getStreetName();
         }
 
-        if ($address->getNumber()) {
-            $addressData['base:number'] = $address->getNumber();
+        if ($object->getPublicPlaceCategory()) {
+            $addressData['base:publicPlaceCategory'] = $object->getPublicPlaceCategory();
         }
 
-        if ($address->getFloor()) {
-            $addressData['base:floor'] = $address->getFloor();
+        if ($object->getNumber()) {
+            $addressData['base:number'] = $object->getNumber();
         }
 
-        if ($address->getDoor()) {
-            $addressData['base:door'] = $address->getDoor();
+        if ($object->getFloor()) {
+            $addressData['base:floor'] = $object->getFloor();
         }
 
-        if ($address->getBuilding()) {
-            $addressData['base:building'] = $address->getBuilding();
+        if ($object->getDoor()) {
+            $addressData['base:door'] = $object->getDoor();
         }
 
-        if ($address->getLotNumber()) {
-            $addressData['base:lotNumber'] = $address->getLotNumber();
+        if ($object->getBuilding()) {
+            $addressData['base:building'] = $object->getBuilding();
         }
 
-        if ($address->getAdditionalAddressDetail()) {
-            $buffer['base:simpleAddress'] = $addressData;
+        if ($object->getLotNumber()) {
+            $addressData['base:lotNumber'] = $object->getLotNumber();
         }
-        else {
-            $buffer['base:detailedAddress'] = $addressData;
+
+        if ($object->getAdditionalAddressDetail()) {
+            $buffer = [
+                'base:simpleAddress' => $addressData,
+            ];
+        } else {
+            $buffer = [
+                'base:detailedAddress' => $addressData,
+            ];
         }
         
         return $buffer;
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof Address;
-    }
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }

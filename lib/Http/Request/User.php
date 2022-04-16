@@ -6,18 +6,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class User
 {
-    protected $request;
+    protected UserAwareRequest $request;
     
     /**
      * setter for request
      *
-     * @param mixed 
+     * @param UserAwareRequest $request
      * @return self
      */
-    public function setRequest(UserAwareRequest $value): self
+    public function setRequest(UserAwareRequest $request): self
     {
-        if ($this->request !== $value) {
-            $this->request = $value;
+        if ($this->request !== $request) {
+            $this->request = $request;
+            $this->request->setUser($this);
         }
         
         return $this;
@@ -26,7 +27,7 @@ class User
     /**
      * getter for request
      * 
-     * @return mixed return value for 
+     * @return UserAwareRequest
      */
     public function getRequest(): UserAwareRequest
     {
@@ -36,24 +37,24 @@ class User
     /**
      * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
-    protected $login;
+    protected string $login = '';
     
     /**
      * setter for login
      *
-     * @param mixed 
+     * @param string
      * @return self
      */
-    public function setLogin(string $value): self
+    public function setLogin(string $login): self
     {
-        $this->login = $value;
+        $this->login = $login;
         return $this;
     }
     
     /**
      * getter for login
      * 
-     * @return mixed return value for 
+     * @return string
      */
     public function getLogin(): string
     {
@@ -63,24 +64,24 @@ class User
     /**
      * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
-    protected $password;
+    protected string $password = '';
     
     /**
      * setter for password
      *
-     * @param mixed 
+     * @param string $password
      * @return self
      */
-    public function setPassword(string $value): self
+    public function setPassword(string $password): self
     {
-        $this->password = $value;
+        $this->password = $password;
         return $this;
     }
     
     /**
      * getter for password
      * 
-     * @return mixed return value for 
+     * @return string
      */
     public function getPassword(): string
     {
@@ -91,24 +92,24 @@ class User
      * @Assert\NotBlank(groups={"v2.0", "v3.0"})
      * @Assert\Length(max=8, min=8, groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
-    protected $taxNumber;
+    protected string $taxNumber = '';
     
     /**
      * setter for taxNumber
      *
-     * @param mixed 
+     * @param string $taxNumber
      * @return self
      */
-    public function setTaxNumber(string $value): self
+    public function setTaxNumber(string $taxNumber): self
     {
-        $this->taxNumber = substr($value, 0, 8);
+        $this->taxNumber = substr($taxNumber, 0, 8);
         return $this;
     }
     
     /**
      * getter for taxNumber
      * 
-     * @return mixed return value for 
+     * @return string
      */
     public function getTaxNumber(): string
     {
@@ -118,24 +119,24 @@ class User
     /**
      * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
-    protected $signKey;
+    protected string $signKey;
     
     /**
      * setter for signKey
      *
-     * @param mixed 
+     * @param string $signKey
      * @return self
      */
-    public function setSignKey(string $value): self
+    public function setSignKey(string $signKey): self
     {
-        $this->signKey = $value;
+        $this->signKey = $signKey;
         return $this;
     }
     
     /**
      * getter for signKey
      * 
-     * @return mixed return value for 
+     * @return string
      */
     public function getSignKey(): string
     {
