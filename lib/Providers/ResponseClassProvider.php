@@ -34,6 +34,12 @@ class ResponseClassProvider
 
             case 'QueryTransactionStatusResponse':
                 return Response\QueryTransactionStatusResponse::class;
+
+            case 'QueryInvoiceDataResponse':
+                return Response\QueryInvoiceDataResponse::class;
+
+            case 'QueryInvoiceDigestResponse':
+                return Response\QueryInvoiceDigestResponse::class;
         }
         
         throw new \Exception('unsupported response class: '. $responseRoot);
