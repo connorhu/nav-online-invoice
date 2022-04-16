@@ -14,26 +14,26 @@ class Address
      *
      * @var string
      */
-    protected $countryCode;
+    protected string $countryCode = '';
     
     /**
      * setter for countryCode
      *
-     * @param mixed 
+     * @param string $countryCode
      * @return self
      */
-    public function setCountryCode($value)
+    public function setCountryCode(string $countryCode): self
     {
-        $this->countryCode = $value;
+        $this->countryCode = $countryCode;
         return $this;
     }
     
     /**
      * getter for countryCode
      * 
-     * @return mixed return value for 
+     * @return string
      */
-    public function getCountryCode()
+    public function getCountryCode(): string
     {
         return $this->countryCode;
     }
@@ -47,28 +47,29 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $region;
+    protected ?string $region = null;
     
     /**
      * setter for region
      *
-     * @param mixed 
+     * @param string|null $region
      * @return self
      */
-    public function setRegion($value)
+    public function setRegion(?string $region): self
     {
-        $this->region = $value;
+        $this->region = $region;
+
         return $this;
     }
     
     /**
      * getter for region
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getRegion()
+    public function getRegion(): ?string
     {
         return $this->region;
     }
@@ -84,26 +85,26 @@ class Address
      *
      * @var string
      */
-    protected $postalCode;
+    protected string $postalCode = '';
     
     /**
      * setter for postalCode
      *
-     * @param mixed 
+     * @param string $postalCode
      * @return self
      */
-    public function setPostalCode($value)
+    public function setPostalCode(string $postalCode): self
     {
-        $this->postalCode = $value;
+        $this->postalCode = $postalCode;
         return $this;
     }
     
     /**
      * getter for postalCode
      * 
-     * @return mixed return value for 
+     * @return string
      */
-    public function getPostalCode()
+    public function getPostalCode(): string
     {
         return $this->postalCode;
     }
@@ -119,26 +120,26 @@ class Address
      *
      * @var string
      */
-    protected $city;
+    protected string $city = '';
     
     /**
      * setter for city
      *
-     * @param mixed 
+     * @param string $city
      * @return self
      */
-    public function setCity($value)
+    public function setCity(string $city): self
     {
-        $this->city = $value;
+        $this->city = $city;
         return $this;
     }
     
     /**
      * getter for city
      * 
-     * @return mixed return value for 
+     * @return string
      */
-    public function getCity()
+    public function getCity(): string
     {
         return $this->city;
     }
@@ -152,28 +153,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText255NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $additionalAddressDetail;
+    protected ?string $additionalAddressDetail = null;
     
     /**
      * setter for additionalAddressDetail
      *
-     * @param mixed 
+     * @param string|null $additionalAddressDetail
      * @return self
      */
-    public function setAdditionalAddressDetail($value)
+    public function setAdditionalAddressDetail(?string $additionalAddressDetail): self
     {
-        $this->additionalAddressDetail = $value;
+        $this->additionalAddressDetail = $additionalAddressDetail;
         return $this;
     }
     
     /**
      * getter for additionalAddressDetail
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getAdditionalAddressDetail()
+    public function getAdditionalAddressDetail(): ?string
     {
         return $this->additionalAddressDetail;
     }
@@ -187,28 +188,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText255NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $streetName;
+    protected ?string $streetName = '';
     
     /**
      * setter for streetName
      *
-     * @param mixed 
+     * @param string|null $streetName
      * @return self
      */
-    public function setStreetName($value)
+    public function setStreetName(?string $streetName): self
     {
-        $this->streetName = $value;
+        $this->streetName = $streetName;
         return $this;
     }
     
     /**
      * getter for streetName
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getStreetName()
+    public function getStreetName(): string
     {
         return $this->streetName;
     }
@@ -222,28 +223,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $publicPlaceCategory;
+    protected ?string $publicPlaceCategory = null;
     
     /**
      * setter for publicPlaceCategory
      *
-     * @param mixed 
+     * @param string|null
      * @return self
      */
-    public function setPublicPlaceCategory($value)
+    public function setPublicPlaceCategory(?string $publicPlaceCategory): self
     {
-        $this->publicPlaceCategory = $value;
+        $this->publicPlaceCategory = $publicPlaceCategory;
         return $this;
     }
     
     /**
      * getter for publicPlaceCategory
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getPublicPlaceCategory()
+    public function getPublicPlaceCategory(): ?string
     {
         return $this->publicPlaceCategory;
     }
@@ -257,28 +258,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $number;
+    protected ?string $number;
     
     /**
      * setter for number
      *
-     * @param mixed 
+     * @param string|null
      * @return self
      */
-    public function setNumber($value)
+    public function setNumber(?string $number): self
     {
-        $this->number = $value;
+        $this->number = $number;
         return $this;
     }
     
     /**
      * getter for number
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getNumber()
+    public function getNumber(): ?string
     {
         return $this->number;
     }
@@ -292,17 +293,17 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $floor;
+    protected ?string $floor;
     
     /**
      * setter for floor
      *
-     * @param mixed 
+     * @param string|null
      * @return self
      */
-    public function setFloor($value)
+    public function setFloor(?string $value): self
     {
         $this->floor = $value;
         return $this;
@@ -311,9 +312,9 @@ class Address
     /**
      * getter for floor
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getFloor()
+    public function getFloor(): ?string
     {
         return $this->floor;
     }
@@ -327,28 +328,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $door;
+    protected ?string $door;
     
     /**
      * setter for door
      *
-     * @param mixed 
+     * @param string|null
      * @return self
      */
-    public function setDoor($value)
+    public function setDoor(?string $door): self
     {
-        $this->door = $value;
+        $this->door = $door;
         return $this;
     }
     
     /**
      * getter for door
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getDoor()
+    public function getDoor(): ?string
     {
         return $this->door;
     }
@@ -362,28 +363,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $building;
+    protected ?string $building;
     
     /**
      * setter for building
      *
-     * @param mixed 
+     * @param string|null
      * @return self
      */
-    public function setBuilding($value)
+    public function setBuilding(?string $building): self
     {
-        $this->building = $value;
+        $this->building = $building;
         return $this;
     }
     
     /**
      * getter for building
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getBuilding()
+    public function getBuilding(): ?string
     {
         return $this->building;
     }
@@ -397,28 +398,28 @@ class Address
      * pattern: .*\S.*
      * type: SimpleText50NotBlankType
      *
-     * @var string
+     * @var string|null
      */
-    protected $lotNumber;
+    protected ?string $lotNumber;
     
     /**
      * setter for lotNumber
      *
-     * @param mixed 
+     * @param string|null $lotNumber
      * @return self
      */
-    public function setLotNumber($value)
+    public function setLotNumber(?string $lotNumber): ?string
     {
-        $this->lotNumber = $value;
+        $this->lotNumber = $lotNumber;
         return $this;
     }
     
     /**
      * getter for lotNumber
      * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getLotNumber()
+    public function getLotNumber(): ?string
     {
         return $this->lotNumber;
     }
