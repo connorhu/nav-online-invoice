@@ -6,7 +6,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class User
 {
-    protected UserAwareRequest $request;
+    protected ?UserAwareRequest $request = null;
     
     /**
      * setter for request
@@ -27,9 +27,9 @@ class User
     /**
      * getter for request
      * 
-     * @return UserAwareRequest
+     * @return UserAwareRequest|null
      */
-    public function getRequest(): UserAwareRequest
+    public function getRequest(): ?UserAwareRequest
     {
         return $this->request;
     }

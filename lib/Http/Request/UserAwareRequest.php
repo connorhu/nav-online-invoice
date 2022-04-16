@@ -6,5 +6,5 @@ interface UserAwareRequest
 {
     public function setUser(User $user): UserAwareRequest;
     
-    public function getUser(): User;
+    public function getUser(): ?User;
 }

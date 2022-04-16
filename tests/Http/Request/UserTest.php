@@ -3,6 +3,7 @@
 namespace NAV\Tests\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request\User;
+use NAV\Tests\OnlineInvoice\Fixtures\UserAwareTraitImplementation;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Length;
@@ -124,5 +125,15 @@ class UserTest extends TestCase
         yield [
             'Login', 'abc', 'login'
         ];
+    }
+
+    public function testSetRequest()
+    {
+        $user = new User();
+        $request = new UserAwareTraitImplementation();
+
+        $user->setRequest($request);
+        $this->assertSame($user, $request->getUser());
+        $this->assertSame($request, $user->getRequest());
     }
 }
