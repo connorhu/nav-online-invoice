@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Test\OnlineInvoice\Http\Request;
+namespace NAV\Tests\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
 use PHPUnit\Framework\TestCase;

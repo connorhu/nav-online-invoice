@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Test\OnlineInvoice\Entity;
+namespace NAV\Tests\OnlineInvoice\Entity;
 
 use NAV\OnlineInvoice\Entity\Invoice;
 use PHPUnit\Framework\TestCase;

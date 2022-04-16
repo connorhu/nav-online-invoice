@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Test\OnlineInvoice\Http\Request;
+namespace NAV\Tests\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request\Software;
 use PHPUnit\Framework\TestCase;
