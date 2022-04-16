@@ -21,38 +21,50 @@ class QueryTaxpayerRequestTest extends TestCase
             ->addXmlMapping('lib/Resources/validator/validation.xml')
             ->getValidator();
     }
-    
-    public function testSoftwareIdValidation()
+
+    /**
+     * @dataProvider taxNumberValidationDataProvider
+     */
+    public function testTaxNumberValidation(callable $setup, int $numberOfError, callable $asserts)
     {
         $request = new QueryTaxpayerRequest();
-        
-        // blank
-        $errors = $this->validator->validateProperty($request, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
-        $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
 
-        // length < 8
-        $request->setTaxNumber(str_repeat('1', 7));
+        $setup($request);
         $errors = $this->validator->validateProperty($request, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(2, count($errors));
-        $this->assertEquals(Length::TOO_SHORT_ERROR, $errors[0]->getCode());
-        $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[1]->getCode());
+        $this->assertCount($numberOfError, $errors);
+        $asserts($errors, $request);
+    }
 
-        // length > 8
-        $request->setTaxNumber(str_repeat('1', 10));
-        $errors = $this->validator->validateProperty($request, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
+    public function taxNumberValidationDataProvider(): \Generator
+    {
+        yield [function (QueryTaxpayerRequest $request) {
 
-        // notmatch
-        $request->setTaxNumber(str_repeat('a', 8));
-        $errors = $this->validator->validateProperty($request, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(1, count($errors));
-        $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
+        }, 1, function ($errors) {
+            $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
+        }];
 
-        // valid
-        $request->setTaxNumber('69061864-1-33');
-        $errors = $this->validator->validateProperty($request, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
-        $this->assertEquals(0, count($errors));
-        $this->assertEquals($request->getTaxNumber(), '69061864');
+        yield [function (QueryTaxpayerRequest $request) {
+            $request->setTaxNumber(str_repeat('1', 7));
+        }, 2, function ($errors) {
+            $this->assertEquals(Length::NOT_EQUAL_LENGTH_ERROR, $errors[0]->getCode());
+            $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[1]->getCode());
+        }];
+
+        yield [function (QueryTaxpayerRequest $request) {
+            $request->setTaxNumber(str_repeat('1', 10));
+        }, 0, function ($errors) {
+        }];
+
+        yield [function (QueryTaxpayerRequest $request) {
+            $request->setTaxNumber(str_repeat('a', 8));
+        }, 1, function ($errors) {
+            $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
+        }];
+
+        yield [function (QueryTaxpayerRequest $request) {
+            $request->setTaxNumber('69061864-1-33');
+        }, 0, function ($errors, $request) {
+            $this->assertEquals('69061864', $request->getTaxNumber());
+        }];
     }
 }
