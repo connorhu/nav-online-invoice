@@ -13,6 +13,7 @@ class Address
      * type: CountryCodeType
      *
      * @var string
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
     protected string $countryCode = '';
     
@@ -84,6 +85,7 @@ class Address
      * type: PostalCodeType
      *
      * @var string
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
     protected string $postalCode = '';
     
@@ -119,6 +121,7 @@ class Address
      * type: SimpleText255NotBlankType
      *
      * @var string
+     * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      */
     protected string $city = '';
     
@@ -422,5 +425,19 @@ class Address
     public function getLotNumber(): ?string
     {
         return $this->lotNumber;
+    }
+
+    public const STREET_IS_BLANK_ERROR = 'a21ec579-1c2d-475e-9ac0-4b00f8c896be';
+
+    /**
+     * @Assert\Callback(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
+     */
+    public function validateStreetFields(ExecutionContextInterface $context)
+    {
+        if (empty($this->additionalAddressDetail) && (empty($this->streetName) || empty($this->publicPlaceCategory))) {
+            $context->buildViolation('Either additionalAddressDetail or streetName and publicPlaceCategory field is requred.')
+                ->setCode(self::STREET_IS_BLANK_ERROR)
+                ->addViolation();
+        }
     }
 }

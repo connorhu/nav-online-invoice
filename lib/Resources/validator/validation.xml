@@ -294,4 +294,45 @@
             </constraint>
         </property>
     </class>
+    <class name="NAV\OnlineInvoice\Entity\Address">
+        <constraint name="Callback">
+            <option name="groups">
+                <value>v1.0</value>
+                <value>v1.1</value>
+                <value>v2.0</value>
+                <value>v3.0</value>
+            </option>
+            <option name="callback">validateStreetFields</option>
+        </constraint>
+        <property name="countryCode">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="postalCode">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+        <property name="city">
+            <constraint name="NotBlank">
+                <option name="groups">
+                    <value>v1.0</value>
+                    <value>v1.1</value>
+                    <value>v2.0</value>
+                    <value>v3.0</value>
+                </option>
+            </constraint>
+        </property>
+    </class>
 </constraint-mapping>
