@@ -2,6 +2,9 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\Context\ExecutionContextInterface;
+
 class Address
 {
     /**
