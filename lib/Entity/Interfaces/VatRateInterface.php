@@ -32,13 +32,13 @@ interface VatRateInterface
     public function setVatRateOutOfScopeCase(?int $vatRateOutOfScopeCase): VatRateInterface;
     public function getVatRateOutOfScopeCase(): ?int;
 
-    public function setVatRateOutOfScopeReason($value);
-    public function getVatRateOutOfScopeReason();
+    public function setVatRateOutOfScopeReason(?string $vatRateOutOfScopeReason): VatRateInterface;
+    public function getVatRateOutOfScopeReason(): ?string;
 
-    public function setVatRateDomesticReverseCharge($value);
-    public function getVatRateDomesticReverseCharge();
-    public function setVatRateMarginSchemeVat($value);
-    public function getVatRateMarginSchemeVat();
-    public function setVatRateMarginSchemeNoVat($value);
-    public function getVatRateMarginSchemeNoVat();
+    public function setVatRateDomesticReverseCharge(?bool $vatRateDomesticReverseCharge): VatRateInterface;
+    public function getVatRateDomesticReverseCharge(): ?bool;
+    public function setVatRateMarginSchemeVat(?bool $vatRateMarginSchemeVat): VatRateInterface;
+    public function getVatRateMarginSchemeVat(): ?bool;
+    public function setVatRateMarginSchemeNoVat(?bool $vatRateMarginSchemeNoVat): VatRateInterface;
+    public function getVatRateMarginSchemeNoVat(): ?bool;
 }
