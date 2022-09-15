@@ -2,10 +2,9 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
-use NAV\OnlineInvoice\Entity\InvoiceInterface;
-use NAV\OnlineInvoice\Serialize\XMLSerialize;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
 
-class InvoiceItem
+class InvoiceItem implements VatRateInterface
 {
     use VatRate;
     

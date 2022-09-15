@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
-use NAV\OnlineInvoice\Serialize\XMLSerialize;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
 
 trait VatRate
 {
@@ -26,32 +26,33 @@ trait VatRate
 		<lineVatRate>
 			<vatPercentage>0.05</vatPercentage>
      */
-    protected $vatRatePercentage;
+    protected ?float $vatRatePercentage = null;
     
     /**
      * setter for vatRatePercentage
      *
-     * @param mixed 
-     * @return self
+     * @param float|null $vatRatePercentage New value for vatRatePercentage field
+     * @return VatRateInterface
      */
-    public function setVatRatePercentage($value)
+    public function setVatRatePercentage(?float $vatRatePercentage): VatRateInterface
     {
-        $this->vatRatePercentage = $value;
+        $this->vatRatePercentage = $vatRatePercentage;
+
         return $this;
     }
     
     /**
      * getter for vatRatePercentage
      * 
-     * @return mixed return value for 
+     * @return float|null Return value for vatRatePercentage field
      */
-    public function getVatRatePercentage()
+    public function getVatRatePercentage(): ?float
     {
         return $this->vatRatePercentage;
     }
     
     /*
-     * Az adómentesség jelölése - ÁFA tv. 169. § m) 
+     * Az adómentesség jelölés kódja
      *
      * requirements: required
      * node name: lineVatRate / vatExemption
@@ -64,75 +65,79 @@ trait VatRate
 		<lineNetAmount>600000.00</lineNetAmount>
 		<vatExemption>...</vatExemption>
      */
-    protected $vatRateExemption;
+    protected ?int $vatRateExemptionCase = null;
     
     /**
      * setter for vatRateExemption
      *
-     * @param mixed 
-     * @return self
+     * @param int|null $vatRateExemptionCase New Value for vatRateExemptionCase field
+     * @return VatRateInterface
      */
-    public function setVatRateExemption($value)
+    public function setVatRateExemptionCase(?int $vatRateExemptionCase): VatRateInterface
     {
-        $this->vatRateExemption = $value;
+        $this->vatRateExemptionCase = $vatRateExemptionCase;
         return $this;
     }
     
     /**
      * getter for vatRateExemption
      * 
-     * @return mixed return value for 
+     * @return int|null Return value of vatRateExemptionCase field
      */
-    public function getVatRateExemption()
+    public function getVatRateExemptionCase(): ?int
     {
-        return $this->vatRateExemption;
+        return $this->vatRateExemptionCase;
     }
-    
-    /*
-     * Az ÁFA törvény hatályán kívüli.
-     *
-     * requirements: required
-     * node name: lineVatRate / vatOutOfScope
-     * xml type: xs:boolean
-     * simple type: boolean
-     * pattern: 
 
-     */
-    protected $vatRateOutOfScope;
-    
-    /**
-     * setter for vatRateOutOfScope
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setVatRateOutOfScope($value)
+    public function getVatRateExemptionCaseString(): ?string
     {
-        $this->vatRateOutOfScope = $value;
+        return match ($this->vatRateExemptionCase) {
+            null => null,
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_AAM => 'AAM',
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_TAM => 'TAM',
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAET => 'KBAET',
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAUK => 'KBAUK',
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_EAM => 'EAM',
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_NAM => 'NAM',
+            VatRateInterface::VAT_RATE_EXEMPTION_CASE_UNKNOWN => 'UNKNOWN',
+        };
+    }
+
+    /*
+     * Az adómentesség jelölés leírása
+     */
+    protected ?string $vatRateExemptionReason = null;
+
+    /**
+     * @param string|null $vatRateExemptionReason New value for vatRateExemptionReason field
+     */
+    public function setVatRateExemptionReason(?string $vatRateExemptionReason): VatRateInterface
+    {
+        $this->vatRateExemptionReason = $vatRateExemptionReason;
+
         return $this;
     }
-    
+
     /**
-     * getter for vatRateOutOfScope
-     * 
-     * @return mixed return value for 
+     * @return string|null
      */
-    public function getVatRateOutOfScope()
+    public function getVatRateExemptionReason(): ?string
     {
-        return $this->vatRateOutOfScope;
+        return $this->vatRateExemptionReason;
     }
 
-    protected $vatRateOutOfScopeCase;
+    protected ?int $vatRateOutOfScopeCase = null;
 
     /**
      * setter for vatRateOutOfScopeCase
      *
-     * @param mixed
-     * @return self
+     * @param int|null $vatRateOutOfScopeCase New value for Vat Rate Out of Scope Case
+     * @return VatRateInterface
      */
-    public function setVatRateOutOfScopeCase($value)
+    public function setVatRateOutOfScopeCase(?int $vatRateOutOfScopeCase): VatRateInterface
     {
-        $this->vatRateOutOfScopeCase = $value;
+        $this->vatRateOutOfScopeCase = $vatRateOutOfScopeCase;
+
         return $this;
     }
 
@@ -141,31 +146,45 @@ trait VatRate
      *
      * @return mixed return value for
      */
-    public function getVatRateOutOfScopeCase()
+    public function getVatRateOutOfScopeCase(): ?int
     {
         return $this->vatRateOutOfScopeCase;
     }
 
-    protected $vatRateOutOfScopeReason;
+    public function getVatRateOutOfScopeCaseString(): ?string
+    {
+        return match ($this->vatRateOutOfScopeCase) {
+            null => null,
+            VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_ATK => 'ATK',
+            VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_EUFAD37 => 'EUFAD37',
+            VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_EUFADE => 'EUFADE',
+            VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_EUE => 'EUE',
+            VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_HO => 'HO',
+            VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_UNKNOWN => 'UNKNOWN',
+        };
+    }
+
+    protected ?string $vatRateOutOfScopeReason = null;
 
     /**
      * setter for vatRateOutOfScopeReason
      *
-     * @param mixed
-     * @return self
+     * @param string|null $vatRateOutOfScopeReason New value for vatRateOutOfScopeReason field
+     * @return VatRateInterface
      */
-    public function setVatRateOutOfScopeReason($value)
+    public function setVatRateOutOfScopeReason(?string $vatRateOutOfScopeReason): VatRateInterface
     {
-        $this->vatRateOutOfScopeReason = $value;
+        $this->vatRateOutOfScopeReason = $vatRateOutOfScopeReason;
+
         return $this;
     }
 
     /**
      * getter for vatRateOutOfScopeReason
      *
-     * @return mixed return value for
+     * @return string|null return value for
      */
-    public function getVatRateOutOfScopeReason()
+    public function getVatRateOutOfScopeReason(): ?string
     {
         return $this->vatRateOutOfScopeReason;
     }
@@ -180,7 +199,7 @@ trait VatRate
      * pattern: 
 
      */
-    protected $vatRateDomesticReverseCharge;
+    protected ?bool $vatRateDomesticReverseCharge = null;
     
     /**
      * setter for vatRateDomesticReverseCharge
@@ -188,9 +207,9 @@ trait VatRate
      * @param mixed 
      * @return self
      */
-    public function setVatRateDomesticReverseCharge($value)
+    public function setVatRateDomesticReverseCharge(?bool $vatRateDomesticReverseCharge): VatRateInterface
     {
-        $this->vatRateDomesticReverseCharge = $value;
+        $this->vatRateDomesticReverseCharge = $vatRateDomesticReverseCharge;
         return $this;
     }
     
@@ -199,7 +218,7 @@ trait VatRate
      * 
      * @return mixed return value for 
      */
-    public function getVatRateDomesticReverseCharge()
+    public function getVatRateDomesticReverseCharge(): ?bool
     {
         return $this->vatRateDomesticReverseCharge;
     }
@@ -214,26 +233,26 @@ trait VatRate
      * pattern: 
 
      */
-    protected $vatRateMarginSchemeVat;
+    protected ?bool $vatRateMarginSchemeVat = null;
     
     /**
      * setter for vatRateMarginSchemeVat
      *
-     * @param mixed 
-     * @return self
+     * @param bool|null $vatRateMarginSchemeVat New value for vatRateMarginSchemeVat field
+     * @return VatRateInterface
      */
-    public function setVatRateMarginSchemeVat($value)
+    public function setVatRateMarginSchemeVat(?bool $vatRateMarginSchemeVat): VatRateInterface
     {
-        $this->vatRateMarginSchemeVat = $value;
+        $this->vatRateMarginSchemeVat = $vatRateMarginSchemeVat;
         return $this;
     }
     
     /**
      * getter for vatRateMarginSchemeVat
      * 
-     * @return mixed return value for 
+     * @return bool|null return value for
      */
-    public function getVatRateMarginSchemeVat()
+    public function getVatRateMarginSchemeVat(): ?bool
     {
         return $this->vatRateMarginSchemeVat;
     }
@@ -248,57 +267,28 @@ trait VatRate
      * pattern: 
 
      */
-    protected $vatRateMarginSchemeNoVat;
+    protected ?bool $vatRateMarginSchemeNoVat = null;
     
     /**
      * setter for vatRateMarginSchemeNoVat
      *
-     * @param mixed 
-     * @return self
+     * @param bool|null $vatRateMarginSchemeNoVat New value for vatRateMarginSchemeNoVat field
+     * @return VatRateInterface
      */
-    public function setVatRateMarginSchemeNoVat($value)
+    public function setVatRateMarginSchemeNoVat(?bool $vatRateMarginSchemeNoVat): VatRateInterface
     {
-        $this->vatRateMarginSchemeNoVat = $value;
+        $this->vatRateMarginSchemeNoVat = $vatRateMarginSchemeNoVat;
         return $this;
     }
     
     /**
      * getter for vatRateMarginSchemeNoVat
      * 
-     * @return mixed return value for 
+     * @return bool|null return value for
      */
-    public function getVatRateMarginSchemeNoVat()
+    public function getVatRateMarginSchemeNoVat(): ?bool
     {
         return $this->vatRateMarginSchemeNoVat;
-    }
-    
-    protected function serializeVatRate()
-    {
-        $buffer = [];
-        
-        $buffer['vatPercentage'] = $this->vatRatePercentage;
-
-        if ($this->vatRateExemption) {
-            $buffer['vatExemption'] = $this->vatRateExemption;
-        }
-
-        if ($this->vatRateOutOfScope) {
-            $buffer['vatOutOfScope'] = XMLSerialize::formatBoolean($this->vatRateOutOfScope);
-        }
-
-        if ($this->vatRateDomesticReverseCharge) {
-            $buffer['vatDomesticReverseCharge'] = XMLSerialize::formatBoolean($this->vatRateDomesticReverseCharge);
-        }
-
-        if ($this->vatRateMarginSchemeVat) {
-            $buffer['marginSchemeVat'] = XMLSerialize::formatBoolean($this->vatRateMarginSchemeVat);
-        }
-
-        if ($this->vatRateMarginSchemeNoVat) {
-            $buffer['marginSchemeNoVat'] = XMLSerialize::formatBoolean($this->vatRateMarginSchemeNoVat);
-        }
-        
-        return $buffer;
     }
 }
 

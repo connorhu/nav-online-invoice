@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Entity\VatRateSummary;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
@@ -14,6 +15,12 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
 {
     use SerializerAwareTrait;
 
+    /**
+     * @param VatRateInterface $item
+     * @param $format
+     * @param array $context
+     * @return array
+     */
     public static function normalizeVatRate($item, $format = null, array $context = [])
     {
         $buffer = [];
@@ -22,22 +29,16 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
             $buffer['vatPercentage'] = $item->getVatRatePercentage();
         }
 
-        if ($item->getVatRateExemption()) {
-            $exemption = strtolower($item->getVatRateExemption());
-            if ($exemption === 'aam') {
-                $buffer['vatExemption'] = [
-                    'case' => 'AAM',
-                    'reason' => 'Alanyi adómentes',
-                ];
-            }
-            else {
-                throw new \Exception('unimplemented vat rage exempltion');
-            }
+        if ($item->getVatRateExemptionCase()) {
+            $buffer['vatExemption'] = [
+                'case' => $item->getVatRateExemptionCaseString(),
+                'reason' => $item->getVatRateExemptionReason(),
+            ];
         }
 
         if ($item->getVatRateOutOfScopeCase()) {
             $buffer['vatOutOfScope'] = [
-                'case' => $item->getVatRateOutOfScopeCase(),
+                'case' => $item->getVatRateOutOfScopeCaseString(),
                 'reason' => $item->getVatRateOutOfScopeReason()
             ];
         }
