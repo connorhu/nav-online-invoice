@@ -7,10 +7,13 @@ use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
 class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {
+    use SerializerAwareTrait;
+
     public static function normalizeVatRate($item, $format = null, array $context = [])
     {
         $buffer = [];
@@ -20,8 +23,8 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
         }
 
         if ($item->getVatRateExemption()) {
-            $excemption = strtolower($item->getVatRateExemption());
-            if ($excemption === 'aam') {
+            $exemption = strtolower($item->getVatRateExemption());
+            if ($exemption === 'aam') {
                 $buffer['vatExemption'] = [
                     'case' => 'AAM',
                     'reason' => 'Alanyi adómentes',
@@ -82,10 +85,5 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
     public function supportsNormalization($data, $format = null, array $context = [])
     {
         return $data instanceof VatRateSummary;
-    }
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }
