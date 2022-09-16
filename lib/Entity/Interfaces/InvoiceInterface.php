@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Entity\Interfaces;
 
+use Doctrine\Common\Collections\Collection;
 use NAV\OnlineInvoice\Entity\Address;
 
 interface InvoiceInterface
@@ -42,4 +43,8 @@ interface InvoiceInterface
 
     public function setCustomerAddress(?AddressInterface $customerAddress): InvoiceInterface;
     public function getCustomerAddress(): ?AddressInterface;
+
+    public function addItem(InvoiceItemInterface $item): InvoiceInterface;
+    public function removeItem(InvoiceItemInterface $item): InvoiceInterface;
+    public function getItems(): Collection;
 }

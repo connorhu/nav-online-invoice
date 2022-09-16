@@ -1298,7 +1298,9 @@ class Invoice implements InvoiceInterface
      */
     public function addItem(InvoiceItemInterface $item): InvoiceInterface
     {
-        $this->items[] = $item;
+        if (!$this->items->contains($item)) {
+            $this->items[] = $item;
+        }
 
         return $this;
     }
@@ -1311,7 +1313,9 @@ class Invoice implements InvoiceInterface
      */
     public function removeItem(InvoiceItemInterface $item): InvoiceInterface
     {
-        $this->items->removeElement($item);
+        if ($this->items->contains($item)) {
+            $this->items->removeElement($item);
+        }
 
         return $this;
     }
