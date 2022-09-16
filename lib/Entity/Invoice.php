@@ -6,6 +6,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -18,6 +19,7 @@ class Invoice implements InvoiceInterface
     {
         $this->supplierAddress = new Address();
         $this->vatRateSummaries = new ArrayCollection();
+        $this->items = new ArrayCollection();
     }
     
     /**
@@ -1286,27 +1288,31 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      * @NavAssert\Valid(groups={"v2.0"})
      */
-    protected $items = [];
-    
-    /**
+    protected Collection $items;
+
+    /*
      * Add item
      *
-     * @param AppBundle\Document\item item
+     * @param InvoiceItemInterface $item
+     * @return InvoiceInterface
      */
-    public function addItem(InvoiceItem $item)
+    public function addItem(InvoiceItemInterface $item): InvoiceInterface
     {
         $this->items[] = $item;
+
         return $this;
     }
-    
+
     /**
      * Remove item
      *
-     * @param AppBundle\Document\Item item
+     * @param InvoiceItemInterface $item
+     * @return InvoiceInterface
      */
-    public function removeItem(InvoiceItem $item)
+    public function removeItem(InvoiceItemInterface $item): InvoiceInterface
     {
         $this->items->removeElement($item);
+
         return $this;
     }
     
@@ -1315,7 +1321,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
-    public function getItems()
+    public function getItems(): Collection
     {
         return $this->items;
     }
