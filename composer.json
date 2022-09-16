@@ -11,7 +11,8 @@
     },
     "require": {
         "php": "^8.0",
-        "symfony/intl": "^5.2|^6.0"
+        "symfony/intl": "^5.2|^6.0",
+        "doctrine/collections": "^1.7"
     },
     "require-dev": {
         "symfony/serializer": "^5.2",

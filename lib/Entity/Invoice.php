@@ -2,8 +2,10 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
-use NAV\OnlineInvoice\Serialize\XMLSerialize;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -15,6 +17,7 @@ class Invoice implements InvoiceInterface
     public function __construct()
     {
         $this->supplierAddress = new Address();
+        $this->vatRateSummaries = new ArrayCollection();
     }
     
     /**
@@ -413,7 +416,7 @@ class Invoice implements InvoiceInterface
      *
      * @NavAssert\TaxNumber(groups="v2.0")
      */
-    protected $customerGroupMemberTaxNumber;
+    protected ?string $customerGroupMemberTaxNumber = null;
     
     /**
      * setter for customerGroupMemberTaxNumber
@@ -421,9 +424,9 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setCustomerGroupMemberTaxNumber($value)
+    public function setCustomerGroupMemberTaxNumber(?string $customerGroupMemberTaxNumber): InvoiceInterface
     {
-        $this->customerGroupMemberTaxNumber = $value;
+        $this->customerGroupMemberTaxNumber = $customerGroupMemberTaxNumber;
         return $this;
     }
     
@@ -432,7 +435,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for 
      */
-    public function getCustomerGroupMemberTaxNumber()
+    public function getCustomerGroupMemberTaxNumber(): ?string
     {
         return $this->customerGroupMemberTaxNumber;
     }
@@ -455,7 +458,7 @@ class Invoice implements InvoiceInterface
 					<countyCode>02</countyCode>
 				</groupMemberTaxNumber>
      */
-    protected $customerCommunityVatNumber;
+    protected ?string $customerCommunityVatNumber = null;
     
     /**
      * setter for customerCommunityVatNumber
@@ -463,9 +466,9 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setCustomerCommunityVatNumber($value)
+    public function setCustomerCommunityVatNumber(?string $customerCommunityVatNumber): InvoiceInterface
     {
-        $this->customerCommunityVatNumber = $value;
+        $this->customerCommunityVatNumber = $customerCommunityVatNumber;
         return $this;
     }
     
@@ -474,7 +477,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for 
      */
-    public function getCustomerCommunityVatNumber()
+    public function getCustomerCommunityVatNumber(): ?string
     {
         return $this->customerCommunityVatNumber;
     }
@@ -495,26 +498,26 @@ class Invoice implements InvoiceInterface
      *
      * @Assert\NotBlank(groups="v2.0")
      */
-    protected $customerName;
+    protected ?string $customerName = null;
     
     /**
      * setter for customerName
      *
-     * @param mixed 
+     * @param string|null $customerName New value for customerName field
      * @return self
      */
-    public function setCustomerName($value)
+    public function setCustomerName(?string $customerName): InvoiceInterface
     {
-        $this->customerName = $value;
+        $this->customerName = $customerName;
         return $this;
     }
     
     /**
      * getter for customerName
      * 
-     * @return mixed return value for 
+     * @return string|null return value for
      */
-    public function getCustomerName()
+    public function getCustomerName(): ?string
     {
         return $this->customerName;
     }
@@ -545,7 +548,7 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups="v2.0")
      * @NavAssert\Valid(groups="v2.0")
      */
-    protected $customerAddress;
+    protected ?AddressInterface $customerAddress = null;
     
     /**
      * setter for customerAddress
@@ -553,9 +556,10 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setCustomerAddress(Address $value)
+    public function setCustomerAddress(?AddressInterface $customerAddress): InvoiceInterface
     {
-        $this->customerAddress = $value;
+        $this->customerAddress = $customerAddress;
+
         return $this;
     }
     
@@ -564,7 +568,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for 
      */
-    public function getCustomerAddress()
+    public function getCustomerAddress(): ?AddressInterface
     {
         return $this->customerAddress;
     }
@@ -1532,7 +1536,7 @@ class Invoice implements InvoiceInterface
     /**
      * @Assert\NotBlank(groups={"v2.0"})
      */
-    protected $vatRateSummaries = [];
+    protected Collection $vatRateSummaries;
     
     /**
      * Add vatRateSummary
