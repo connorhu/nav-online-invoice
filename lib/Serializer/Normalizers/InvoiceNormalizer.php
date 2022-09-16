@@ -54,7 +54,7 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
     {
         $customerInfo = [];
 
-        $customerInfo['customerVatStatus'] = $invoice->getCustomerVatStatus();
+        $customerInfo['customerVatStatus'] = $invoice->getCustomerVatStatusString();
         if ($invoice->getCustomerVatStatus() === Invoice::CUSTOMER_VAT_STATUS_PRIVATE_PERSON) {
             return $customerInfo;
         }

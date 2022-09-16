@@ -125,7 +125,7 @@ class Invoice implements InvoiceInterface
             <supplierInfo>
                 <communityVatNumber>ZZ1111111111111</communityVatNumber>
      */
-    protected $supplierCommunityVatNumber;
+    protected ?string $supplierCommunityVatNumber = null;
     
     /**
      * setter for supplierCommunityVatNumber
@@ -170,7 +170,7 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank()
      * @Assert\Length(max = 512)
      */
-    protected $supplierName;
+    protected string $supplierName = '';
     
     /**
      * setter for supplierName
@@ -226,24 +226,24 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank()
      * @Assert\Valid(group="v2.0")
      */
-    protected $supplierAddress;
+    protected Address $supplierAddress;
     
     /**
      * setter for supplierAddress
      *
-     * @param mixed 
+     * @param Address $supplierAddress
      * @return self
      */
-    public function setSupplierAddress(Address $value): InvoiceInterface
+    public function setSupplierAddress(Address $supplierAddress): InvoiceInterface
     {
-        $this->supplierAddress = $value;
+        $this->supplierAddress = $supplierAddress;
         return $this;
     }
     
     /**
      * getter for supplierAddress
      * 
-     * @return mixed return value for 
+     * @return Address
      */
     public function getSupplierAddress(): Address
     {
@@ -270,7 +270,7 @@ class Invoice implements InvoiceInterface
 				<supplierBankAccountNumber>88888888-66666666-12345678</supplierBankAccountNumber>
     
      */
-    protected $supplierBankAccountNumber;
+    protected ?string $supplierBankAccountNumber = null;
     
     /**
      * setter for supplierBankAccountNumber
@@ -278,9 +278,9 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setSupplierBankAccountNumber(?string $value): InvoiceInterface
+    public function setSupplierBankAccountNumber(?string $supplierBankAccountNumber): InvoiceInterface
     {
-        $this->supplierBankAccountNumber = $value;
+        $this->supplierBankAccountNumber = $supplierBankAccountNumber;
         return $this;
     }
     
@@ -294,26 +294,38 @@ class Invoice implements InvoiceInterface
         return $this->supplierBankAccountNumber;
     }
 
-    const CUSTOMER_VAT_STATUS_DOMESTIC = 'DOMESTIC';
-    const CUSTOMER_VAT_STATUS_OTHER = 'OTHER';
-    const CUSTOMER_VAT_STATUS_PRIVATE_PERSON = 'PRIVATE_PERSON';
-
-    private $customerVatStatus = self::CUSTOMER_VAT_STATUS_DOMESTIC;
+    protected int $customerVatStatus = self::CUSTOMER_VAT_STATUS_DOMESTIC;
 
     /**
-     * @return string
+     * @return int
      */
-    public function getCustomerVatStatus(): string
+    public function getCustomerVatStatus(): int
     {
         return $this->customerVatStatus;
     }
 
     /**
-     * @param string $customerVatStatus
+     * @return string
+     * @throws \Exception
      */
-    public function setCustomerVatStatus(string $customerVatStatus): void
+    public function getCustomerVatStatusString(): string
+    {
+        return match ($this->customerVatStatus) {
+            self::CUSTOMER_VAT_STATUS_DOMESTIC => 'DOMESTIC',
+            self::CUSTOMER_VAT_STATUS_OTHER => 'OTHER',
+            self::CUSTOMER_VAT_STATUS_PRIVATE_PERSON => 'PRIVATE_PERSON',
+            default => throw new \Exception(sprintf('invalid customerVatStatus value: "%d"', $this->customerVatStatus)),
+        };
+    }
+
+    /**
+     * @param int $customerVatStatus
+     */
+    public function setCustomerVatStatus(int $customerVatStatus): InvoiceInterface
     {
         $this->customerVatStatus = $customerVatStatus;
+
+        return $this;
     }
     
     /*
@@ -337,7 +349,7 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      * @NavAssert\TaxNumber(groups={"v2.0"})
      */
-    protected $customerTaxNumber;
+    protected string $customerTaxNumber = '';
     
     /**
      * setter for customerTaxNumber
@@ -345,9 +357,9 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setCustomerTaxNumber($value)
+    public function setCustomerTaxNumber(string $customerTaxNumber): InvoiceInterface
     {
-        $this->customerTaxNumber = str_replace('-', '', $value);
+        $this->customerTaxNumber = str_replace('-', '', $customerTaxNumber);
         return $this;
     }
     
@@ -356,27 +368,29 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for 
      */
-    public function getCustomerTaxNumber()
+    public function getCustomerTaxNumber(): string
     {
         return $this->customerTaxNumber;
     }
 
-    protected $thirdStateTaxId;
+    protected ?string $thirdStateTaxId = null;
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public function getThirdStateTaxId()
+    public function getThirdStateTaxId(): ?string
     {
         return $this->thirdStateTaxId;
     }
 
     /**
-     * @param mixed $thirdStateTaxId
+     * @param string|null $thirdStateTaxId New value for thirdStateTaxId field
      */
-    public function setThirdStateTaxId($thirdStateTaxId): void
+    public function setThirdStateTaxId(?string $thirdStateTaxId): InvoiceInterface
     {
         $this->thirdStateTaxId = $thirdStateTaxId;
+
+        return $this;
     }
     
     /*
