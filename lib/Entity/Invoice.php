@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\Collection;
 use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\InvoiceItemInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
 use NAV\OnlineInvoice\Validator\Constraints as NavAssert;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -1551,22 +1552,24 @@ class Invoice implements InvoiceInterface
     /**
      * Add vatRateSummary
      *
-     * @param AppBundle\Document\vatRateSummary vatRateSummary
+     * @param VatRateSummaryInterface $vatRateSummary New Summary to add
      */
-    public function addVatRateSummary(VatRateSummary $vatRateSummary)
+    public function addVatRateSummary(VatRateSummaryInterface $vatRateSummary): InvoiceInterface
     {
         $this->vatRateSummaries[] = $vatRateSummary;
+
         return $this;
     }
     
     /**
      * Remove vatRateSummary
      *
-     * @param AppBundle\Document\VatRateSummary vatRateSummary
+     * @param VatRateSummaryInterface $vatRateSummary Summary to remove
      */
-    public function removeVatRateSummary(VatRateSummary $vatRateSummary)
+    public function removeVatRateSummary(VatRateSummaryInterface $vatRateSummary): InvoiceInterface
     {
         $this->vatRateSummaries->removeElement($vatRateSummary);
+
         return $this;
     }
     
@@ -1575,7 +1578,7 @@ class Invoice implements InvoiceInterface
      * 
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
-    public function getVatRateSummaries()
+    public function getVatRateSummaries(): Collection
     {
         return $this->vatRateSummaries;
     }

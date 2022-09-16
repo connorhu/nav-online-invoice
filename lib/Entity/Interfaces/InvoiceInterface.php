@@ -47,4 +47,8 @@ interface InvoiceInterface
     public function addItem(InvoiceItemInterface $item): InvoiceInterface;
     public function removeItem(InvoiceItemInterface $item): InvoiceInterface;
     public function getItems(): Collection;
+
+    public function addVatRateSummary(VatRateSummaryInterface $vatRateSummary): InvoiceInterface;
+    public function removeVatRateSummary(VatRateSummaryInterface $vatRateSummary): InvoiceInterface;
+    public function getVatRateSummaries(): Collection;
 }
