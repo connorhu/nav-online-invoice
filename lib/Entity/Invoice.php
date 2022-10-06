@@ -355,7 +355,7 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      * @NavAssert\TaxNumber(groups={"v2.0"})
      */
-    protected string $customerTaxNumber = '';
+    protected ?string $customerTaxNumber = null;
     
     /**
      * setter for customerTaxNumber
@@ -363,18 +363,16 @@ class Invoice implements InvoiceInterface
      * @param mixed 
      * @return self
      */
-    public function setCustomerTaxNumber(string $customerTaxNumber): InvoiceInterface
+    public function setCustomerTaxNumber(?string $customerTaxNumber): InvoiceInterface
     {
-        $this->customerTaxNumber = str_replace('-', '', $customerTaxNumber);
+        $this->customerTaxNumber = null !== $customerTaxNumber ? str_replace('-', '', $customerTaxNumber) : null;
         return $this;
     }
     
     /**
      * getter for customerTaxNumber
-     * 
-     * @return mixed return value for 
      */
-    public function getCustomerTaxNumber(): string
+    public function getCustomerTaxNumber(): ?string
     {
         return $this->customerTaxNumber;
     }

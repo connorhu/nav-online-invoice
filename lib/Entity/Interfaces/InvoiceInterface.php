@@ -30,7 +30,7 @@ interface InvoiceInterface
     public function setCustomerVatStatus(int $customerVatStatus): InvoiceInterface;
 
     public function setCustomerTaxNumber(string $customerTaxNumber): InvoiceInterface;
-    public function getCustomerTaxNumber(): string;
+    public function getCustomerTaxNumber(): ?string;
     public function getThirdStateTaxId(): ?string;
     public function setThirdStateTaxId(?string $thirdStateTaxId): InvoiceInterface;
     public function setCustomerGroupMemberTaxNumber(?string $customerGroupMemberTaxNumber): InvoiceInterface;
