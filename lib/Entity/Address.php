@@ -196,7 +196,7 @@ class Address
      *
      * @var string|null
      */
-    protected ?string $streetName = '';
+    protected ?string $streetName = null;
     
     /**
      * setter for streetName
@@ -215,7 +215,7 @@ class Address
      * 
      * @return string|null
      */
-    public function getStreetName(): string
+    public function getStreetName(): ?string
     {
         return $this->streetName;
     }
