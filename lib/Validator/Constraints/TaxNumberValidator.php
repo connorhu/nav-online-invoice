@@ -79,21 +79,21 @@ class TaxNumberValidator extends ConstraintValidator
         
         $components = TaxNumberHelper::parse($value);
 
-        if (!preg_match('/^[0-9]{8}$/', $components['taxpayerid'], $matches)) {
+        if (!preg_match('/^[0-9]{8}$/', $components['taxpayer_id'], $matches)) {
             $this->context->buildViolation($constraint->messageTaxpayerId)
                 ->setParameter('{{ value }}', $value)
                 ->setCode(TaxNumber::INVALID_TAXPAYER_FORMAT_ERROR)
                 ->addViolation();
         }
 
-        if ($components['vatcode'] !== null && !preg_match('/^[1-5]$/', $components['vatcode'], $matches)) {
+        if ($components['vat_code'] !== null && !preg_match('/^[1-5]$/', $components['vat_code'], $matches)) {
             $this->context->buildViolation($constraint->messageVatCode)
                 ->setParameter('{{ value }}', $value)
                 ->setCode(TaxNumber::INVALID_VATCODE_FORMAT_ERROR)
                 ->addViolation();
         }
 
-        if ($components['countrycode'] !== null && !isset(self::$countryCodes[$components['countrycode']])) {
+        if ($components['country_code'] !== null && !isset(self::$countryCodes[$components['country_code']])) {
             $this->context->buildViolation($constraint->messageCountryCode)
                 ->setParameter('{{ value }}', $value)
                 ->setCode(TaxNumber::INVALID_COUNTRYCODE_FORMAT_ERROR)
