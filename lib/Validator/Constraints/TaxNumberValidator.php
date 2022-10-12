@@ -10,7 +10,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class TaxNumberValidator extends ConstraintValidator
 {
-    public static $countrCodes = [
+    public static array $countryCodes = [
         '02' => 'Baranya',
         '22' => 'Baranya',
         '03' => 'Bács-Kiskun',
@@ -93,7 +93,7 @@ class TaxNumberValidator extends ConstraintValidator
                 ->addViolation();
         }
 
-        if ($components['countrycode'] !== null && !isset(self::$countrCodes[$components['countrycode']])) {
+        if ($components['countrycode'] !== null && !isset(self::$countryCodes[$components['countrycode']])) {
             $this->context->buildViolation($constraint->messageCountryCode)
                 ->setParameter('{{ value }}', $value)
                 ->setCode(TaxNumber::INVALID_COUNTRYCODE_FORMAT_ERROR)
