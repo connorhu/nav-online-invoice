@@ -37,9 +37,9 @@ class TaxNumber extends Constraint
     public string $messageVatCodeInvalid = 'The VAT Code "{{ vat_code }}" of the Tax Number "{{ value }}" is invalid.';
     public string $messageVatCodeMissing = 'The VAT Code of the Tax Number "{{ value }}" is missing.';
     public string $messageVatCodeNotAllowed = 'The VAT Code "{{ vat_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed VAT Codes are: "{{ allowed_vat_codes }}"';
-    public string $messageCountyCodeInvalid = 'The County Code "{{ country_code }}" of the Tax Number "{{ value }}" is invalid.';
+    public string $messageCountyCodeInvalid = 'The County Code "{{ county_code }}" of the Tax Number "{{ value }}" is invalid.';
     public string $messageCountyCodeMissing = 'The County Code of the Tax Number "{{ value }}" is missing.';
-    public string $messageCountyCodeNotAllowed = 'The County Code "{{ country_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed County Codes are: "{{ allowed_county_codes }}"';
+    public string $messageCountyCodeNotAllowed = 'The County Code "{{ county_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed County Codes are: "{{ allowed_county_codes }}"';
 
     public bool $vatCodeRequired = false;
     public bool $countyCodeRequired = false;
