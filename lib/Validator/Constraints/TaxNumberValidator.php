@@ -3,8 +3,10 @@
 namespace NAV\OnlineInvoice\Validator\Constraints;
 
 use NAV\OnlineInvoice\Helpers\TaxNumber as TaxNumberHelper;
+use NAV\OnlineInvoice\Validator\Exceptions\InvalidValue;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
 use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
@@ -55,6 +57,14 @@ class TaxNumberValidator extends ConstraintValidator
         '44' => 'Kiemelt Adózók Adóigazgatósága',
         '51' => 'Kiemelt Ügyek Adóigazgatósága',
     ];
+
+    public static array $vatCodes = [
+        1 => '',
+        2 => '',
+        3 => '',
+        4 => '',
+        5 => '',
+    ];
     
     public function validate($value, Constraint $constraint)
     {
@@ -87,16 +97,68 @@ class TaxNumberValidator extends ConstraintValidator
         }
 
         if ($components['vat_code'] !== null && !preg_match('/^[1-5]$/', $components['vat_code'], $matches)) {
-            $this->context->buildViolation($constraint->messageVatCode)
+            $this->context->buildViolation($constraint->messageVatCodeInvalid)
                 ->setParameter('{{ value }}', $value)
-                ->setCode(TaxNumber::INVALID_VATCODE_FORMAT_ERROR)
+                ->setParameter('{{ vat_code }}', $components['vat_code'])
+                ->setCode(TaxNumber::INVALID_VAT_CODE_FORMAT_ERROR)
+                ->addViolation();
+        } elseif ($components['vat_code'] !== null && $constraint->allowedVatCodes !== null) {
+            if (0 === \count($constraint->allowedVatCodes)) {
+                throw new InvalidOptionsException('The allowedVatCodes field must contain one valid VAT Code at least.', self::$vatCodes);
+            }
+
+            foreach ($constraint->allowedVatCodes as $allowedVatCode) {
+                if (!isset(self::$vatCodes[(int)$allowedVatCode])) {
+                    throw new InvalidOptionsException('The allowedVatCodes field must contain valid VAT Codes.', self::$vatCodes);
+                }
+            }
+
+            if (!in_array((int)$components['vat_code'], $constraint->allowedVatCodes)) {
+                $this->context->buildViolation($constraint->messageVatCodeNotAllowed)
+                    ->setParameter('{{ value }}', $value)
+                    ->setParameter('{{ vat_code }}', $components['vat_code'])
+                    ->setParameter('{{ allowed_vat_codes }}', implode(', ', $constraint->allowedVatCodes))
+                    ->setCode(TaxNumber::NOT_ALLOWED_VAT_CODE_ERROR)
+                    ->addViolation();
+            }
+
+        } elseif ($components['vat_code'] === null && $constraint->vatCodeRequired === true) {
+            $this->context->buildViolation($constraint->messageVatCodeMissing)
+                ->setParameter('{{ value }}', $value)
+                ->setCode(TaxNumber::MISSING_VAT_CODE_ERROR)
                 ->addViolation();
         }
 
         if ($components['country_code'] !== null && !isset(self::$countryCodes[$components['country_code']])) {
-            $this->context->buildViolation($constraint->messageCountryCode)
+            $this->context->buildViolation($constraint->messageCountryCodeInvalid)
                 ->setParameter('{{ value }}', $value)
-                ->setCode(TaxNumber::INVALID_COUNTRYCODE_FORMAT_ERROR)
+                ->setParameter('{{ country_code }}', $components['country_code'])
+                ->setCode(TaxNumber::INVALID_COUNTRY_CODE_FORMAT_ERROR)
+                ->addViolation();
+        } elseif ($components['country_code'] !== null && $constraint->allowedCountryCodes !== null) {
+            if (0 === \count($constraint->allowedCountryCodes)) {
+                throw new InvalidOptionsException('The allowedCountryCodes field must contain one valid Country Code at least.', array_keys(self::$countryCodes));
+            }
+
+            foreach ($constraint->allowedCountryCodes as $allowedCountryCode) {
+                if (!isset(self::$countryCodes[$allowedCountryCode])) {
+                    throw new InvalidOptionsException('The allowedCountryCodes field must contain valid Country Codes.', array_keys(self::$countryCodes));
+                }
+            }
+
+            if (!in_array((int)$components['country_code'], $constraint->allowedCountryCodes)) {
+                $this->context->buildViolation($constraint->messageCountryCodeNotAllowed)
+                    ->setParameter('{{ value }}', $value)
+                    ->setParameter('{{ country_code }}', $components['country_code'])
+                    ->setParameter('{{ allowed_country_codes }}', implode(', ', $constraint->allowedCountryCodes))
+                    ->setCode(TaxNumber::NOT_ALLOWED_COUNTRY_CODE_ERROR)
+                    ->addViolation();
+            }
+
+        } elseif ($components['country_code'] === null && $constraint->countryCodeRequired === true) {
+            $this->context->buildViolation($constraint->messageCountryCodeMissing)
+                ->setParameter('{{ value }}', $value)
+                ->setCode(TaxNumber::MISSING_COUNTRY_CODE_ERROR)
                 ->addViolation();
         }
     }

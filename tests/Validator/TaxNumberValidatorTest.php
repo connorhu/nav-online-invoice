@@ -16,12 +16,14 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testNullIsValid()
     {
         $this->validator->validate(null, new TaxNumber());
+
         $this->assertNoViolation();
     }
 
     public function testEmptyStringIsValid()
     {
         $this->validator->validate('', new TaxNumber());
+
         $this->assertNoViolation();
     }
     
@@ -69,7 +71,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     /**
      * @dataProvider getInvalidTaxPayerNumbers
      */
-    public function testInvalidTaxPayerIdFormats($taxNumber)
+    public function testInvalidTaxPayerIdFormats(string $taxNumber)
     {
         $constraint = new TaxNumber([
             'messageTaxpayerId' => 'myMessage',
@@ -83,63 +85,156 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidTaxPayerNumbers()
+    public function getInvalidTaxPayerNumbers(): \Generator
     {
-        return [
-            ['1111'],
-            ['abc214'],
-        ];
+        yield ['1111'];
+        yield ['abc214'];
     }
     
     /**
      * @dataProvider getInvalidVatCodes
      */
-    public function testInvalidVatCodes($taxNumber)
+    public function testInvalidVatCodes(string $taxNumber, string $expectedVatCode)
     {
         $constraint = new TaxNumber([
-            'messageVatCode' => 'myMessage',
+            'messageVatCodeInvalid' => 'myMessage',
         ]);
 
         $this->validator->validate($taxNumber, $constraint);
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', $taxNumber)
-            ->setCode(TaxNumber::INVALID_VATCODE_FORMAT_ERROR)
+            ->setParameter('{{ vat_code }}', $expectedVatCode)
+            ->setCode(TaxNumber::INVALID_VAT_CODE_FORMAT_ERROR)
             ->assertRaised();
     }
 
-    public function getInvalidVatCodes()
+    public function getInvalidVatCodes(): \Generator
     {
-        return [
-            ['123456786'],
-            ['12345678a'],
-            ['12345678.'],
-        ];
+        yield ['123456786', '6'];
+        yield ['12345678a', 'a'];
+        yield ['12345678.', '.'];
+    }
+
+    public function testMissingVatCode()
+    {
+        $constraint = new TaxNumber([
+            'messageVatCodeMissing' => 'myMessage',
+            'vatCodeRequired' => true,
+        ]);
+
+        $this->validator->validate('12345678', $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '12345678')
+            ->setCode(TaxNumber::MISSING_VAT_CODE_ERROR)
+            ->assertRaised();
+    }
+
+    public function testNotAllowedVatCode()
+    {
+        $constraint = new TaxNumber([
+            'messageVatCodeNotAllowed' => 'myMessage',
+            'vatCodeRequired' => true,
+            'allowedVatCodes' => [1, 2]
+        ]);
+
+        $this->validator->validate('123456785', $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '123456785')
+            ->setParameter('{{ vat_code }}', '5')
+            ->setParameter('{{ allowed_vat_codes }}', '1, 2')
+            ->setCode(TaxNumber::NOT_ALLOWED_VAT_CODE_ERROR)
+            ->assertRaised();
     }
     
     /**
      * @dataProvider getInvalidCountryCodes
      */
-    public function testInvalidCountryCodes($taxNumber)
+    public function testInvalidCountryCodes(string $taxNumber, string $expectedCountryCode)
     {
         $constraint = new TaxNumber([
-            'messageCountryCode' => 'myMessage',
+            'messageCountryCodeInvalid' => 'myMessage',
         ]);
 
         $this->validator->validate($taxNumber, $constraint);
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', $taxNumber)
-            ->setCode(TaxNumber::INVALID_COUNTRYCODE_FORMAT_ERROR)
+            ->setParameter('{{ country_code }}', $expectedCountryCode)
+            ->setCode(TaxNumber::INVALID_COUNTRY_CODE_FORMAT_ERROR)
             ->assertRaised();
     }
 
-    public function getInvalidCountryCodes()
+    public function getInvalidCountryCodes(): \Generator
     {
-        return [
-            ['12345678100'],
-            ['123456781bb'],
-            ['123456781..'],
-        ];
+        yield ['12345678100', '00'];
+        yield ['123456781bb', 'bb'];
+        yield ['123456781..', '..'];
+    }
+
+    public function testMissingCountryCode()
+    {
+        $constraint = new TaxNumber([
+            'messageCountryCodeMissing' => 'myMessage',
+            'countryCodeRequired' => true,
+        ]);
+
+        $this->validator->validate('123456781', $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '123456781')
+            ->setCode(TaxNumber::MISSING_COUNTRY_CODE_ERROR)
+            ->assertRaised();
+    }
+
+    public function testNotAllowedCountryCode()
+    {
+        $constraint = new TaxNumber([
+            'messageCountryCodeNotAllowed' => 'myMessage',
+            'vatCodeRequired' => true,
+            'countryCodeRequired' => true,
+            'allowedVatCodes' => [1, 2],
+            'allowedCountryCodes' => [13, 33],
+        ]);
+
+        $this->validator->validate('12345678141', $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '12345678141')
+            ->setParameter('{{ country_code }}', '41')
+            ->setParameter('{{ allowed_country_codes }}', '13, 33')
+            ->setCode(TaxNumber::NOT_ALLOWED_COUNTRY_CODE_ERROR)
+            ->assertRaised();
+    }
+
+    public function testNotAllowedCountryAndVatCode()
+    {
+        $constraint = new TaxNumber([
+            'messageCountryCodeNotAllowed' => 'myMessage',
+            'messageVatCodeNotAllowed' => 'myMessage2',
+            'vatCodeRequired' => true,
+            'countryCodeRequired' => true,
+            'allowedVatCodes' => [1, 2],
+            'allowedCountryCodes' => [13, 33],
+        ]);
+
+        $this->validator->validate('12345678541', $constraint);
+
+        $this
+            ->buildViolation('myMessage2')
+            ->setParameter('{{ value }}', '12345678541')
+            ->setParameter('{{ vat_code }}', '5')
+            ->setParameter('{{ allowed_vat_codes }}', '1, 2')
+            ->setCode(TaxNumber::NOT_ALLOWED_VAT_CODE_ERROR)
+
+            ->buildNextViolation('myMessage')
+            ->setParameter('{{ value }}', '12345678541')
+            ->setParameter('{{ country_code }}', '41')
+            ->setParameter('{{ allowed_country_codes }}', '13, 33')
+            ->setCode(TaxNumber::NOT_ALLOWED_COUNTRY_CODE_ERROR)
+
+            ->assertRaised();
     }
 }
