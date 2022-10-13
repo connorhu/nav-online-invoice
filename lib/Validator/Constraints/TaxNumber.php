@@ -11,6 +11,7 @@ class TaxNumber extends Constraint
 {
     public const INVALID_LENGTH_ERROR = '87402298-53d4-11ea-8d77-2e728ce88125';
     public const INVALID_TAXPAYER_FORMAT_ERROR = 'd571cfc9-2faf-4894-b39a-522788541d2f';
+    public const INVALID_TAXPAYER_SHORT_ERROR = '5e73faf6-6007-4f48-99cc-06073411c5b4';
     public const INVALID_VAT_CODE_FORMAT_ERROR = '80914cd0-8e58-4b66-81e8-9fed53cc78ee';
     public const MISSING_VAT_CODE_ERROR = 'c13c5006-4ac7-11ed-b878-0242ac120002';
     public const NOT_ALLOWED_VAT_CODE_ERROR = 'f138adfe-4acc-11ed-b878-0242ac120002';
@@ -21,6 +22,7 @@ class TaxNumber extends Constraint
     protected static $errorNames = [
         self::INVALID_LENGTH_ERROR => 'INVALID_LENGTH_ERROR',
         self::INVALID_TAXPAYER_FORMAT_ERROR => 'INVALID_TAXPAYER_FORMAT_ERROR',
+        self::INVALID_TAXPAYER_SHORT_ERROR => 'INVALID_TAXPAYER_LENGTH_ERROR',
         self::INVALID_VAT_CODE_FORMAT_ERROR => 'INVALID_VAT_CODE_FORMAT_ERROR',
         self::MISSING_VAT_CODE_ERROR => 'MISSING_VAT_CODE_ERROR',
         self::NOT_ALLOWED_VAT_CODE_ERROR => 'NOT_ALLOWED_VAT_CODE_ERROR',
@@ -29,8 +31,9 @@ class TaxNumber extends Constraint
         self::NOT_ALLOWED_COUNTRY_CODE_ERROR => 'NOT_ALLOWED_COUNTRY_CODE_ERROR',
     ];
     
-    public string $messageLength = 'The string "{{ value }}" contains an illegal character: it can only contain letters or numbers.';
-    public string $messageTaxpayerId = 'The string "{{ value }}" contains an illegal character: it can only contain letters or numbers.';
+    public string $messageLength = 'The Tax Number "{{ value }}" is too long. The maximum length is 11 characters.';
+    public string $messageTaxpayerId = 'The Taxpayer ID "{{ value }}" contains an illegal character: it can only contain numbers.';
+    public string $messageTaxpayerIdShort = 'The Taxpayer ID "{{ value }}" is too short. The minimum length is 8 characters.';
     public string $messageVatCodeInvalid = 'The VAT Code "{{ vat_code }}" of the Tax Number "{{ value }}" is invalid.';
     public string $messageVatCodeMissing = 'The VAT Code of the Tax Number "{{ value }}" is missing.';
     public string $messageVatCodeNotAllowed = 'The VAT Code "{{ vat_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed VAT Codes are: "{{ allowed_vat_codes }}"';

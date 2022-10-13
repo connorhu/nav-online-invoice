@@ -67,11 +67,34 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->setCode(TaxNumber::INVALID_LENGTH_ERROR)
             ->assertRaised();
     }
-    
+
     /**
-     * @dataProvider getInvalidTaxPayerNumbers
+     * @dataProvider getShortTaxNumbers
      */
-    public function testInvalidTaxPayerIdFormats(string $taxNumber)
+    public function testShortTaxPayerId(string $taxNumber)
+    {
+        $constraint = new TaxNumber([
+            'messageTaxpayerIdShort' => 'myMessage',
+        ]);
+
+        $this->validator->validate($taxNumber, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', $taxNumber)
+            ->setCode(TaxNumber::INVALID_TAXPAYER_SHORT_ERROR)
+            ->assertRaised();
+    }
+
+    public function getShortTaxNumbers(): \Generator
+    {
+        yield ['1111'];
+        yield ['abc214'];
+    }
+
+    /**
+     * @dataProvider getInvalidTaxNumbers
+     */
+    public function testInvalidTaxPayerId(string $taxNumber)
     {
         $constraint = new TaxNumber([
             'messageTaxpayerId' => 'myMessage',
@@ -85,10 +108,10 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidTaxPayerNumbers(): \Generator
+    public function getInvalidTaxNumbers(): \Generator
     {
-        yield ['1111'];
-        yield ['abc214'];
+        yield ['1234567s'];
+        yield ['..123456'];
     }
     
     /**

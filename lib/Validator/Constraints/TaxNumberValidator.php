@@ -89,7 +89,12 @@ class TaxNumberValidator extends ConstraintValidator
         
         $components = TaxNumberHelper::parse($value);
 
-        if (!preg_match('/^[0-9]{8}$/', $components['taxpayer_id'], $matches)) {
+        if (strlen($components['taxpayer_id']) !== 8) {
+            $this->context->buildViolation($constraint->messageTaxpayerIdShort)
+                ->setParameter('{{ value }}', $components['taxpayer_id'])
+                ->setCode(TaxNumber::INVALID_TAXPAYER_SHORT_ERROR)
+                ->addViolation();
+        } elseif (!preg_match('/^[0-9]{8}$/', $components['taxpayer_id'], $matches)) {
             $this->context->buildViolation($constraint->messageTaxpayerId)
                 ->setParameter('{{ value }}', $value)
                 ->setCode(TaxNumber::INVALID_TAXPAYER_FORMAT_ERROR)
