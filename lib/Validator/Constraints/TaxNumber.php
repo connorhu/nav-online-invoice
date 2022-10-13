@@ -15,9 +15,9 @@ class TaxNumber extends Constraint
     public const INVALID_VAT_CODE_FORMAT_ERROR = '80914cd0-8e58-4b66-81e8-9fed53cc78ee';
     public const MISSING_VAT_CODE_ERROR = 'c13c5006-4ac7-11ed-b878-0242ac120002';
     public const NOT_ALLOWED_VAT_CODE_ERROR = 'f138adfe-4acc-11ed-b878-0242ac120002';
-    public const INVALID_COUNTRY_CODE_FORMAT_ERROR = 'edcdf373-1150-4fb3-aab6-a07b7b9315a9';
-    public const MISSING_COUNTRY_CODE_ERROR = '4565f8f0-4ac8-11ed-b878-0242ac120002';
-    public const NOT_ALLOWED_COUNTRY_CODE_ERROR = 'f612b87e-4acc-11ed-b878-0242ac120002';
+    public const INVALID_COUNTY_CODE_FORMAT_ERROR = 'edcdf373-1150-4fb3-aab6-a07b7b9315a9';
+    public const MISSING_COUNTY_CODE_ERROR = '4565f8f0-4ac8-11ed-b878-0242ac120002';
+    public const NOT_ALLOWED_COUNTY_CODE_ERROR = 'f612b87e-4acc-11ed-b878-0242ac120002';
 
     protected static $errorNames = [
         self::INVALID_LENGTH_ERROR => 'INVALID_LENGTH_ERROR',
@@ -26,9 +26,9 @@ class TaxNumber extends Constraint
         self::INVALID_VAT_CODE_FORMAT_ERROR => 'INVALID_VAT_CODE_FORMAT_ERROR',
         self::MISSING_VAT_CODE_ERROR => 'MISSING_VAT_CODE_ERROR',
         self::NOT_ALLOWED_VAT_CODE_ERROR => 'NOT_ALLOWED_VAT_CODE_ERROR',
-        self::INVALID_COUNTRY_CODE_FORMAT_ERROR => 'INVALID_COUNTRY_CODE_FORMAT_ERROR',
-        self::MISSING_COUNTRY_CODE_ERROR => 'MISSING_COUNTRY_CODE_ERROR',
-        self::NOT_ALLOWED_COUNTRY_CODE_ERROR => 'NOT_ALLOWED_COUNTRY_CODE_ERROR',
+        self::INVALID_COUNTY_CODE_FORMAT_ERROR => 'INVALID_COUNTY_CODE_FORMAT_ERROR',
+        self::MISSING_COUNTY_CODE_ERROR => 'MISSING_COUNTY_CODE_ERROR',
+        self::NOT_ALLOWED_COUNTY_CODE_ERROR => 'NOT_ALLOWED_COUNTY_CODE_ERROR',
     ];
     
     public string $messageLength = 'The Tax Number "{{ value }}" is too long. The maximum length is 11 characters.';
@@ -37,15 +37,15 @@ class TaxNumber extends Constraint
     public string $messageVatCodeInvalid = 'The VAT Code "{{ vat_code }}" of the Tax Number "{{ value }}" is invalid.';
     public string $messageVatCodeMissing = 'The VAT Code of the Tax Number "{{ value }}" is missing.';
     public string $messageVatCodeNotAllowed = 'The VAT Code "{{ vat_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed VAT Codes are: "{{ allowed_vat_codes }}"';
-    public string $messageCountryCodeInvalid = 'The Country Code "{{ country_code }}" of the Tax Number "{{ value }}" is invalid.';
-    public string $messageCountryCodeMissing = 'The Country Code of the Tax Number "{{ value }}" is missing.';
-    public string $messageCountryCodeNotAllowed = 'The Country Code "{{ country_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed VAT Codes are: "{{ allowed_country_codes }}"';
+    public string $messageCountyCodeInvalid = 'The County Code "{{ country_code }}" of the Tax Number "{{ value }}" is invalid.';
+    public string $messageCountyCodeMissing = 'The County Code of the Tax Number "{{ value }}" is missing.';
+    public string $messageCountyCodeNotAllowed = 'The County Code "{{ country_code }}" of the Tax Number "{{ value }}" is not allowed. Allowed County Codes are: "{{ allowed_county_codes }}"';
 
     public bool $vatCodeRequired = false;
-    public bool $countryCodeRequired = false;
+    public bool $countyCodeRequired = false;
 
     public ?array $allowedVatCodes = null;
-    public ?array $allowedCountryCodes = null;
+    public ?array $allowedCountyCodes = null;
     
     public function validatedBy(): string
     {

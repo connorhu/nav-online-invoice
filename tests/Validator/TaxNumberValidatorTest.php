@@ -173,74 +173,74 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
     
     /**
-     * @dataProvider getInvalidCountryCodes
+     * @dataProvider getInvalidCountyCodes
      */
-    public function testInvalidCountryCodes(string $taxNumber, string $expectedCountryCode)
+    public function testInvalidCountyCodes(string $taxNumber, string $expectedCountyCode)
     {
         $constraint = new TaxNumber([
-            'messageCountryCodeInvalid' => 'myMessage',
+            'messageCountyCodeInvalid' => 'myMessage',
         ]);
 
         $this->validator->validate($taxNumber, $constraint);
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', $taxNumber)
-            ->setParameter('{{ country_code }}', $expectedCountryCode)
-            ->setCode(TaxNumber::INVALID_COUNTRY_CODE_FORMAT_ERROR)
+            ->setParameter('{{ county_code }}', $expectedCountyCode)
+            ->setCode(TaxNumber::INVALID_COUNTY_CODE_FORMAT_ERROR)
             ->assertRaised();
     }
 
-    public function getInvalidCountryCodes(): \Generator
+    public function getInvalidCountyCodes(): \Generator
     {
         yield ['12345678100', '00'];
         yield ['123456781bb', 'bb'];
         yield ['123456781..', '..'];
     }
 
-    public function testMissingCountryCode()
+    public function testMissingCountyCode()
     {
         $constraint = new TaxNumber([
-            'messageCountryCodeMissing' => 'myMessage',
-            'countryCodeRequired' => true,
+            'messageCountyCodeMissing' => 'myMessage',
+            'countyCodeRequired' => true,
         ]);
 
         $this->validator->validate('123456781', $constraint);
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', '123456781')
-            ->setCode(TaxNumber::MISSING_COUNTRY_CODE_ERROR)
+            ->setCode(TaxNumber::MISSING_COUNTY_CODE_ERROR)
             ->assertRaised();
     }
 
-    public function testNotAllowedCountryCode()
+    public function testNotAllowedCountyCode()
     {
         $constraint = new TaxNumber([
-            'messageCountryCodeNotAllowed' => 'myMessage',
+            'messageCountyCodeNotAllowed' => 'myMessage',
             'vatCodeRequired' => true,
-            'countryCodeRequired' => true,
+            'countyCodeRequired' => true,
             'allowedVatCodes' => [1, 2],
-            'allowedCountryCodes' => [13, 33],
+            'allowedCountyCodes' => [13, 33],
         ]);
 
         $this->validator->validate('12345678141', $constraint);
 
         $this->buildViolation('myMessage')
             ->setParameter('{{ value }}', '12345678141')
-            ->setParameter('{{ country_code }}', '41')
-            ->setParameter('{{ allowed_country_codes }}', '13, 33')
-            ->setCode(TaxNumber::NOT_ALLOWED_COUNTRY_CODE_ERROR)
+            ->setParameter('{{ county_code }}', '41')
+            ->setParameter('{{ allowed_county_codes }}', '13, 33')
+            ->setCode(TaxNumber::NOT_ALLOWED_COUNTY_CODE_ERROR)
             ->assertRaised();
     }
 
-    public function testNotAllowedCountryAndVatCode()
+    public function testNotAllowedCountyAndVatCode()
     {
         $constraint = new TaxNumber([
-            'messageCountryCodeNotAllowed' => 'myMessage',
+            'messageCountyCodeNotAllowed' => 'myMessage',
             'messageVatCodeNotAllowed' => 'myMessage2',
             'vatCodeRequired' => true,
-            'countryCodeRequired' => true,
+            'countyCodeRequired' => true,
             'allowedVatCodes' => [1, 2],
-            'allowedCountryCodes' => [13, 33],
+            'allowedCountyCodes' => [13, 33],
         ]);
 
         $this->validator->validate('12345678541', $constraint);
@@ -254,9 +254,9 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 
             ->buildNextViolation('myMessage')
             ->setParameter('{{ value }}', '12345678541')
-            ->setParameter('{{ country_code }}', '41')
-            ->setParameter('{{ allowed_country_codes }}', '13, 33')
-            ->setCode(TaxNumber::NOT_ALLOWED_COUNTRY_CODE_ERROR)
+            ->setParameter('{{ county_code }}', '41')
+            ->setParameter('{{ allowed_county_codes }}', '13, 33')
+            ->setCode(TaxNumber::NOT_ALLOWED_COUNTY_CODE_ERROR)
 
             ->assertRaised();
     }

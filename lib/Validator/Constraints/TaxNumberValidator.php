@@ -12,7 +12,7 @@ use Symfony\Component\Validator\Exception\UnexpectedValueException;
 
 class TaxNumberValidator extends ConstraintValidator
 {
-    public static array $countryCodes = [
+    public static array $countyCodes = [
         '02' => 'Baranya',
         '22' => 'Baranya',
         '03' => 'Bács-Kiskun',
@@ -134,36 +134,36 @@ class TaxNumberValidator extends ConstraintValidator
                 ->addViolation();
         }
 
-        if ($components['country_code'] !== null && !isset(self::$countryCodes[$components['country_code']])) {
-            $this->context->buildViolation($constraint->messageCountryCodeInvalid)
+        if ($components['county_code'] !== null && !isset(self::$countyCodes[$components['county_code']])) {
+            $this->context->buildViolation($constraint->messageCountyCodeInvalid)
                 ->setParameter('{{ value }}', $value)
-                ->setParameter('{{ country_code }}', $components['country_code'])
-                ->setCode(TaxNumber::INVALID_COUNTRY_CODE_FORMAT_ERROR)
+                ->setParameter('{{ county_code }}', $components['county_code'])
+                ->setCode(TaxNumber::INVALID_COUNTY_CODE_FORMAT_ERROR)
                 ->addViolation();
-        } elseif ($components['country_code'] !== null && $constraint->allowedCountryCodes !== null) {
-            if (0 === \count($constraint->allowedCountryCodes)) {
-                throw new InvalidOptionsException('The allowedCountryCodes field must contain one valid Country Code at least.', array_keys(self::$countryCodes));
+        } elseif ($components['county_code'] !== null && $constraint->allowedCountyCodes !== null) {
+            if (0 === \count($constraint->allowedCountyCodes)) {
+                throw new InvalidOptionsException('The allowedCountyCodes field must contain one valid County Code at least.', array_keys(self::$countyCodes));
             }
 
-            foreach ($constraint->allowedCountryCodes as $allowedCountryCode) {
-                if (!isset(self::$countryCodes[$allowedCountryCode])) {
-                    throw new InvalidOptionsException('The allowedCountryCodes field must contain valid Country Codes.', array_keys(self::$countryCodes));
+            foreach ($constraint->allowedCountyCodes as $allowedCountyCode) {
+                if (!isset(self::$countyCodes[$allowedCountyCode])) {
+                    throw new InvalidOptionsException('The allowedCountyCodes field must contain valid County Codes.', array_keys(self::$countyCodes));
                 }
             }
 
-            if (!in_array((int)$components['country_code'], $constraint->allowedCountryCodes)) {
-                $this->context->buildViolation($constraint->messageCountryCodeNotAllowed)
+            if (!in_array((int)$components['county_code'], $constraint->allowedCountyCodes)) {
+                $this->context->buildViolation($constraint->messageCountyCodeNotAllowed)
                     ->setParameter('{{ value }}', $value)
-                    ->setParameter('{{ country_code }}', $components['country_code'])
-                    ->setParameter('{{ allowed_country_codes }}', implode(', ', $constraint->allowedCountryCodes))
-                    ->setCode(TaxNumber::NOT_ALLOWED_COUNTRY_CODE_ERROR)
+                    ->setParameter('{{ county_code }}', $components['county_code'])
+                    ->setParameter('{{ allowed_county_codes }}', implode(', ', $constraint->allowedCountyCodes))
+                    ->setCode(TaxNumber::NOT_ALLOWED_COUNTY_CODE_ERROR)
                     ->addViolation();
             }
 
-        } elseif ($components['country_code'] === null && $constraint->countryCodeRequired === true) {
-            $this->context->buildViolation($constraint->messageCountryCodeMissing)
+        } elseif ($components['county_code'] === null && $constraint->countyCodeRequired === true) {
+            $this->context->buildViolation($constraint->messageCountyCodeMissing)
                 ->setParameter('{{ value }}', $value)
-                ->setCode(TaxNumber::MISSING_COUNTRY_CODE_ERROR)
+                ->setCode(TaxNumber::MISSING_COUNTY_CODE_ERROR)
                 ->addViolation();
         }
     }

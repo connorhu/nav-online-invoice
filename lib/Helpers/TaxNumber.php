@@ -14,7 +14,7 @@ class TaxNumber
      * @return array{
      *     taxpayer_id: ?string,
      *     vat_code: ?string,
-     *     country_code: ?string
+     *     county_code: ?string
      * }
      */
     public static function parse(string $taxNumber, int $component = -1): array
@@ -47,7 +47,7 @@ class TaxNumber
                 $part = null;
             }
             
-            $buffer['country_code'] = $part;
+            $buffer['county_code'] = $part;
         }
         
         return $buffer;
