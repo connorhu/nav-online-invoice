@@ -2,154 +2,67 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Http\Request\Header;
+use NAV\OnlineInvoice\Http\Request\Software;
+use NAV\OnlineInvoice\Http\Response\Audit;
 use NAV\OnlineInvoice\Http\Response\QueryInvoiceDataResponse;
-use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 
-class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface
+class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, DenormalizerAwareInterface, SerializerAwareInterface
 {
     use ResponseDenormalizerTrait;
+    use DenormalizerAwareTrait;
+    use SerializerAwareTrait;
 
-    protected function denormalizeV3($data): QueryTaxpayerResponse
+    protected function denormalizeV3($data): QueryInvoiceDataResponse
     {
-        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
-        $apiKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
-
-        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::BASE_SCHEMAS_URL_V30, $data);
-        $baseKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
-
-        $taxpayerResponse = new QueryTaxpayerResponse();
-        $taxpayerResponse->setValidity($data[$apiKeyPrefix.'taxpayerValidity'] === 'true');
-
-        if ($taxpayerResponse->getValidity()) {
-
-            if (isset($data['infoDate'])) {
-                $taxpayerResponse->setLastUpdate(new \DateTime($data[$apiKeyPrefix.'infoDate']));
-            }
-
-            $taxpayerData = $data[$apiKeyPrefix.'taxpayerData'];
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerName'])) {
-                $taxpayerResponse->setName($taxpayerData[$apiKeyPrefix.'taxpayerName']);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerShortName'])) {
-                $taxpayerResponse->setShortName($taxpayerData[$apiKeyPrefix.'taxpayerShortName']);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'];
-                $taxpayerResponse->setTaxpayerId($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'vatCode'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'vatCode'];
-                $taxpayerResponse->setVatCode($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'countryCode'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'countryCode'];
-                $taxpayerResponse->setCountryCode($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'vatGroupMembership'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'vatGroupMembership'];
-                $taxpayerResponse->setVatGroupMembership($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerAddressList'])) {
-                $items = $taxpayerData[$apiKeyPrefix.'taxpayerAddressList'][$apiKeyPrefix.'taxpayerAddressItem'];
-
-                if (isset($items[$apiKeyPrefix.'taxpayerAddressType'])) {
-                    $items = [$items];
-                }
-
-                foreach ($items as $item) {
-                    $buffer = [
-                        'type' => $item[$apiKeyPrefix.'taxpayerAddressType'],
-                    ];
-
-                    $address = $item[$apiKeyPrefix.'taxpayerAddress'];
-
-                    // TODO Address denormalizer
-
-                    if (isset($address[$baseKeyPrefix.'countryCode'])) {
-                        $buffer['countryCode'] = $address[$baseKeyPrefix.'countryCode'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'region'])) {
-                        $buffer['region'] = $address[$baseKeyPrefix.'region'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'postalCode'])) {
-                        $buffer['postalCode'] = $address[$baseKeyPrefix.'postalCode'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'city'])) {
-                        $buffer['city'] = $address[$baseKeyPrefix.'city'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'streetName'])) {
-                        $buffer['streetName'] = $address[$baseKeyPrefix.'streetName'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'publicPlaceCategory'])) {
-                        $buffer['publicPlaceCategory'] = $address[$baseKeyPrefix.'publicPlaceCategory'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'number'])) {
-                        $buffer['number'] = $address[$baseKeyPrefix.'number'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'building'])) {
-                        $buffer['building'] = $address[$baseKeyPrefix.'building'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'staircase'])) {
-                        $buffer['staircase'] = $address[$baseKeyPrefix.'staircase'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'floor'])) {
-                        $buffer['floor'] = $address[$baseKeyPrefix.'floor'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'door'])) {
-                        $buffer['door'] = $address[$baseKeyPrefix.'door'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'lotNumber'])) {
-                        $buffer['lotNumber'] = $address[$baseKeyPrefix.'lotNumber'];
-                    }
-
-                    $taxpayerResponse->addAddress($buffer);
-                }
-            }
-        }
-
-        return $taxpayerResponse;
+        dump($data);
+        exit;
     }
 
     public function denormalize($data, string $type, ?string $format = null, array $context = [])
     {
-        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
+        $commonNamespacePrefix = self::getNamespaceWithUrl(ResponseDenormalizerInterface::COMMON_SCHEMAS_URL_V10, $data);
+        $commonKeyPrefix = self::getNamespaceKeyPrefix(ResponseDenormalizerInterface::COMMON_SCHEMAS_URL_V10, $data);
 
-        $content = base64_decode($data['ns2:invoiceDataResult']['ns2:invoiceData']);
+        $apiNamespacePrefix = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
+        $apiKeyPrefix = self::getNamespaceKeyPrefix(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
 
-        if ($data['ns2:invoiceDataResult']['ns2:compressedContentIndicator'] === 'true') {
-            dump($content);
-            $content = gzinflate($content);
-            dump($content);
+        $header = $this->denormalizer->denormalize($data[$commonKeyPrefix.'header'], Header::class, $format, [
+            HeaderNormalizer::XMLNS_CONTEXT_KEY => $commonNamespacePrefix,
+        ]);
+
+        $software = $this->denormalizer->denormalize($data[$apiKeyPrefix.'software'], Software::class, $format, [
+            HeaderNormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
+        ]);
+
+        $invoiceDataResult = $data[$apiKeyPrefix.'invoiceDataResult'];
+
+        $audit = $this->denormalizer->denormalize($invoiceDataResult[$apiKeyPrefix.'auditData'], Audit::class, $format, [
+            AuditDenormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
+        ]);
+
+        $object = new QueryInvoiceDataResponse();
+        $object->setHeader($header);
+        $object->setSoftware($software);
+        $object->setAudit($audit);
+        $object->setCompressedContentIndicator((bool) $invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator']);
+
+        $stringInvoiceContent = base64_decode($invoiceDataResult[$apiKeyPrefix.'invoiceData']);
+        if ($object->getCompressedContentIndicator()) {
+            $stringInvoiceContent = gzinflate($stringInvoiceContent);
         }
 
-        dump($content);
+        $invoice = $this->serializer->deserialize($stringInvoiceContent, Invoice::class, 'xml');
 
-        exit;
+        $object->setInvoiceData($invoice);
 
-        if ($namespace !== null) { // v3
-            return $this->denormalizeV3($data);
-        }
-
-        throw new \LogicException('Unknown response interface.');
+        return $object;
     }
 
     public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool

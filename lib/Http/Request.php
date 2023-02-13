@@ -17,47 +17,40 @@ abstract class Request
     protected string $requestVersion = self::REQUEST_VERSION_V11;
     
     /**
-     * setter for requestVersion
-     *
-     * @param mixed 
+     * @param string $requestVersion One of self::REQUEST_VERSION_*
      * @return self
      */
-    public function setRequestVersion($value)
+    public function setRequestVersion(string $requestVersion): self
     {
-        $this->requestVersion = $value;
+        $this->requestVersion = $requestVersion;
+
         return $this;
     }
     
     /**
-     * getter for requestVersion
-     * 
-     * @return mixed return value for 
+     * @return string One of self::REQUEST_VERSION_*
      */
-    public function getRequestVersion()
+    public function getRequestVersion(): string
     {
         return $this->requestVersion;
     }
     
     // TODO [+a-zA-Z0-9_]{1,30}
-    private $requestId;
+    private string $requestId;
     
     /**
-     * setter for requestId
-     *
-     * @param mixed 
+     * @param string $requestId uniq id for request
      * @return self
      */
-    public function setRequestId(string $value): self
+    public function setRequestId(string $requestId): self
     {
-        $this->requestId = $value;
+        $this->requestId = $requestId;
         
         return $this;
     }
     
     /**
-     * getter for requestId
-     * 
-     * @return mixed return value for 
+     * @return string uniq id for request
      */
     public function getRequestId(): string
     {

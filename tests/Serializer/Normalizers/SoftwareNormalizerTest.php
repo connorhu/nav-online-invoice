@@ -118,4 +118,32 @@ class SoftwareNormalizerTest extends TestCase
 
         $normalizer->normalize($software);
     }
+
+    public function testDenormalize()
+    {
+        $content = [
+            'softwareId' => 'SOFTWAREID',
+            'softwareName' => 'Software Name',
+            'softwareOperation' => 'ONLINE_SERVICE',
+            'softwareMainVersion' => '1.0',
+            'softwareDevName' => 'Developer Kft.',
+            'softwareDevContact' => 'info@developer.tld',
+            'softwareDevCountryCode' => 'HU',
+            'softwareDevTaxNumber' => '12345678-9-11',
+        ];
+
+        $normalizer = new SoftwareNormalizer();
+        $denormalized = $normalizer->denormalize($content, Software::class, 'xml', [
+            SoftwareNormalizer::XMLNS_CONTEXT_KEY => null,
+        ]);
+
+        $this->assertSame('SOFTWAREID', $denormalized->getId());
+        $this->assertSame('Software Name', $denormalized->getName());
+        $this->assertSame('ONLINE_SERVICE', $denormalized->getOperation());
+        $this->assertSame('1.0', $denormalized->getMainVersion());
+        $this->assertSame('Developer Kft.', $denormalized->getDevName());
+        $this->assertSame('info@developer.tld', $denormalized->getDevContact());
+        $this->assertSame('HU', $denormalized->getDevCountryCode());
+        $this->assertSame('12345678-9-11', $denormalized->getDevTaxNumber());
+    }
 }

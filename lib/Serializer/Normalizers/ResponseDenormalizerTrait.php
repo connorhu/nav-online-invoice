@@ -7,7 +7,7 @@ trait ResponseDenormalizerTrait
     protected static function getNamespaceWithUrl(string $url, array $data): ?string
     {
         foreach ($data as $key => $value) {
-            if (substr($key, 0, 6) !== '@xmlns') {
+            if (!str_starts_with($key, '@xmlns')) {
                 continue;
             }
 
@@ -17,5 +17,12 @@ trait ResponseDenormalizerTrait
         }
 
         return null;
+    }
+
+    protected static function getNamespaceKeyPrefix(string $url, array $data): string
+    {
+        $namespace = self::getNamespaceWithUrl($url, $data);
+        
+        return $namespace === null ? '' : ($namespace.':');
     }
 }

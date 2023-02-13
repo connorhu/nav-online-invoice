@@ -5,6 +5,7 @@ namespace NAV\Tests\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
+use NAV\Tests\OnlineInvoice\Fixtures\HeaderAwareRequest;
 use PHPUnit\Framework\TestCase;
 
 class HeaderNormalizerTest extends TestCase
@@ -70,4 +71,24 @@ class HeaderNormalizerTest extends TestCase
             'headerVersion' => '1.0',
         ]);
     }
+
+    public function testDenormalize()
+    {
+        $content = [
+            'ns2:requestId' => 'RANDOMID',
+            'ns2:timestamp' => '2023-01-01T10:10:12.000Z',
+            'ns2:requestVersion' => '3.0',
+            'ns2:headerVersion' => '1.0',
+        ];
+
+        $normalizer = new HeaderNormalizer();
+        $denormalized = $normalizer->denormalize($content, Header::class, 'xml', [
+            HeaderNormalizer::XMLNS_CONTEXT_KEY => 'ns2',
+        ]);
+
+        $this->assertSame('1.0', $denormalized->getHeaderVersion());
+        $this->assertSame('2023-01-01T10:10:12.000Z', $denormalized->getTimestamp()->format('Y-m-d\TH:i:s.000\Z'));
+    }
+
+    // TODO public function testDenormalizeMissingXmlnsContextKey()
 }
