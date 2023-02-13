@@ -6,12 +6,12 @@ use NAV\OnlineInvoice\Http\Response;
 
 class TokenExchangeResponse extends Response
 {
-    private $validFrom;
+    private ?\DateTime $validFrom = null;
     
-    private $validTo;
-    
-    private $exhangeToken;
-    
+    private ?\DateTime $validTo = null;
+
+    private ?string $exchangeToken = null;
+
     public function getValidFrom(): \DateTime
     {
         return $this->validFrom;

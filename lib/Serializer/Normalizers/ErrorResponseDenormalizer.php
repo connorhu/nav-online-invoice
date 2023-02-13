@@ -4,12 +4,12 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Response\GeneralErrorResponse;
 use NAV\OnlineInvoice\Http\Response\GeneralExceptionResponse;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class ErrorResponseDenormalizer implements ContextAwareDenormalizerInterface, SerializerAwareInterface
+class ErrorResponseDenormalizer implements DenormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
     
@@ -43,7 +43,7 @@ class ErrorResponseDenormalizer implements ContextAwareDenormalizerInterface, Se
         return $response;
     }
 
-    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
+    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
     {
         return $type === GeneralErrorResponse::class ||
             $type === GeneralExceptionResponse::class;

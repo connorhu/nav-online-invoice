@@ -2,13 +2,11 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use http\Encoding\Stream\Deflate;
 use NAV\OnlineInvoice\Http\Response\QueryInvoiceDataResponse;
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
-use NAV\OnlineInvoice\Http\Response\QueryInvoiceDigestResponse;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
-class QueryInvoiceDataResponseDenormalizer implements ContextAwareDenormalizerInterface
+class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface
 {
     use ResponseDenormalizerTrait;
 
@@ -154,7 +152,7 @@ class QueryInvoiceDataResponseDenormalizer implements ContextAwareDenormalizerIn
         throw new \LogicException('Unknown response interface.');
     }
 
-    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
+    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
     {
         return $type === QueryInvoiceDataResponse::class;
     }

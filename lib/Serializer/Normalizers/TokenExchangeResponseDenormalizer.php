@@ -4,9 +4,9 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
-class TokenExchangeResponseDenormalizer implements ContextAwareDenormalizerInterface
+class TokenExchangeResponseDenormalizer implements DenormalizerInterface
 {
     use ResponseDenormalizerTrait;
 
@@ -34,7 +34,7 @@ class TokenExchangeResponseDenormalizer implements ContextAwareDenormalizerInter
         throw new \LogicException('Unsupported response');
     }
 
-    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
+    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === TokenExchangeResponse::class;
     }

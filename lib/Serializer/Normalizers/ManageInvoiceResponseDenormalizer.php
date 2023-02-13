@@ -3,9 +3,9 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Response\ManageInvoiceResponse;
-use Symfony\Component\Serializer\Normalizer\ContextAwareDenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
-class ManageInvoiceResponseDenormalizer implements ContextAwareDenormalizerInterface
+class ManageInvoiceResponseDenormalizer implements DenormalizerInterface
 {
     use ResponseDenormalizerTrait;
 
@@ -24,7 +24,7 @@ class ManageInvoiceResponseDenormalizer implements ContextAwareDenormalizerInter
         throw new \LogicException('Unknown response version.');
     }
 
-    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = [])
+    public function supportsDenormalization($data, string $type, string $format = null): bool
     {
         return $type === ManageInvoiceResponse::class;
     }

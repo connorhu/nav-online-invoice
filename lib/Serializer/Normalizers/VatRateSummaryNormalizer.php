@@ -83,7 +83,7 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
         return $buffer;
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof VatRateSummary;
     }

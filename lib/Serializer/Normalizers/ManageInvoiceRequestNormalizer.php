@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\ExchangeTokenAwareRequest;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
@@ -24,7 +25,7 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
     {
     }
 
-    protected function normalizeV20($object, $format = null, array $context = []): array
+    protected function normalizeV20(ManageInvoiceRequest $object, $format = null, array $context = []): array
     {
         $buffer = [];
         $buffer['exchangeToken'] = $object->getExchangeToken();
@@ -33,8 +34,8 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
             'invoiceOperation' => [],
         ];
 
-        if ($object->getHeader()->getRequestVersion() !== Header::REQUEST_VERSION_V20) {
-            throw new \Exception('request version not supported: '. $object->getHeader()->getRequestVersion());
+        if (($requestVersion = $object->getHeader()->getRequestVersion()) !== Request::REQUEST_VERSION_V20) {
+            throw new \Exception('request version not supported: '. $requestVersion);
         }
 
         $operations = array_values($object->getInvoiceOperations());
@@ -56,7 +57,7 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
         return $buffer;
     }
 
-    protected function normalizeV30($object, $format = null, array $context = []): array
+    protected function normalizeV30(ManageInvoiceRequest $object, $format = null, array $context = []): array
     {
         $contentToSign = [
             'exchangeToken' => $object->getExchangeToken(),
@@ -87,7 +88,7 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
     }
 
     /**
-     * @param Request $object
+     * @param ManageInvoiceRequest $object
      * @param null $format
      * @param array $context
      * @return array
@@ -97,13 +98,14 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
     {
         if ($object->getRequestVersion() === Request::REQUEST_VERSION_V20) {
             return $this->normalizeV20($object, $format, $context);
-        }
-        elseif ($object->getRequestVersion() === Request::REQUEST_VERSION_V30) {
+        } elseif ($object->getRequestVersion() === Request::REQUEST_VERSION_V30) {
             return $this->normalizeV30($object, $format, $context);
         }
+
+        throw new \RuntimeException('version not supported: '. $object->getRequestVersion());
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof ManageInvoiceRequest;
     }

@@ -11,7 +11,7 @@ use NAV\OnlineInvoice\Providers\ResponseClassProvider;
 use NAV\OnlineInvoice\Providers\SoftwareProviderInterface;
 use NAV\OnlineInvoice\Providers\UserProviderInterface;
 
-use NAV\OnlineInvoice\Http\ExhangeTokenAwareRequest;
+use NAV\OnlineInvoice\Http\ExchangeTokenAwareRequest;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\TokenExchange;
 use NAV\OnlineInvoice\NavRestClient;
@@ -128,7 +128,7 @@ class OnlineInvoiceRestClient
             throw new ConstraintViolationException('The request is invalid', $errors);
         }
 
-        if ($request instanceof ExhangeTokenAwareRequest) {
+        if ($request instanceof ExchangeTokenAwareRequest) {
             $token = $this->getExhangeToken();
             $request->setExchangeToken($token);
         }
