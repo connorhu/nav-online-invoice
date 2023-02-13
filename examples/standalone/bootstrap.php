@@ -27,7 +27,7 @@ function initClient(): OnlineInvoiceRestClient
     $dataProvider = new CompactDataProvider(__DIR__ .'/info.json');
 
     $encoders = [
-        new RequestEncoder(new XmlEncoder()),
+        new RequestEncoder(),
     ];
 
     $requestNormalizer = new RequestNormalizer($dataProvider);
