@@ -18,7 +18,7 @@ class RequestEncoder implements EncoderInterface, DecoderInterface
         $this->xmlEncoder = new XmlEncoder();
     }
     
-    public function encode($data, string $format, array $context = [])
+    public function encode($data, string $format, array $context = []): string
     {
         if (!isset($data['@root_node_name'])) {
             throw new \LogicException('Root node name is missing.');
@@ -30,7 +30,7 @@ class RequestEncoder implements EncoderInterface, DecoderInterface
         return $this->xmlEncoder->encode($data, 'xml', $context);
     }
 
-    public function supportsEncoding(string $format)
+    public function supportsEncoding(string $format): bool
     {
         return 'request' === $format || 'invoice_xml' === $format;;
     }
@@ -40,7 +40,7 @@ class RequestEncoder implements EncoderInterface, DecoderInterface
         return $this->xmlEncoder->decode($data, 'xml', $context);
     }
 
-    public function supportsDecoding(string $format)
+    public function supportsDecoding(string $format): bool
     {
         return 'request' === $format;
     }
