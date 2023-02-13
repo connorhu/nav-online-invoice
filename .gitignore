@@ -8,3 +8,4 @@ info.json
 .phpunit
 /phpunit.xml
 ###< symfony/phpunit-bridge ###
+/.idea/
