@@ -4,20 +4,21 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\Address;
 use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Entity\InvoiceItem;
 use NAV\OnlineInvoice\Http\Request;
-use NAV\OnlineInvoice\Http\Request\Header;
-use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizableInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface, DenormalizerInterface
+class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface, DenormalizerInterface, DenormalizerAwareInterface
 {
     use SerializerAwareTrait;
+    use DenormalizerAwareTrait;
     use ResponseDenormalizerTrait;
 
     protected function normalizeSupplierInfo(Invoice $invoice, string $format = null, array $context = []): array
@@ -326,7 +327,31 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         $object->setCustomerName($customerInfo[$dataKeyPrefix.'customerName']);
         $object->setCustomerAddress($this->denormalizeAddress($customerInfo[$dataKeyPrefix.'customerAddress'], $baseKeyPrefix));
 
-        dump($invoiceHead);
+        $invoiceDetail = $invoiceHead[$dataKeyPrefix.'invoiceDetail'];
+
+        $object->setInvoiceCategory($invoiceDetail[$dataKeyPrefix.'invoiceCategory']);
+        $object->setInvoiceDeliveryDate(new \DateTime($invoiceDetail[$dataKeyPrefix.'invoiceDeliveryDate']));
+        $object->setCurrencyCode($invoiceDetail[$dataKeyPrefix.'currencyCode']);
+        $object->setExchangeRate($invoiceDetail[$dataKeyPrefix.'exchangeRate']);
+        $object->setSelfBillingIndicator($invoiceDetail[$dataKeyPrefix.'selfBillingIndicator'] === 'true');
+        $object->setPaymentMethod($invoiceDetail[$dataKeyPrefix.'paymentMethod']);
+        $object->setPaymentDate(new \DateTime($invoiceDetail[$dataKeyPrefix.'paymentDate']));
+        $object->setCashAccountingIndicator($invoiceDetail[$dataKeyPrefix.'cashAccountingIndicator'] === 'true');
+        $object->setInvoiceAppearance($invoiceDetail[$dataKeyPrefix.'invoiceAppearance']);
+
+        $invoiceLines = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceLines'];
+
+        foreach ($invoiceLines[$dataKeyPrefix.'line'] as $line) {
+            $object->addItem($this->denormalizer->denormalize($line, InvoiceItem::class, $format, [
+                InvoiceItemNormalizer::XMLNS_CONTEXT_KEY => $dataKeyPrefix,
+            ]));
+        }
+
+        exit;
+
+        $summaryInfo = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceSummary'];
+
+        dump($summaryInfo);
 
         exit;
 

@@ -27,7 +27,7 @@ trait VatRate
 			<vatPercentage>0.05</vatPercentage>
      */
     protected ?float $vatRatePercentage = null;
-    
+
     /**
      * setter for vatRatePercentage
      *
@@ -40,17 +40,17 @@ trait VatRate
 
         return $this;
     }
-    
+
     /**
      * getter for vatRatePercentage
-     * 
+     *
      * @return float|null Return value for vatRatePercentage field
      */
     public function getVatRatePercentage(): ?float
     {
         return $this->vatRatePercentage;
     }
-    
+
     /*
      * Az adómentesség jelölés kódja
      *
@@ -66,7 +66,7 @@ trait VatRate
 		<vatExemption>...</vatExemption>
      */
     protected ?int $vatRateExemptionCase = null;
-    
+
     /**
      * setter for vatRateExemption
      *
@@ -78,10 +78,10 @@ trait VatRate
         $this->vatRateExemptionCase = $vatRateExemptionCase;
         return $this;
     }
-    
+
     /**
      * getter for vatRateExemption
-     * 
+     *
      * @return int|null Return value of vatRateExemptionCase field
      */
     public function getVatRateExemptionCase(): ?int
@@ -101,6 +101,21 @@ trait VatRate
             VatRateInterface::VAT_RATE_EXEMPTION_CASE_NAM => 'NAM',
             VatRateInterface::VAT_RATE_EXEMPTION_CASE_UNKNOWN => 'UNKNOWN',
         };
+    }
+
+    public function setVatRateExemptionCaseWithString(string $case): self
+    {
+        $this->vatRateExemptionCase = match ($case) {
+            'AAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_AAM,
+            'TAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_TAM,
+            'KBAET' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAET,
+            'KBAUK' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAUK,
+            'EAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_EAM,
+            'NAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_NAM,
+            'UNKNOWN' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_UNKNOWN,
+        };
+
+        return $this;
     }
 
     /*
@@ -164,6 +179,20 @@ trait VatRate
         };
     }
 
+    public function setVatRateOutOfScopeCaseWithString(string $case): self
+    {
+        $this->vatRateOutOfScopeCase = match ($case) {
+            'ATK' => VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_ATK,
+            'EUFAD37' => VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_EUFAD37,
+            'EUFADE' => VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_EUFADE,
+            'EUE' => VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_EUE,
+            'HO' => VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_HO,
+            'UNKNOWN' => VatRateInterface::VAT_RATE_OUT_OF_SCOPE_CASE_UNKNOWN,
+        };
+
+        return $this;
+    }
+
     protected ?string $vatRateOutOfScopeReason = null;
 
     /**
@@ -200,11 +229,11 @@ trait VatRate
 
      */
     protected ?bool $vatRateDomesticReverseCharge = null;
-    
+
     /**
      * setter for vatRateDomesticReverseCharge
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setVatRateDomesticReverseCharge(?bool $vatRateDomesticReverseCharge): VatRateInterface
@@ -212,17 +241,17 @@ trait VatRate
         $this->vatRateDomesticReverseCharge = $vatRateDomesticReverseCharge;
         return $this;
     }
-    
+
     /**
      * getter for vatRateDomesticReverseCharge
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getVatRateDomesticReverseCharge(): ?bool
     {
         return $this->vatRateDomesticReverseCharge;
     }
-    
+
     /*
      * Áthárított adót tartalmazó különbözet szerinti adózásra
      *
@@ -234,7 +263,7 @@ trait VatRate
 
      */
     protected ?bool $vatRateMarginSchemeVat = null;
-    
+
     /**
      * setter for vatRateMarginSchemeVat
      *
@@ -246,17 +275,17 @@ trait VatRate
         $this->vatRateMarginSchemeVat = $vatRateMarginSchemeVat;
         return $this;
     }
-    
+
     /**
      * getter for vatRateMarginSchemeVat
-     * 
+     *
      * @return bool|null return value for
      */
     public function getVatRateMarginSchemeVat(): ?bool
     {
         return $this->vatRateMarginSchemeVat;
     }
-    
+
     /*
      * Áthárított adót nem tartalmazó különbözet szerinti adózásra
      *
@@ -268,7 +297,7 @@ trait VatRate
 
      */
     protected ?bool $vatRateMarginSchemeNoVat = null;
-    
+
     /**
      * setter for vatRateMarginSchemeNoVat
      *
@@ -280,10 +309,10 @@ trait VatRate
         $this->vatRateMarginSchemeNoVat = $vatRateMarginSchemeNoVat;
         return $this;
     }
-    
+
     /**
      * getter for vatRateMarginSchemeNoVat
-     * 
+     *
      * @return bool|null return value for
      */
     public function getVatRateMarginSchemeNoVat(): ?bool

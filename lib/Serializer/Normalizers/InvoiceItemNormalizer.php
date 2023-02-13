@@ -2,54 +2,56 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Entity\Invoice;
 use NAV\OnlineInvoice\Entity\InvoiceItem;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInterface
+class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInterface, DenormalizerInterface
 {
     use SerializerAwareTrait;
 
     public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
-        
+
         $buffer['lineNumber'] = $object->getItemNumber();
-        
+
         if ($object->getLineModificationReferenceNumber()) {
             $buffer['lineModificationReference'] = [
                 'lineNumberReference' => $object->getLineModificationReferenceNumber(),
                 'lineOperation' => $object->getLineModificationReferenceOperation(),
             ];
         }
-    
+
         if ($object->getReferencesToOtherLines()) {
             foreach ($object->getReferencesToOtherLines() as $reference) {
                 $buffer['referenceToOtherLines']['referenceToOtherLine'] = $reference;
             }
         }
-        
+
         if ($object->getAdvanceIndicator()) {
             $buffer['advanceData'] = [
                 'advanceIndicator' => $object->getAdvanceIndicator(),
             ];
         }
-        
+
         foreach ($object->getProductCodes() as $code) {
             $buffer['productCodes'][] = $this->serializer->normalize($code, $format, $context);
         }
-        
+
         $buffer['lineExpressionIndicator'] = $object->getLineExpressionIndicator() === true ? 'true' : 'false';
-    
+
         if ($object->getLineDescription()) {
             $buffer['lineDescription'] = $object->getLineDescription();
         }
-        
+
         if ($object->getQuantity()) {
             $buffer['quantity'] = $object->getQuantity();
         }
@@ -69,7 +71,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInter
             'lineNetAmount' => $object->getNetAmount(),
             'lineNetAmountHUF' => $object->getNetAmountHUF(),
         ];
-        
+
         $buffer['lineAmountsNormal']['lineVatRate'] = VatRateSummaryNormalizer::normalizeVatRate($object, $format, $context);
         $buffer['lineAmountsNormal']['lineVatData'] = [
             'lineVatAmount' => $object->getVatAmount(),
@@ -86,7 +88,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInter
         if ($object->getIntermediatedService() !== null) {
             $buffer['intermediatedService'] = $object->getIntermediatedService();
         }
-    
+
         foreach ($object->getAdditionalData() as $key => $data) {
             $buffer['additionalLineData'][] = [
                 'dataName' => $key,
@@ -94,12 +96,69 @@ class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInter
                 'dataValue' => $data['value'],
             ];
         }
-        
+
         return $buffer;
     }
-    
+
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof InvoiceItem;
+    }
+
+    public const XMLNS_CONTEXT_KEY = '_invoice_item_xmlns';
+
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    {
+        if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
+            // TODO create exception type
+            throw new \RuntimeException('Context key missing: '. self::XMLNS_CONTEXT_KEY);
+        }
+
+        $keyPrefix = !empty($context[self::XMLNS_CONTEXT_KEY]) ? ($context[self::XMLNS_CONTEXT_KEY].':') : '';
+
+        $object = new InvoiceItem();
+
+        $object->setLineExpressionIndicator($data[$keyPrefix.'lineExpressionIndicator']);
+        $object->setLineDescription($data[$keyPrefix.'lineDescription']);
+        $object->setQuantity($data[$keyPrefix.'quantity']);
+        $object->setUnitOfMeasure($data[$keyPrefix.'unitOfMeasure']);
+        $object->setUnitPrice($data[$keyPrefix.'unitPrice']);
+        $object->setIntermediatedService($data[$keyPrefix.'unitPrice'] === 'true');
+
+        $netAmountData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineNetAmountData'];
+        $object->setNetAmount($netAmountData[$keyPrefix.'lineNetAmount']);
+        $object->setNetAmountHUF($netAmountData[$keyPrefix.'lineNetAmountHUF']);
+
+        $vatAmountData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineVatData'];
+        $object->setVatAmount($vatAmountData[$keyPrefix.'lineVatAmount']);
+        $object->setVatAmountHUF($vatAmountData[$keyPrefix.'lineVatAmountHUF']);
+
+        if (isset($data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineGrossAmountData'][$keyPrefix.'lineGrossAmountNormal'])) {
+            $grossAmountData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineGrossAmountData'];
+            $object->setGrossAmountNormal($grossAmountData[$keyPrefix.'lineGrossAmountNormal']);
+            $object->setGrossAmountNormalHUF($grossAmountData[$keyPrefix.'lineGrossAmountNormalHUF']);
+        }
+
+        $lineData = [];
+        if (isset($data[$keyPrefix.'additionalLineData']['dataName'])) {
+            $lineData = [$data[$keyPrefix.'additionalLineData']];
+        } elseif (isset($data[$keyPrefix.'additionalLineData'][0])) {
+            $lineData = $data[$keyPrefix.'additionalLineData'];
+        }
+        foreach ($lineData as $additionalLineData) {
+            $object->addAdditionalData($additionalLineData[$keyPrefix.'dataName'], $additionalLineData[$keyPrefix.'dataDescription'], $additionalLineData[$keyPrefix.'dataValue']);
+        }
+
+        $vatRateData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineVatRate'];
+        VatRateSummaryNormalizer::denormalizeVatRate($object, $vatRateData, $format, [
+            VatRateSummaryNormalizer::XMLNS_CONTEXT_KEY => $context[self::XMLNS_CONTEXT_KEY],
+        ]);
+
+        return $object;
+    }
+
+    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    {
+        return InvoiceItem::class === $type;
     }
 }
