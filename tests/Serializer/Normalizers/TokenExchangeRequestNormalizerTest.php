@@ -2,7 +2,7 @@
 
 namespace NAV\Tests\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Providers\CryptoToolsProvider;
+use NAV\Tests\OnlineInvoice\Fixtures\CryptoToolsProvider;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Http\Request\Software;

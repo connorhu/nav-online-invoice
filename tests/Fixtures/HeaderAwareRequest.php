@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Serializer\Normalizers;
+namespace NAV\Tests\OnlineInvoice\Fixtures;
 
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest as HeaderAwareRequestInterface;
