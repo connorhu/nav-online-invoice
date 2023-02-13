@@ -12,11 +12,8 @@ class QueryInvoiceDigestRequestNormalizer implements ContextAwareNormalizerInter
 {
     use NormalizerAwareTrait;
 
-    private RequestNormalizer $requestNormalizer;
-    
-    public function __construct(RequestNormalizer $requestNormalizer)
+    public function __construct(private readonly RequestNormalizer $requestNormalizer)
     {
-        $this->requestNormalizer = $requestNormalizer;
     }
 
     /**
@@ -51,7 +48,7 @@ class QueryInvoiceDigestRequestNormalizer implements ContextAwareNormalizerInter
         ]);
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof QueryInvoiceDigestRequest;
     }

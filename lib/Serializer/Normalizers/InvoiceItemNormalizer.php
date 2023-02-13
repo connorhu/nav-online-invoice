@@ -6,84 +6,88 @@ use NAV\OnlineInvoice\Entity\InvoiceItem;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class InvoiceItemNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
+class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
-    public function normalize($item, $format = null, array $context = [])
+    use SerializerAwareTrait;
+
+    public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
         
-        $buffer['lineNumber'] = $item->getItemNumber();
+        $buffer['lineNumber'] = $object->getItemNumber();
         
-        if ($item->getLineModificationReferenceNumber()) {
+        if ($object->getLineModificationReferenceNumber()) {
             $buffer['lineModificationReference'] = [
-                'lineNumberReference' => $item->getLineModificationReferenceNumber(),
-                'lineOperation' => $item->getLineModificationReferenceOperation(),
+                'lineNumberReference' => $object->getLineModificationReferenceNumber(),
+                'lineOperation' => $object->getLineModificationReferenceOperation(),
             ];
         }
     
-        if ($item->getReferencesToOtherLines()) {
-            foreach ($item->getReferencesToOtherLines() as $reference) {
+        if ($object->getReferencesToOtherLines()) {
+            foreach ($object->getReferencesToOtherLines() as $reference) {
                 $buffer['referenceToOtherLines']['referenceToOtherLine'] = $reference;
             }
         }
         
-        if ($item->getAdvanceIndicator()) {
+        if ($object->getAdvanceIndicator()) {
             $buffer['advanceData'] = [
-                'advanceIndicator' => $item->getAdvanceIndicator(),
+                'advanceIndicator' => $object->getAdvanceIndicator(),
             ];
         }
         
-        foreach ($item->getProductCodes() as $code) {
+        foreach ($object->getProductCodes() as $code) {
             $buffer['productCodes'][] = $this->serializer->normalize($code, $format, $context);
         }
         
-        $buffer['lineExpressionIndicator'] = $item->getLineExpressionIndicator() === true ? 'true' : 'false';
+        $buffer['lineExpressionIndicator'] = $object->getLineExpressionIndicator() === true ? 'true' : 'false';
     
-        if ($item->getLineDescription()) {
-            $buffer['lineDescription'] = $item->getLineDescription();
+        if ($object->getLineDescription()) {
+            $buffer['lineDescription'] = $object->getLineDescription();
         }
         
-        if ($item->getQuantity()) {
-            $buffer['quantity'] = $item->getQuantity();
+        if ($object->getQuantity()) {
+            $buffer['quantity'] = $object->getQuantity();
         }
 
-        if ($item->getUnitOfMeasure()) {
-            $buffer['unitOfMeasure'] = $item->getUnitOfMeasure();
+        if ($object->getUnitOfMeasure()) {
+            $buffer['unitOfMeasure'] = $object->getUnitOfMeasure();
         }
-        if ($item->getUnitOfMeasureOwn()) {
-            $buffer['unitOfMeasureOwn'] = $item->getUnitOfMeasureOwn();
+        if ($object->getUnitOfMeasureOwn()) {
+            $buffer['unitOfMeasureOwn'] = $object->getUnitOfMeasureOwn();
         }
 
-        if ($item->getUnitPrice()) {
-            $buffer['unitPrice'] = $item->getUnitPrice();
+        if ($object->getUnitPrice()) {
+            $buffer['unitPrice'] = $object->getUnitPrice();
         }
 
         $buffer['lineAmountsNormal']['lineNetAmountData'] = [
-            'lineNetAmount' => $item->getNetAmount(),
-            'lineNetAmountHUF' => $item->getNetAmountHUF(),
+            'lineNetAmount' => $object->getNetAmount(),
+            'lineNetAmountHUF' => $object->getNetAmountHUF(),
         ];
         
-        $buffer['lineAmountsNormal']['lineVatRate'] = VatRateSummaryNormalizer::normalizeVatRate($item, $format, $context);
+        $buffer['lineAmountsNormal']['lineVatRate'] = VatRateSummaryNormalizer::normalizeVatRate($object, $format, $context);
         $buffer['lineAmountsNormal']['lineVatData'] = [
-            'lineVatAmount' => $item->getVatAmount(),
-            'lineVatAmountHUF' => $item->getVatAmountHUF(),
+            'lineVatAmount' => $object->getVatAmount(),
+            'lineVatAmountHUF' => $object->getVatAmountHUF(),
         ];
 
-        if ($item->getGrossAmountNormal()) {
+        if ($object->getGrossAmountNormal()) {
             $buffer['lineAmountsNormal']['lineGrossAmountData'] = [
-                'lineGrossAmountNormal' => $item->getGrossAmountNormal(),
-                'lineGrossAmountNormalHUF' => $item->getGrossAmountNormalHUF(),
+                'lineGrossAmountNormal' => $object->getGrossAmountNormal(),
+                'lineGrossAmountNormalHUF' => $object->getGrossAmountNormalHUF(),
             ];
         }
 
-        if ($item->getIntermediatedService() !== null) {
-            $buffer['intermediatedService'] = $item->getIntermediatedService();
+        if ($object->getIntermediatedService() !== null) {
+            $buffer['intermediatedService'] = $object->getIntermediatedService();
         }
     
-        foreach ($item->getAdditionalData() as $key => $data) {
+        foreach ($object->getAdditionalData() as $key => $data) {
             $buffer['additionalLineData'][] = [
                 'dataName' => $key,
                 'dataDescription' => $data['description'],
@@ -94,13 +98,8 @@ class InvoiceItemNormalizer implements ContextAwareNormalizerInterface, Serializ
         return $buffer;
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof InvoiceItem;
-    }
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }

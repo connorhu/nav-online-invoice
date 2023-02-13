@@ -4,8 +4,9 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class TokenExchangeRequestNormalizer implements ContextAwareNormalizerInterface
+class TokenExchangeRequestNormalizer implements NormalizerInterface
 {
     private RequestNormalizer $requestNormalizer;
     
@@ -16,11 +17,10 @@ class TokenExchangeRequestNormalizer implements ContextAwareNormalizerInterface
     
     public function normalize($request, $format = null, array $context = [])
     {
-        $data = $this->requestNormalizer->normalize($request, $format);
-        return $data;
+        return $this->requestNormalizer->normalize($request, $format);
     }
     
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof TokenExchangeRequest;
     }

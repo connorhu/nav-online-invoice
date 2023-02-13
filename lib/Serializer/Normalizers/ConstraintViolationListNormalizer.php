@@ -2,19 +2,16 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Validator\ConstraintViolationList;
 
-class ConstraintViolationListNormalizer implements ContextAwareNormalizerInterface
+class ConstraintViolationListNormalizer implements NormalizerInterface
 {
-    private $normalizer;
-
-    public function __construct(ConstraintViolationNormalizer $normalizer)
+    public function __construct(private readonly ConstraintViolationNormalizer $normalizer)
     {
-        $this->normalizer = $normalizer;
     }
 
-    public function normalize($violationList, $format = null, array $context = [])
+    public function normalize($violationList, $format = null, array $context = []): array
     {
         $buffer = [];
 
@@ -27,7 +24,7 @@ class ConstraintViolationListNormalizer implements ContextAwareNormalizerInterfa
         ];
     }
 
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof ConstraintViolationList;
     }

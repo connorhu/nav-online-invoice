@@ -15,19 +15,13 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
 {
     use SerializerAwareTrait;
 
-    private CryptoToolsProviderInterface $cryptoTools;
-
-    private RequestNormalizer $requestNormalizer;
-
     /**
      * @var InvoiceNormalizer
      */
     private InvoiceNormalizer $invoiceNormalizer;
 
-    public function __construct(RequestNormalizer $requestNormalizer, CryptoToolsProviderInterface $cryptoTools)
+    public function __construct(private readonly RequestNormalizer $requestNormalizer, private readonly CryptoToolsProviderInterface $cryptoTools)
     {
-        $this->requestNormalizer = $requestNormalizer;
-        $this->cryptoTools = $cryptoTools;
     }
 
     protected function normalizeV20($object, $format = null, array $context = []): array

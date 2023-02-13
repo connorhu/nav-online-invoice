@@ -7,11 +7,8 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class QueryTaxpayerRequestNormalizer implements ContextAwareNormalizerInterface
 {
-    private RequestNormalizer $requestNormalizer;
-    
-    public function __construct(RequestNormalizer $requestNormalizer)
+    public function __construct(private readonly RequestNormalizer $requestNormalizer)
     {
-        $this->requestNormalizer = $requestNormalizer;
     }
     
     public function normalize($object, string $format = null, array $context = [])
@@ -25,7 +22,7 @@ class QueryTaxpayerRequestNormalizer implements ContextAwareNormalizerInterface
         ]);
     }
     
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof QueryTaxpayerRequest;
     }

@@ -8,16 +8,14 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class QueryInvoiceDataRequestNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
+class QueryInvoiceDataRequestNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
-    private RequestNormalizer $requestNormalizer;
-    
-    public function __construct(RequestNormalizer $requestNormalizer)
+    public function __construct(private readonly RequestNormalizer $requestNormalizer)
     {
-        $this->requestNormalizer = $requestNormalizer;
     }
 
     /**
@@ -37,7 +35,7 @@ class QueryInvoiceDataRequestNormalizer implements ContextAwareNormalizerInterfa
         ]);
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof QueryInvoiceDataRequest;
     }

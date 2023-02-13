@@ -7,11 +7,8 @@ use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 
 class QueryTransactionStatusRequestNormalizer implements ContextAwareNormalizerInterface
 {
-    private RequestNormalizer $requestNormalizer;
-
-    public function __construct(RequestNormalizer $requestNormalizer)
+    public function __construct(private readonly RequestNormalizer $requestNormalizer)
     {
-        $this->requestNormalizer = $requestNormalizer;
     }
 
     public function normalize($object, $format = null, array $context = []): array

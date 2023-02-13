@@ -10,11 +10,8 @@ class TokenExchangeResponseDenormalizer implements ContextAwareDenormalizerInter
 {
     use ResponseDenormalizerTrait;
 
-    private CryptoToolsProviderInterface $cryptoTools;
-    
-    public function __construct(CryptoToolsProviderInterface $cryptoTools)
+    public function __construct(private readonly CryptoToolsProviderInterface $cryptoTools)
     {
-        $this->cryptoTools = $cryptoTools;
     }
 
     public function denormalize($data, string $type, ?string $format = null, array $context = [])

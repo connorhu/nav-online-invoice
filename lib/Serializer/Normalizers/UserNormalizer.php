@@ -6,14 +6,12 @@ use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class UserNormalizer implements ContextAwareNormalizerInterface
+class UserNormalizer implements NormalizerInterface
 {
-    private $cryptoTools;
-
-    public function __construct(CryptoToolsProviderInterface $cryptoTools)
+    public function __construct(private readonly CryptoToolsProviderInterface $cryptoTools)
     {
-        $this->cryptoTools = $cryptoTools;
     }
 
     public function normalize($user, $format = null, array $context = [])
@@ -29,9 +27,11 @@ class UserNormalizer implements ContextAwareNormalizerInterface
             ];
         }
 
+        $request = $user->getRequest();
+
         return [
             'login' => $user->getLogin(),
-            'passwordHash' => $this->cryptoTools->getUserPasswordHash($request),
+            'passwordHash' => $this->cryptoTools->signRequest($request),
             'taxNumber' => $user->getTaxNumber(),
         ];
     }

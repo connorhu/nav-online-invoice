@@ -8,11 +8,12 @@ use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
+class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
 
@@ -258,7 +259,7 @@ class InvoiceNormalizer implements ContextAwareNormalizerInterface, SerializerAw
         return $buffer;
     }
 
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof Invoice;
     }

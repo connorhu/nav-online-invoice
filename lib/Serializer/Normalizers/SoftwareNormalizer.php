@@ -29,7 +29,7 @@ class SoftwareNormalizer implements ContextAwareNormalizerInterface
         return $buffer;
     }
 
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof Software;
     }

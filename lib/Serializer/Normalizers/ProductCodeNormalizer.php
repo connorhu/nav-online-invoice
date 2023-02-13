@@ -4,11 +4,15 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\ProductCode;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
+use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class ProductCodeNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
+class ProductCodeNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
+    use SerializerAwareTrait;
+
     public function normalize($code, string $format = null, array $context = [])
     {
         $buffer = [];
@@ -23,13 +27,8 @@ class ProductCodeNormalizer implements ContextAwareNormalizerInterface, Serializ
         return ['productCode' => $buffer];
     }
     
-    public function supportsNormalization($data, string $format = null, array $context = [])
+    public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof ProductCode;
-    }
-    
-    public function setSerializer(SerializerInterface $serializer)
-    {
-        $this->serializer = $serializer;
     }
 }
