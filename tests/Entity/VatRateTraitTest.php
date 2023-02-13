@@ -1,9 +1,9 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Entity;
+namespace NAV\OnlineInvoice\Tests\Entity;
 
 use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
-use NAV\Tests\OnlineInvoice\Fixtures\VatRateTraitImplementation;
+use NAV\OnlineInvoice\Tests\Fixtures\VatRateTraitImplementation;
 use PHPUnit\Framework\TestCase;
 
 class VatRateTraitTest extends TestCase

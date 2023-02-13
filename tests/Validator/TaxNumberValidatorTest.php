@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Validator;
+namespace NAV\OnlineInvoice\Tests\Validator;
 
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumber;
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumberValidator;

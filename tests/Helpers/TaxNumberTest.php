@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Helpers;
+namespace NAV\OnlineInvoice\Tests\Helpers;
 
 use NAV\OnlineInvoice\Helpers\TaxNumber;
 use PHPUnit\Framework\TestCase;

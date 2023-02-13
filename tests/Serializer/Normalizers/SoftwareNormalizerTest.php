@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Serializer\Normalizers;
+namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request\Software;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;

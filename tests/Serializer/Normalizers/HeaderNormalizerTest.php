@@ -1,11 +1,11 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Serializer\Normalizers;
+namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
-use NAV\Tests\OnlineInvoice\Fixtures\HeaderAwareRequest;
+use NAV\OnlineInvoice\Tests\Fixtures\HeaderAwareRequest;
 use PHPUnit\Framework\TestCase;
 
 class HeaderNormalizerTest extends TestCase

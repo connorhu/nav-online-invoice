@@ -1,0 +1,38 @@
+{
+  "@xmlns:ns4": "http://schemas.nav.gov.hu/OSA/3.0/data",
+  "@xmlns:ns3": "http://schemas.nav.gov.hu/OSA/3.0/base",
+  "@xmlns:ns2": "http://schemas.nav.gov.hu/OSA/3.0/api",
+  "@xmlns": "http://schemas.nav.gov.hu/NTCA/1.0/common",
+  "header": {
+    "requestId": "REQUESTID",
+    "timestamp": "2023-01-01T10:10:01.000Z",
+    "requestVersion": "3.0",
+    "headerVersion": "1.0"
+  },
+  "result": {
+    "funcCode": "OK"
+  },
+  "ns2:software": {
+    "ns2:softwareId": "HUSOFTWARE_ID",
+    "ns2:softwareName": "Very special invoice software",
+    "ns2:softwareOperation": "ONLINE_SERVICE",
+    "ns2:softwareMainVersion": "1.0",
+    "ns2:softwareDevName": "Software Dev Corp Inc.",
+    "ns2:softwareDevContact": "szamlazas@puzzlepix.hu",
+    "ns2:softwareDevCountryCode": "HU",
+    "ns2:softwareDevTaxNumber": "12345678-1-99"
+  },
+  "ns2:invoiceDataResult": {
+    "ns2:invoiceData": "aW52b2ljZWRhdGE=",
+    "ns2:auditData": {
+      "ns2:insdate": "2022-12-01T10:00:05Z",
+      "ns2:insCusUser": "userid",
+      "ns2:source": "MGM",
+      "ns2:transactionId": "TRANSACTIONID",
+      "ns2:index": "1",
+      "ns2:batchIndex": "99",
+      "ns2:originalRequestVersion": "3.0"
+    },
+    "ns2:compressedContentIndicator": "false"
+  }
+}

@@ -1,9 +1,9 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Http\Request;
+namespace NAV\OnlineInvoice\Tests\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request\User;
-use NAV\Tests\OnlineInvoice\Fixtures\UserAwareTraitImplementation;
+use NAV\OnlineInvoice\Tests\Fixtures\UserAwareTraitImplementation;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Length;

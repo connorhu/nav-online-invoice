@@ -38,7 +38,7 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
         ]);
 
         $software = $this->denormalizer->denormalize($data[$apiKeyPrefix.'software'], Software::class, $format, [
-            HeaderNormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
+            SoftwareNormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
         ]);
 
         $invoiceDataResult = $data[$apiKeyPrefix.'invoiceDataResult'];
@@ -51,7 +51,7 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
         $object->setHeader($header);
         $object->setSoftware($software);
         $object->setAudit($audit);
-        $object->setCompressedContentIndicator((bool) $invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator']);
+        $object->setCompressedContentIndicator($invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator'] === 'true');
 
         $stringInvoiceContent = base64_decode($invoiceDataResult[$apiKeyPrefix.'invoiceData']);
         if ($object->getCompressedContentIndicator()) {

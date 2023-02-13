@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\Tests\OnlineInvoice\Providers;
+namespace NAV\OnlineInvoice\Tests\Providers;
 
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
 use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;

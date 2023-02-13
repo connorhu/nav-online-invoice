@@ -39,7 +39,7 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
             throw new \RuntimeException('Context key missing: '. self::XMLNS_CONTEXT_KEY);
         }
 
-        $keyPrefix = $context[self::XMLNS_CONTEXT_KEY].':';
+        $keyPrefix = empty($context[self::XMLNS_CONTEXT_KEY]) ? '' : ($context[self::XMLNS_CONTEXT_KEY].':');
 
         $object = new Header();
         $object->setHeaderVersion($data[$keyPrefix.'headerVersion']);

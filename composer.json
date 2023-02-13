@@ -5,8 +5,12 @@
     "license": "MIT",
     "autoload": {
         "psr-4": {
-            "NAV\\OnlineInvoice\\": "lib/",
-            "NAV\\Tests\\OnlineInvoice\\": "tests/"
+            "NAV\\OnlineInvoice\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "NAV\\OnlineInvoice\\Tests\\": "tests/"
         }
     },
     "require": {

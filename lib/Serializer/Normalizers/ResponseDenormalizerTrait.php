@@ -22,7 +22,7 @@ trait ResponseDenormalizerTrait
     protected static function getNamespaceKeyPrefix(string $url, array $data): string
     {
         $namespace = self::getNamespaceWithUrl($url, $data);
-        
-        return $namespace === null ? '' : ($namespace.':');
+
+        return empty($namespace) ? '' : ($namespace.':');
     }
 }
