@@ -2,20 +2,23 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Entity\Address;
 use NAV\OnlineInvoice\Entity\Invoice;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
+class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface, DenormalizerInterface
 {
     use SerializerAwareTrait;
+    use ResponseDenormalizerTrait;
 
     protected function normalizeSupplierInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
@@ -262,5 +265,76 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof Invoice;
+    }
+
+    protected function denormalizeAddress(array $data, string $keyPrefix): Address
+    {
+        if (isset($data[$keyPrefix.'simpleAddress'])) {
+            $addressInfo = $data[$keyPrefix.'simpleAddress'];
+
+            $address = new Address();
+            $address->setCountryCode($addressInfo[$keyPrefix.'countryCode']);
+            $address->setPostalCode($addressInfo[$keyPrefix.'postalCode']);
+            $address->setCity($addressInfo[$keyPrefix.'city']);
+            $address->setAdditionalAddressDetail($addressInfo[$keyPrefix.'additionalAddressDetail']);
+
+            return $address;
+        }
+
+        $addressInfo = $data[$keyPrefix.'detailedAddress'];
+
+        $address = new Address();
+        $address->setCountryCode($addressInfo[$keyPrefix.'countryCode']);
+        $address->setRegion($addressInfo[$keyPrefix.'region']);
+        $address->setPostalCode($addressInfo[$keyPrefix.'postalCode']);
+        $address->setCity($addressInfo[$keyPrefix.'city']);
+        $address->setStreetName($addressInfo[$keyPrefix.'streetName']);
+        $address->setPublicPlaceCategory($addressInfo[$keyPrefix.'publicPlaceCategory']);
+        $address->setNumber($addressInfo[$keyPrefix.'number']);
+        $address->setFloor($addressInfo[$keyPrefix.'floor']);
+        $address->setDoor($addressInfo[$keyPrefix.'door']);
+
+        return $address;
+    }
+
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    {
+        $object = new Invoice();
+
+        $baseKeyPrefix = self::getNamespaceKeyPrefix(ResponseDenormalizerInterface::BASE_SCHEMAS_URL_V30, $data);
+        $dataKeyPrefix = self::getNamespaceKeyPrefix(ResponseDenormalizerInterface::DATA_SCHEMAS_URL_V30, $data);
+
+        $object->setInvoiceNumber($data[$dataKeyPrefix.'invoiceNumber']);
+        $object->setInvoiceIssueDate(new \DateTime($data[$dataKeyPrefix.'invoiceIssueDate']));
+        $object->setCompletenessIndicator($data[$dataKeyPrefix.'completenessIndicator'] === 'true');
+
+        $invoiceHead = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceHead'];
+        $supplierInfo = $invoiceHead[$dataKeyPrefix.'supplierInfo'];
+        $supplierTaxNumberInfo = $supplierInfo[$dataKeyPrefix.'supplierTaxNumber'];
+
+        $object->setSupplierName($supplierInfo[$dataKeyPrefix.'supplierName']);
+        $object->setSupplierCommunityVatNumber($supplierInfo[$dataKeyPrefix.'communityVatNumber']);
+        $object->setSupplierAddress($this->denormalizeAddress($supplierInfo[$dataKeyPrefix.'supplierAddress'], $baseKeyPrefix));
+
+        $taxNumber = $supplierTaxNumberInfo[$baseKeyPrefix.'taxpayerId'].'-'.$supplierTaxNumberInfo[$baseKeyPrefix.'vatCode'].'-'.$supplierTaxNumberInfo[$baseKeyPrefix.'countyCode'];
+        $object->setSupplierTaxNumber($taxNumber);
+
+        $object->setSupplierBankAccountNumber($supplierInfo[$dataKeyPrefix.'supplierBankAccountNumber']);
+
+        $customerInfo = $invoiceHead[$dataKeyPrefix.'customerInfo'];
+        $object->setCustomerVatStatus(Invoice::getCustomerVatStatusWithString($customerInfo[$dataKeyPrefix.'customerVatStatus']));
+        $object->setCustomerName($customerInfo[$dataKeyPrefix.'customerName']);
+        $object->setCustomerAddress($this->denormalizeAddress($customerInfo[$dataKeyPrefix.'customerAddress'], $baseKeyPrefix));
+
+        dump($invoiceHead);
+
+        exit;
+
+        return new Invoice();
+    }
+
+    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    {
+        return Invoice::class === $type;
     }
 }

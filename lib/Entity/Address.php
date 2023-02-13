@@ -2,10 +2,11 @@
 
 namespace NAV\OnlineInvoice\Entity;
 
+use NAV\OnlineInvoice\Entity\Interfaces\AddressInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
-class Address
+class Address implements AddressInterface
 {
     /**
      * ISO 3166

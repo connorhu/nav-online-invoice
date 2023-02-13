@@ -22,7 +22,7 @@ class Invoice implements InvoiceInterface
         $this->vatRateSummaries = new ArrayCollection();
         $this->items = new ArrayCollection();
     }
-    
+
     /**
      * Belföldi adószám, amely alatt a számlán szereplő termékértékesítés vagy szolgáltatás nyújtás történt. Lehet csoportazonosító szám is.
      * The domestic tax number under which the sale of the product or provision of service was carried out. It can also be a group ID.
@@ -50,11 +50,11 @@ class Invoice implements InvoiceInterface
      * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected $supplierTaxNumber;
-    
+
     /**
      * setter for supplierTaxNumber
      *
-     * @param string 
+     * @param string
      * @return self
      */
     public function setSupplierTaxNumber(string $value): InvoiceInterface
@@ -62,10 +62,10 @@ class Invoice implements InvoiceInterface
         $this->supplierTaxNumber = str_replace('-', '', $value);
         return $this;
     }
-    
+
     /**
      * getter for supplierTaxNumber
-     * 
+     *
      * @return string
      */
     public function getSupplierTaxNumber(): string
@@ -94,11 +94,11 @@ class Invoice implements InvoiceInterface
      * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected $supplierGroupMemberTaxNumber;
-    
+
     /**
      * setter for supplierGroupMemberTaxNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setSupplierGroupMemberTaxNumber(?string $value): InvoiceInterface
@@ -106,11 +106,11 @@ class Invoice implements InvoiceInterface
         $this->supplierGroupMemberTaxNumber = $value;
         return $this;
     }
-    
+
     /**
      * getter for supplierGroupMemberTaxNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getSupplierGroupMemberTaxNumber(): ?string
     {
@@ -132,11 +132,11 @@ class Invoice implements InvoiceInterface
                 <communityVatNumber>ZZ1111111111111</communityVatNumber>
      */
     protected ?string $supplierCommunityVatNumber = null;
-    
+
     /**
      * setter for supplierCommunityVatNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setSupplierCommunityVatNumber(?string $value): InvoiceInterface
@@ -144,11 +144,11 @@ class Invoice implements InvoiceInterface
         $this->supplierCommunityVatNumber = $value;
         return $this;
     }
-    
+
     /**
      * getter for supplierCommunityVatNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getSupplierCommunityVatNumber(): ?string
     {
@@ -177,11 +177,11 @@ class Invoice implements InvoiceInterface
      * @Assert\Length(max = 512)
      */
     protected string $supplierName = '';
-    
+
     /**
      * setter for supplierName
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setSupplierName(string $value): InvoiceInterface
@@ -189,17 +189,17 @@ class Invoice implements InvoiceInterface
         $this->supplierName = $value;
         return $this;
     }
-    
+
     /**
      * getter for supplierName
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getSupplierName(): string
     {
         return $this->supplierName;
     }
-    
+
     /*
      * Az eladó (szállító) címe
      *
@@ -233,7 +233,7 @@ class Invoice implements InvoiceInterface
      * @Assert\Valid(group="v2.0")
      */
     protected Address $supplierAddress;
-    
+
     /**
      * setter for supplierAddress
      *
@@ -245,17 +245,17 @@ class Invoice implements InvoiceInterface
         $this->supplierAddress = $supplierAddress;
         return $this;
     }
-    
+
     /**
      * getter for supplierAddress
-     * 
+     *
      * @return Address
      */
     public function getSupplierAddress(): Address
     {
         return $this->supplierAddress;
     }
-    
+
     /*
      * Az eladó (szállító) bankszámlaszáma
      *
@@ -277,11 +277,11 @@ class Invoice implements InvoiceInterface
     
      */
     protected ?string $supplierBankAccountNumber = null;
-    
+
     /**
      * setter for supplierBankAccountNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setSupplierBankAccountNumber(?string $supplierBankAccountNumber): InvoiceInterface
@@ -289,11 +289,11 @@ class Invoice implements InvoiceInterface
         $this->supplierBankAccountNumber = $supplierBankAccountNumber;
         return $this;
     }
-    
+
     /**
      * getter for supplierBankAccountNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getSupplierBankAccountNumber(): ?string
     {
@@ -324,6 +324,16 @@ class Invoice implements InvoiceInterface
         };
     }
 
+    public static function getCustomerVatStatusWithString(string $customerVatStatus): string
+    {
+        return match($customerVatStatus) {
+            'DOMESTIC' => self::CUSTOMER_VAT_STATUS_DOMESTIC,
+            'OTHER' => self::CUSTOMER_VAT_STATUS_OTHER,
+            'PRIVATE_PERSON' => self::CUSTOMER_VAT_STATUS_PRIVATE_PERSON,
+            default => throw new \Exception(sprintf('invalid customerVatStatus value: "%s"', $customerVatStatus)),
+        };
+    }
+
     /**
      * @param int $customerVatStatus
      */
@@ -333,7 +343,7 @@ class Invoice implements InvoiceInterface
 
         return $this;
     }
-    
+
     /*
      * Adószám, amely alatt a számlán szereplő termékbeszerzés vagy szolgáltatás igénybevétele történt. Lehet csoportazonosító szám is.
      *
@@ -356,11 +366,11 @@ class Invoice implements InvoiceInterface
      * @NavAssert\TaxNumber(groups={"v2.0"})
      */
     protected ?string $customerTaxNumber = null;
-    
+
     /**
      * setter for customerTaxNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCustomerTaxNumber(?string $customerTaxNumber): InvoiceInterface
@@ -368,7 +378,7 @@ class Invoice implements InvoiceInterface
         $this->customerTaxNumber = null !== $customerTaxNumber ? str_replace('-', '', $customerTaxNumber) : null;
         return $this;
     }
-    
+
     /**
      * getter for customerTaxNumber
      */
@@ -396,7 +406,7 @@ class Invoice implements InvoiceInterface
 
         return $this;
     }
-    
+
     /*
      * Csoport tag adószáma, ha a termékértékesítés vagy szolgáltatásnyújtás csoportazonosító szám alatt történt.
      *
@@ -418,11 +428,11 @@ class Invoice implements InvoiceInterface
      * @NavAssert\TaxNumber(groups="v2.0")
      */
     protected ?string $customerGroupMemberTaxNumber = null;
-    
+
     /**
      * setter for customerGroupMemberTaxNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCustomerGroupMemberTaxNumber(?string $customerGroupMemberTaxNumber): InvoiceInterface
@@ -430,17 +440,17 @@ class Invoice implements InvoiceInterface
         $this->customerGroupMemberTaxNumber = $customerGroupMemberTaxNumber;
         return $this;
     }
-    
+
     /**
      * getter for customerGroupMemberTaxNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getCustomerGroupMemberTaxNumber(): ?string
     {
         return $this->customerGroupMemberTaxNumber;
     }
-    
+
     /*
      * Közösségi adószám
      *
@@ -460,11 +470,11 @@ class Invoice implements InvoiceInterface
 				</groupMemberTaxNumber>
      */
     protected ?string $customerCommunityVatNumber = null;
-    
+
     /**
      * setter for customerCommunityVatNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCustomerCommunityVatNumber(?string $customerCommunityVatNumber): InvoiceInterface
@@ -472,17 +482,17 @@ class Invoice implements InvoiceInterface
         $this->customerCommunityVatNumber = $customerCommunityVatNumber;
         return $this;
     }
-    
+
     /**
      * getter for customerCommunityVatNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getCustomerCommunityVatNumber(): ?string
     {
         return $this->customerCommunityVatNumber;
     }
-    
+
     /*
      * A vevő neve
      *
@@ -500,7 +510,7 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups="v2.0")
      */
     protected ?string $customerName = null;
-    
+
     /**
      * setter for customerName
      *
@@ -512,17 +522,17 @@ class Invoice implements InvoiceInterface
         $this->customerName = $customerName;
         return $this;
     }
-    
+
     /**
      * getter for customerName
-     * 
+     *
      * @return string|null return value for
      */
     public function getCustomerName(): ?string
     {
         return $this->customerName;
     }
-    
+
     /*
      * A vevő címe
      *
@@ -550,11 +560,11 @@ class Invoice implements InvoiceInterface
      * @NavAssert\Valid(groups="v2.0")
      */
     protected ?AddressInterface $customerAddress = null;
-    
+
     /**
      * setter for customerAddress
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCustomerAddress(?AddressInterface $customerAddress): InvoiceInterface
@@ -563,17 +573,17 @@ class Invoice implements InvoiceInterface
 
         return $this;
     }
-    
+
     /**
      * getter for customerAddress
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getCustomerAddress(): ?AddressInterface
     {
         return $this->customerAddress;
     }
-    
+
     /*
      * Vevő bankszámlaszáma
      *
@@ -589,11 +599,11 @@ class Invoice implements InvoiceInterface
 				<customerBankAccountNumber>88888888-66666666-12345678</customerBankAccountNumber>
      */
     protected $customerBankAccountNumber;
-    
+
     /**
      * setter for customerBankAccountNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCustomerBankAccountNumber($value)
@@ -601,19 +611,19 @@ class Invoice implements InvoiceInterface
         $this->customerBankAccountNumber = $value;
         return $this;
     }
-    
+
     /**
      * getter for customerBankAccountNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getCustomerBankAccountNumber()
     {
         return $this->customerBankAccountNumber;
     }
-    
+
     // TODO: fiscalRepresentativeInfo nem implementált
-    
+
     /*
      * Számla vagy módosító okirat sorszáma - ÁFA tv. 169. § b) vagy 170. § (1) bek. b) pont
      *
@@ -631,11 +641,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups="v2.0")
      */
     protected $invoiceNumber;
-    
+
     /**
      * setter for invoiceNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceNumber($value)
@@ -646,8 +656,8 @@ class Invoice implements InvoiceInterface
 
     /**
      * getter for invoiceNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceNumber()
     {
@@ -675,7 +685,7 @@ class Invoice implements InvoiceInterface
     const INVOCE_CATEGORY_NORMAL = 'NORMAL';
     const INVOCE_CATEGORY_SIMPLIFIED = 'SIMPLIFIED';
     const INVOCE_CATEGORY_AGGREGATE = 'AGGREGATE';
-    
+
     /*
      * A számla típusa, módosító okirat esetén az eredeti számla típusa
      *
@@ -694,11 +704,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups="v2.0")
      */
     protected $invoiceCategory;
-    
+
     /**
      * setter for invoiceCategory
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceCategory($value)
@@ -706,17 +716,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceCategory = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceCategory
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceCategory()
     {
         return $this->invoiceCategory;
     }
-    
+
     /*
      * Számla kelte - ÁFA tv. 169. § a)
      *
@@ -732,11 +742,11 @@ class Invoice implements InvoiceInterface
 				<invoiceIssueDate>2019-05-15</invoiceIssueDate>
      */
     protected $invoiceIssueDate;
-    
+
     /**
      * setter for invoiceIssueDate
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceIssueDate(\DateTime $value = null)
@@ -744,11 +754,11 @@ class Invoice implements InvoiceInterface
         $this->invoiceIssueDate = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceIssueDate
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceIssueDate()
     {
@@ -770,11 +780,11 @@ class Invoice implements InvoiceInterface
 				<invoiceDeliveryDate>2019-05-10</invoiceDeliveryDate>
      */
     protected $invoiceDeliveryDate;
-    
+
     /**
      * setter for invoiceDeliveryDate
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceDeliveryDate(\DateTime $value = null)
@@ -782,17 +792,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceDeliveryDate = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceDeliveryDate
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceDeliveryDate()
     {
         return $this->invoiceDeliveryDate;
     }
-    
+
     /*
      * Amennyiben a számla egy időszakra vonatkozik, akkor az időszak első napja
      *
@@ -809,11 +819,11 @@ class Invoice implements InvoiceInterface
 				<invoiceDeliveryPeriodStart>2019-05-10</invoiceDeliveryPeriodStart>
      */
     protected $invoiceDeliveryPeriodStart;
-    
+
     /**
      * setter for invoiceDeliveryPeriodStart
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceDeliveryPeriodStart($value)
@@ -821,17 +831,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceDeliveryPeriodStart = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceDeliveryPeriodStart
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceDeliveryPeriodStart()
     {
         return $this->invoiceDeliveryPeriodStart;
     }
-    
+
     /*
      * Amennyiben a számla egy időszakra vonatkozik, akkor az időszak utolsó napja.
      *
@@ -847,11 +857,11 @@ class Invoice implements InvoiceInterface
 				<invoiceDeliveryPeriodEnd>2019-05-10</invoiceDeliveryPeriodEnd>
      */
     protected $invoiceDeliveryPeriodEnd;
-    
+
     /**
      * setter for invoiceDeliveryPeriodEnd
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceDeliveryPeriodEnd($value)
@@ -859,17 +869,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceDeliveryPeriodEnd = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceDeliveryPeriodEnd
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceDeliveryPeriodEnd()
     {
         return $this->invoiceDeliveryPeriodEnd;
     }
-    
+
     /*
      * Számviteli teljesítés dátuma. Időszak esetén az időszak utolsó napja.
      *
@@ -885,11 +895,11 @@ class Invoice implements InvoiceInterface
 				<invoiceAccountingDeliveryDate>2019-05-10</invoiceAccountingDeliveryDate>
      */
     protected $invoiceAccountingDeliveryDate;
-    
+
     /**
      * setter for invoiceAccountingDeliveryDate
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceAccountingDeliveryDate(\DateTime $value = null)
@@ -897,17 +907,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceAccountingDeliveryDate = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceAccountingDeliveryDate
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceAccountingDeliveryDate()
     {
         return $this->invoiceAccountingDeliveryDate;
     }
-    
+
     /*
      * A számla pénzneme az ISO 4217 szabvány szerint
      *
@@ -925,11 +935,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups="v2.0")
      */
     protected $currencyCode;
-    
+
     /**
      * setter for currencyCode
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCurrencyCode($value)
@@ -937,17 +947,17 @@ class Invoice implements InvoiceInterface
         $this->currencyCode = $value;
         return $this;
     }
-    
+
     /**
      * getter for currencyCode
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getCurrencyCode()
     {
         return $this->currencyCode;
     }
-    
+
     /*
      * HUF-tól különböző pénznem esetén az alkalmazott árfolyam: egy egység értéke HUF-ban.
      * Az árfolyam típus a különböző árfolyamok leírására szolgál. Legfeljebb 14 számjegyet tartalmazhat, ebből legfeljebb 6 lehet a tizedesponttól jobbra. Értéke csak pozitív lehet. 
@@ -964,11 +974,11 @@ class Invoice implements InvoiceInterface
 				<exchangeRate>1521.154</exchangeRate>
      */
     protected $exchangeRate;
-    
+
     /**
      * setter for exchangeRate
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setExchangeRate($value)
@@ -976,17 +986,17 @@ class Invoice implements InvoiceInterface
         $this->exchangeRate = $value;
         return $this;
     }
-    
+
     /**
      * getter for exchangeRate
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getExchangeRate()
     {
         return $this->exchangeRate;
     }
-    
+
     /*
      * Önszámlázás jelölése (önszámlázás esetén true)
      *
@@ -1002,11 +1012,11 @@ class Invoice implements InvoiceInterface
 				<selfBillingIndicator>false</selfBillingIndicator>
      */
     protected $selfBillingIndicator;
-    
+
     /**
      * setter for selfBillingIndicator
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setSelfBillingIndicator($value)
@@ -1014,23 +1024,23 @@ class Invoice implements InvoiceInterface
         $this->selfBillingIndicator = $value;
         return $this;
     }
-    
+
     /**
      * getter for selfBillingIndicator
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getSelfBillingIndicator()
     {
         return $this->selfBillingIndicator;
     }
-    
+
     const PATMENT_METHOD_TRANSFER = 'TRANSFER';
     const PATMENT_METHOD_CASH = 'CASH';
     const PATMENT_METHOD_CARD = 'CARD';
     const PATMENT_METHOD_VOUCHER = 'VOUCHER';
     const PATMENT_METHOD_OTHER = 'OTHER';
-    
+
     /*
      * Fizetés módja
      *
@@ -1047,11 +1057,11 @@ class Invoice implements InvoiceInterface
 				<paymentMethod>TRANSFER</paymentMethod>
      */
     protected $paymentMethod;
-    
+
     /**
      * setter for paymentMethod
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setPaymentMethod($value)
@@ -1059,17 +1069,17 @@ class Invoice implements InvoiceInterface
         $this->paymentMethod = $value;
         return $this;
     }
-    
+
     /**
      * getter for paymentMethod
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getPaymentMethod()
     {
         return $this->paymentMethod;
     }
-    
+
     /*
      * Fizetési határidő
      *
@@ -1085,11 +1095,11 @@ class Invoice implements InvoiceInterface
 				<paymentDate>2019-05-30</paymentDate>
      */
     protected $paymentDate;
-    
+
     /**
      * setter for paymentDate
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setPaymentDate($value)
@@ -1097,17 +1107,17 @@ class Invoice implements InvoiceInterface
         $this->paymentDate = $value;
         return $this;
     }
-    
+
     /**
      * getter for paymentDate
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getPaymentDate()
     {
         return $this->paymentDate;
     }
-    
+
     /*
      * Pénzforgalmi elszámolás jelölése, ha az szerepel a számlán - ÁFA tv. 169. § h). 
      *
@@ -1123,11 +1133,11 @@ class Invoice implements InvoiceInterface
 				<cashAccountingIndicator>false</cashAccountingIndicator>
      */
     protected $cashAccountingIndicator;
-    
+
     /**
      * setter for cashAccountingIndicator
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setCashAccountingIndicator($value)
@@ -1135,22 +1145,22 @@ class Invoice implements InvoiceInterface
         $this->cashAccountingIndicator = $value;
         return $this;
     }
-    
+
     /**
      * getter for cashAccountingIndicator
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getCashAccountingIndicator()
     {
         return $this->cashAccountingIndicator;
     }
-    
+
     const INVOCE_APPEARANCE_PAPER = 'PAPER';
     const INVOCE_APPEARANCE_ELECTRONIC = 'ELECTRONIC';
     const INVOCE_APPEARANCE_EDI = 'EDI';
     const INVOCE_APPEARANCE_UNKNOWN = 'UNKNOWN';
-    
+
     /*
      * A számla vagy módosító okirat megjelenési formája.
      *
@@ -1169,11 +1179,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups="v2.0")
      */
     protected $invoiceAppearance;
-    
+
     /**
      * setter for invoiceAppearance
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceAppearance($value)
@@ -1181,17 +1191,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceAppearance = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceAppearance
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceAppearance()
     {
         return $this->invoiceAppearance;
     }
-    
+
     /*
      * Elektronikus számla vagy módosító okirat állomány SHA256 lenyomata.
      *
@@ -1207,11 +1217,11 @@ class Invoice implements InvoiceInterface
 				<electronicInvoiceHash>...</electronicInvoiceHash>
      */
     protected $electronicInvoiceHash;
-    
+
     /**
      * setter for electronicInvoiceHash
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setElectronicInvoiceHash($value)
@@ -1219,17 +1229,17 @@ class Invoice implements InvoiceInterface
         $this->electronicInvoiceHash = $value;
         return $this;
     }
-    
+
     /**
      * getter for electronicInvoiceHash
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getElectronicInvoiceHash()
     {
         return $this->electronicInvoiceHash;
     }
-    
+
     /*
      * A számlára vonatkozó egyéb adat
      *
@@ -1249,11 +1259,11 @@ class Invoice implements InvoiceInterface
 				</additionalInvoiceData>
      */
     protected $additionalInvoiceData = [];
-    
+
     /**
      * setter for additionalInvoiceData
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setAdditionalInvoiceData($value)
@@ -1261,17 +1271,17 @@ class Invoice implements InvoiceInterface
         $this->additionalInvoiceData = $value;
         return $this;
     }
-    
+
     /**
      * getter for additionalInvoiceData
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getAdditionalInvoiceData()
     {
         return $this->additionalInvoiceData;
     }
-    
+
     /*
      * 
      *
@@ -1318,17 +1328,17 @@ class Invoice implements InvoiceInterface
 
         return $this;
     }
-    
+
     /**
      * Getter for items
-     * 
+     *
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
     public function getItems(): Collection
     {
         return $this->items;
     }
-    
+
     /*
      * A számla bruttó összege a számla pénznemében
      *
@@ -1340,11 +1350,11 @@ class Invoice implements InvoiceInterface
 
      */
     protected $invoiceGrossAmount;
-    
+
     /**
      * setter for invoiceGrossAmount
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceGrossAmount($value)
@@ -1352,17 +1362,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceGrossAmount = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceGrossAmount
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceGrossAmount()
     {
         return $this->invoiceGrossAmount;
     }
-    
+
     /*
      * A számla bruttó összege forintban
      *
@@ -1374,11 +1384,11 @@ class Invoice implements InvoiceInterface
 
      */
     protected $invoiceGrossAmountHUF;
-    
+
     /**
      * setter for invoiceGrossAmount
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceGrossAmountHUF($value)
@@ -1386,17 +1396,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceGrossAmountHUF = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceGrossAmount
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceGrossAmountHUF()
     {
         return $this->invoiceGrossAmountHUF;
     }
-    
+
     /*
      * A számla nettó összege a számla pénznemében
      *
@@ -1410,11 +1420,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceNetAmount;
-    
+
     /**
      * setter for invoiceNetAmount
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceNetAmount($value)
@@ -1422,18 +1432,18 @@ class Invoice implements InvoiceInterface
         $this->invoiceNetAmount = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceNetAmount
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceNetAmount()
     {
         return $this->invoiceNetAmount;
     }
-    
-    
+
+
     /*
      * A számla nettó összege forintban
      *
@@ -1447,11 +1457,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceNetAmountHUF;
-    
+
     /**
      * setter for invoiceNetAmount
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceNetAmountHUF($value)
@@ -1459,17 +1469,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceNetAmountHUF = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceNetAmount
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceNetAmountHUF()
     {
         return $this->invoiceNetAmountHUF;
     }
-    
+
     /*
      * A számla ÁFA összege a számla pénznemében
      *
@@ -1483,11 +1493,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceVatAmount;
-    
+
     /**
      * setter for invoiceVatAmount
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceVatAmount($value)
@@ -1495,17 +1505,17 @@ class Invoice implements InvoiceInterface
         $this->invoiceVatAmount = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceVatAmount
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceVatAmount()
     {
         return $this->invoiceVatAmount;
     }
-    
+
     /*
      * A számla ÁFA összege forintban 
      *
@@ -1519,11 +1529,11 @@ class Invoice implements InvoiceInterface
      * @Assert\NotBlank(groups={"v2.0"})
      */
     protected $invoiceVatAmountHUF;
-    
+
     /**
      * setter for invoiceVatAmountHUF
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setInvoiceVatAmountHUF($value)
@@ -1531,22 +1541,22 @@ class Invoice implements InvoiceInterface
         $this->invoiceVatAmountHUF = $value;
         return $this;
     }
-    
+
     /**
      * getter for invoiceVatAmountHUF
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getInvoiceVatAmountHUF()
     {
         return $this->invoiceVatAmountHUF;
     }
-    
+
     /**
      * @Assert\NotBlank(groups={"v2.0"})
      */
     protected Collection $vatRateSummaries;
-    
+
     /**
      * Add vatRateSummary
      *
@@ -1558,7 +1568,7 @@ class Invoice implements InvoiceInterface
 
         return $this;
     }
-    
+
     /**
      * Remove vatRateSummary
      *
@@ -1570,23 +1580,23 @@ class Invoice implements InvoiceInterface
 
         return $this;
     }
-    
+
     /**
      * Getter for vatRateSummarys
-     * 
+     *
      * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
      */
     public function getVatRateSummaries(): Collection
     {
         return $this->vatRateSummaries;
     }
-    
+
     protected $originalInvoiceNumber;
-    
+
     /**
      * setter for originalInvoiceNumber
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setOriginalInvoiceNumber($value)
@@ -1594,23 +1604,23 @@ class Invoice implements InvoiceInterface
         $this->originalInvoiceNumber = $value;
         return $this;
     }
-    
+
     /**
      * getter for originalInvoiceNumber
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getOriginalInvoiceNumber()
     {
         return $this->originalInvoiceNumber;
     }
-    
+
     protected $modifyWithoutMaster = false;
-    
+
     /**
      * setter for modifyWithoutMaster
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setModifyWithoutMaster($value)
@@ -1618,11 +1628,11 @@ class Invoice implements InvoiceInterface
         $this->modifyWithoutMaster = $value;
         return $this;
     }
-    
+
     /**
      * getter for modifyWithoutMaster
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getModifyWithoutMaster()
     {
@@ -1630,11 +1640,11 @@ class Invoice implements InvoiceInterface
     }
 
     protected $modificationIndex;
-    
+
     /**
      * setter for modificationIndex
      *
-     * @param mixed 
+     * @param mixed
      * @return self
      */
     public function setModificationIndex($value)
@@ -1642,11 +1652,11 @@ class Invoice implements InvoiceInterface
         $this->modificationIndex = $value;
         return $this;
     }
-    
+
     /**
      * getter for modificationIndex
-     * 
-     * @return mixed return value for 
+     *
+     * @return mixed return value for
      */
     public function getModificationIndex()
     {
