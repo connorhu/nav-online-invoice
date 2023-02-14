@@ -2,20 +2,19 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Entity\InvoiceItem;
-use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
-use Symfony\Component\Serializer\SerializerInterface;
 
-class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInterface, DenormalizerInterface
+class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInterface, DenormalizerInterface, DenormalizerAwareInterface
 {
-    use SerializerAwareTrait;
+    use NormalizerAwareTrait;
+    use DenormalizerAwareTrait;
 
     public function normalize($object, $format = null, array $context = []): array
     {
@@ -72,7 +71,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInter
             'lineNetAmountHUF' => $object->getNetAmountHUF(),
         ];
 
-        $buffer['lineAmountsNormal']['lineVatRate'] = VatRateSummaryNormalizer::normalizeVatRate($object, $format, $context);
+        $buffer['lineAmountsNormal']['lineVatRate'] = $this->normalizer->normalize($object, $format, $context);
         $buffer['lineAmountsNormal']['lineVatData'] = [
             'lineVatAmount' => $object->getVatAmount(),
             'lineVatAmountHUF' => $object->getVatAmountHUF(),
@@ -116,7 +115,15 @@ class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInter
 
         $keyPrefix = !empty($context[self::XMLNS_CONTEXT_KEY]) ? ($context[self::XMLNS_CONTEXT_KEY].':') : '';
 
-        $object = new InvoiceItem();
+        $vatRateData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineVatRate'];
+
+        /** @var InvoiceItem $object */
+        $object = $this->denormalizer->denormalize($vatRateData, VatRateInterface::class, $format, [
+            VatRateNormalizer::XMLNS_CONTEXT_KEY => $context[self::XMLNS_CONTEXT_KEY],
+            VatRateNormalizer::ITEM_FACTORY_CONTEXT_KEY => function () {
+                return new InvoiceItem();
+            }
+        ]);
 
         $object->setLineExpressionIndicator($data[$keyPrefix.'lineExpressionIndicator']);
         $object->setLineDescription($data[$keyPrefix.'lineDescription']);
@@ -148,11 +155,6 @@ class InvoiceItemNormalizer implements NormalizerInterface, SerializerAwareInter
         foreach ($lineData as $additionalLineData) {
             $object->addAdditionalData($additionalLineData[$keyPrefix.'dataName'], $additionalLineData[$keyPrefix.'dataDescription'], $additionalLineData[$keyPrefix.'dataValue']);
         }
-
-        $vatRateData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineVatRate'];
-        VatRateSummaryNormalizer::denormalizeVatRate($object, $vatRateData, $format, [
-            VatRateSummaryNormalizer::XMLNS_CONTEXT_KEY => $context[self::XMLNS_CONTEXT_KEY],
-        ]);
 
         return $object;
     }

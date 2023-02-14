@@ -3,8 +3,10 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\Address;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
 use NAV\OnlineInvoice\Entity\Invoice;
 use NAV\OnlineInvoice\Entity\InvoiceItem;
+use NAV\OnlineInvoice\Entity\VatRateSummary;
 use NAV\OnlineInvoice\Http\Request;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizableInterface;
@@ -347,15 +349,22 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
             ]));
         }
 
-        exit;
-
         $summaryInfo = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceSummary'];
+        $vatRateSummaryInfo = $summaryInfo[$dataKeyPrefix.'summaryNormal'][$dataKeyPrefix.'summaryByVatRate'];
+        $summary = $this->denormalizer->denormalize($vatRateSummaryInfo, VatRateSummaryInterface::class, $format, [
+            VatRateSummaryNormalizer::XMLNS_CONTEXT_KEY => $dataKeyPrefix,
+        ]);
 
-        dump($summaryInfo);
+        $object->addVatRateSummary($summary); // TODO test with more vat rates
 
-        exit;
+        $object->setInvoiceGrossAmount($summaryInfo[$dataKeyPrefix.'summaryGrossData'][$dataKeyPrefix.'invoiceGrossAmount']);
+        $object->setInvoiceGrossAmountHUF($summaryInfo[$dataKeyPrefix.'summaryGrossData'][$dataKeyPrefix.'invoiceGrossAmountHUF']);
+        $object->setInvoiceNetAmount($summaryInfo[$dataKeyPrefix.'summaryNormal'][$dataKeyPrefix.'invoiceNetAmount']);
+        $object->setInvoiceNetAmountHUF($summaryInfo[$dataKeyPrefix.'summaryNormal'][$dataKeyPrefix.'invoiceNetAmountHUF']);
+        $object->setInvoiceVatAmount($summaryInfo[$dataKeyPrefix.'summaryNormal'][$dataKeyPrefix.'invoiceVatAmount']);
+        $object->setInvoiceVatAmountHUF($summaryInfo[$dataKeyPrefix.'summaryNormal'][$dataKeyPrefix.'invoiceVatAmountHUF']);
 
-        return new Invoice();
+        return $object;
     }
 
     public function supportsDenormalization(mixed $data, string $type, string $format = null)

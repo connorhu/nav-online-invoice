@@ -3,8 +3,9 @@
 namespace NAV\OnlineInvoice\Entity;
 
 use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
 
-class VatRateSummary implements VatRateInterface
+class VatRateSummary implements VatRateInterface, VatRateSummaryInterface
 {
     use VatRate;
     

@@ -3,82 +3,47 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
 use NAV\OnlineInvoice\Entity\InvoiceItem;
 use NAV\OnlineInvoice\Entity\VatRateSummary;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 use Symfony\Component\Serializer\SerializerInterface;
 
-class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
+class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInterface, NormalizerAwareInterface, DenormalizerAwareInterface
 {
-    use SerializerAwareTrait;
+    use NormalizerAwareTrait;
+    use DenormalizerAwareTrait;
 
-    /**
-     * @param VatRateInterface $item
-     * @param $format
-     * @param array $context
-     * @return array
-     */
-    public static function normalizeVatRate($item, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = [])
     {
         $buffer = [];
 
-        if ($item->getVatRatePercentage()) {
-            $buffer['vatPercentage'] = $item->getVatRatePercentage();
-        }
-
-        if ($item->getVatRateExemptionCase()) {
-            $buffer['vatExemption'] = [
-                'case' => $item->getVatRateExemptionCaseString(),
-                'reason' => $item->getVatRateExemptionReason(),
-            ];
-        }
-
-        if ($item->getVatRateOutOfScopeCase()) {
-            $buffer['vatOutOfScope'] = [
-                'case' => $item->getVatRateOutOfScopeCaseString(),
-                'reason' => $item->getVatRateOutOfScopeReason()
-            ];
-        }
-
-        if ($item->getVatRateDomesticReverseCharge()) {
-            $buffer['vatDomesticReverseCharge'] = $item->getVatRateDomesticReverseCharge();
-        }
-
-        if ($item->getVatRateMarginSchemeVat()) {
-            $buffer['marginSchemeVat'] = $item->getVatRateMarginSchemeVat();
-        }
-
-        if ($item->getVatRateMarginSchemeNoVat()) {
-            $buffer['marginSchemeNoVat'] = $item->getVatRateMarginSchemeNoVat();
-        }
-
-        return $buffer;
-    }
-
-    public function normalize($invoice, $format = null, array $context = [])
-    {
-        $buffer = [];
-
-        $buffer['vatRate'] = self::normalizeVatRate($invoice, $format, $context);
+        $buffer['vatRate'] = $this->normalizer->normalize($object, $format, $context);
 
         $buffer['vatRateNetData'] = [
-            'vatRateNetAmount' => $invoice->getNetAmount(),
-            'vatRateNetAmountHUF' => $invoice->getNetAmountHUF(),
+            'vatRateNetAmount' => $object->getNetAmount(),
+            'vatRateNetAmountHUF' => $object->getNetAmountHUF(),
         ];
 
         $buffer['vatRateVatData'] = [
-            'vatRateVatAmount' => $invoice->getVatAmount(),
-            'vatRateVatAmountHUF' => $invoice->getVatAmountHUF(),
+            'vatRateVatAmount' => $object->getVatAmount(),
+            'vatRateVatAmountHUF' => $object->getVatAmountHUF(),
         ];
 
 
         $buffer['vatRateGrossData'] = [
-            'vatRateGrossAmount' => $invoice->getGrossAmount(),
-            'vatRateGrossAmountHUF' => $invoice->getGrossAmountHUF(),
+            'vatRateGrossAmount' => $object->getGrossAmount(),
+            'vatRateGrossAmountHUF' => $object->getGrossAmountHUF(),
         ];
 
         return $buffer;
@@ -89,9 +54,9 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
         return $data instanceof VatRateSummary;
     }
 
-    public const XMLNS_CONTEXT_KEY = '_invoice_item_xmlns';
+    public const XMLNS_CONTEXT_KEY = '_vat_rate_xmlns';
 
-    public static function denormalizeVatRate(InvoiceItem $item, array $data, $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -100,30 +65,28 @@ class VatRateSummaryNormalizer implements ContextAwareNormalizerInterface, Seria
 
         $keyPrefix = !empty($context[self::XMLNS_CONTEXT_KEY]) ? ($context[self::XMLNS_CONTEXT_KEY].':') : '';
 
-        if (isset($data[$keyPrefix.'vatPercentage'])) {
-            $item->setVatRatePercentage($data[$keyPrefix.'vatPercentage']);
-        }
+        $vatRateData = $data[$keyPrefix.'vatRate'];
 
-        if (isset($data[$keyPrefix.'vatExemption'])) {
-            $item->setVatRateExemptionCaseWithString($data[$keyPrefix.'vatExemption'][$keyPrefix.'case']);
-            $item->setVatRateExemptionReason($data[$keyPrefix.'vatExemption'][$keyPrefix.'reason']);
-        }
+        /** @var InvoiceItem $object */
+        $object = $this->denormalizer->denormalize($vatRateData, VatRateInterface::class, $format, [
+            VatRateNormalizer::XMLNS_CONTEXT_KEY => $context[self::XMLNS_CONTEXT_KEY],
+            VatRateNormalizer::ITEM_FACTORY_CONTEXT_KEY => function () {
+                return new VatRateSummary();
+            }
+        ]);
 
-        if (isset($data[$keyPrefix.'vatOutOfScope'])) {
-            $item->setVatRateOutOfScopeCaseWithString($data[$keyPrefix.'vatOutOfScope'][$keyPrefix.'case']);
-            $item->setVatRateOutOfScopeReason($data[$keyPrefix.'vatOutOfScope'][$keyPrefix.'reason']);
-        }
+        $object->setNetAmount($data[$keyPrefix.'vatRateNetData'][$keyPrefix.'vatRateNetAmount']);
+        $object->setNetAmountHUF($data[$keyPrefix.'vatRateNetData'][$keyPrefix.'vatRateNetAmountHUF']);
+        $object->setVatAmount($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmount']);
+        $object->setVatAmountHUF($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmount']);
+        $object->setGrossAmountNormal($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmount']);
+        $object->setGrossAmountNormalHUF($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmountHUF']);
 
-        if (isset($data[$keyPrefix.'vatDomesticReverseCharge'])) {
-            $item->setVatRateDomesticReverseCharge($data[$keyPrefix.'vatDomesticReverseCharge']);
-        }
+        return $object;
+    }
 
-        if (isset($data[$keyPrefix.'marginSchemeVat'])) {
-            $item->setVatRateMarginSchemeVat($data[$keyPrefix.'marginSchemeVat']);
-        }
-
-        if (isset($data[$keyPrefix.'marginSchemeNoVat'])) {
-            $item->setVatRateMarginSchemeNoVat($data[$keyPrefix.'marginSchemeNoVat']);
-        }
+    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    {
+        return $type === VatRateSummaryInterface::class;
     }
 }
