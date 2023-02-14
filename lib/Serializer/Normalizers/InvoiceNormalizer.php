@@ -325,9 +325,19 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         $object->setSupplierBankAccountNumber($supplierInfo[$dataKeyPrefix.'supplierBankAccountNumber']);
 
         $customerInfo = $invoiceHead[$dataKeyPrefix.'customerInfo'];
+        $customerVatData = $customerInfo[$dataKeyPrefix.'customerVatData'];
+
         $object->setCustomerVatStatus(Invoice::getCustomerVatStatusWithString($customerInfo[$dataKeyPrefix.'customerVatStatus']));
         $object->setCustomerName($customerInfo[$dataKeyPrefix.'customerName']);
         $object->setCustomerAddress($this->denormalizeAddress($customerInfo[$dataKeyPrefix.'customerAddress'], $baseKeyPrefix));
+
+        if (isset($customerVatData[$dataKeyPrefix.'communityVatNumber'])) {
+            $object->setCustomerCommunityVatNumber($customerVatData[$dataKeyPrefix.'communityVatNumber']);
+        } elseif (isset($customerVatData[$dataKeyPrefix.'customerTaxNumber'])) {
+            $taxNumber = $customerVatData[$dataKeyPrefix.'customerTaxNumber'];
+            $taxNumber = $taxNumber[$baseKeyPrefix.'taxpayerId'].'-'.$taxNumber[$baseKeyPrefix.'vatCode'].'-'.$taxNumber[$baseKeyPrefix.'countyCode'];
+            $object->setCustomerTaxNumber($taxNumber);
+        }
 
         $invoiceDetail = $invoiceHead[$dataKeyPrefix.'invoiceDetail'];
 
@@ -343,7 +353,8 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         $invoiceLines = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceLines'];
 
-        foreach ($invoiceLines[$dataKeyPrefix.'line'] as $line) {
+        $lines = isset($invoiceLines[$dataKeyPrefix.'line'][0]) ? $invoiceLines[$dataKeyPrefix.'line'] : [$invoiceLines[$dataKeyPrefix.'line']];
+        foreach ($lines as $line) {
             $object->addItem($this->denormalizer->denormalize($line, InvoiceItem::class, $format, [
                 InvoiceItemNormalizer::XMLNS_CONTEXT_KEY => $dataKeyPrefix,
             ]));
