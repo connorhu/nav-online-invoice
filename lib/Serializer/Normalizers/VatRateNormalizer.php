@@ -3,17 +3,8 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
-use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
-use NAV\OnlineInvoice\Entity\InvoiceItem;
-use NAV\OnlineInvoice\Entity\VatRateSummary;
-use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
 {
