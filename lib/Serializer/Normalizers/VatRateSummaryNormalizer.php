@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
+use NAV\OnlineInvoice\Entity\Invoice;
 use NAV\OnlineInvoice\Entity\InvoiceItem;
 use NAV\OnlineInvoice\Entity\VatRateSummary;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
@@ -67,7 +68,7 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
 
         $vatRateData = $data[$keyPrefix.'vatRate'];
 
-        /** @var InvoiceItem $object */
+        /** @var VatRateSummary $object */
         $object = $this->denormalizer->denormalize($vatRateData, VatRateInterface::class, $format, [
             VatRateNormalizer::XMLNS_CONTEXT_KEY => $context[self::XMLNS_CONTEXT_KEY],
             VatRateNormalizer::ITEM_FACTORY_CONTEXT_KEY => function () {
@@ -79,8 +80,8 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
         $object->setNetAmountHUF($data[$keyPrefix.'vatRateNetData'][$keyPrefix.'vatRateNetAmountHUF']);
         $object->setVatAmount($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmount']);
         $object->setVatAmountHUF($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmount']);
-        $object->setGrossAmountNormal($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmount']);
-        $object->setGrossAmountNormalHUF($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmountHUF']);
+        $object->setGrossAmount($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmount']);
+        $object->setGrossAmountHUF($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmountHUF']);
 
         return $object;
     }

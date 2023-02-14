@@ -111,6 +111,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function supportsDenormalization(mixed $data, string $type, string $format = null)
     {
-        return in_array(VatRateInterface::class, class_implements($type));
+        return in_array(VatRateInterface::class, class_implements($type))
+            || VatRateInterface::class === $type;
     }
 }
