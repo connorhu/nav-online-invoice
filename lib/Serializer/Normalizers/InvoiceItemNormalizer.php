@@ -125,6 +125,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             }
         ]);
 
+        $object->setItemNumber($data[$keyPrefix.'lineNumber']);
         $object->setLineExpressionIndicator($data[$keyPrefix.'lineExpressionIndicator']);
         $object->setLineDescription($data[$keyPrefix.'lineDescription']);
         $object->setQuantity($data[$keyPrefix.'quantity']);
