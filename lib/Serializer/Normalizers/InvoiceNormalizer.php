@@ -38,7 +38,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
             $supplierInfo['groupMemberTaxNumber'] = [
                 'base:taxpayerId' => substr($groupMemberTaxNumber, 0, 8),
                 'base:vatCode' => substr($groupMemberTaxNumber, 8, 1),
-                'base:  countyCode' => substr($groupMemberTaxNumber, 9, 2),
+                'base:countyCode' => substr($groupMemberTaxNumber, 9, 2),
             ];
         }
 
@@ -91,7 +91,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
 
         if ($groupMemberTaxNumber = $invoice->getCustomerGroupMemberTaxNumber()) {
-            $customerInfo['groupMemberTaxNumber'] = [
+            $customerInfo['customerVatData']['customerTaxNumber']['groupMemberTaxNumber'] = [
                 'base:taxpayerId' => substr($groupMemberTaxNumber, 0, 8),
                 'base:vatCode' => substr($groupMemberTaxNumber, 8, 1),
                 'base:countyCode' => substr($groupMemberTaxNumber, 9, 2),
