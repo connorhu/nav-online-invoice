@@ -7,6 +7,7 @@ use Symfony\Component\Validator\Constraint;
 /**
  * @Annotation
  */
+#[\Attribute(\Attribute::TARGET_PROPERTY)]
 class TaxNumber extends Constraint
 {
     public const INVALID_LENGTH_ERROR = '87402298-53d4-11ea-8d77-2e728ce88125';
@@ -44,11 +45,41 @@ class TaxNumber extends Constraint
     public bool $vatCodeRequired = false;
     public bool $countyCodeRequired = false;
 
+    /**
+     * @var array<int, int>|null
+     * @readonly
+     * @psalm-var 1|2|3|4|5|null
+     * @Enum({1, 2, 3, 4, 5})
+     */
     public ?array $allowedVatCodes = null;
+
+    /**
+     * @var array<int, string>|null
+     * @readonly
+     * @psalm-var '02'|'22'|'03'|'23'|'04'|'24'|'05'|'25'|'06'|'26'|'07'|'27'|'08'|'28'|'09'|'29'|'10'|'30'|'11'|'31'|'12'|'32'|'13'|'33'|'14'|'34'|'15'|'35'|'16'|'36'|'17'|'37'|'18'|'38'|'19'|'39'|'20'|'40'|'41'|'42'|'43'|'44'|'51'|null
+     * @Enum({"02", "22", "03", "23", "04", "24", "05", "25", "06", "26", "07", "27", "08", "28", "09", "29", "10", "30", "11", "31", "12", "32", "13", "33", "14", "34", "15", "35", "16", "36", "17", "37", "18", "38", "19", "39", "20", "40", "41", "42", "43", "44", "51"})
+     */
     public ?array $allowedCountyCodes = null;
-    
+
+    public function __construct(
+        array $options = null,
+        bool $vatCodeRequired = false,
+        bool $countyCodeRequired = false,
+        ?array $allowedVatCodes = null,
+        ?array $allowedCountyCodes = null,
+        array $groups = null,
+        mixed $payload = null)
+    {
+        parent::__construct($options ?? [], $groups, $payload);
+
+        $this->vatCodeRequired = $vatCodeRequired;
+        $this->countyCodeRequired = $countyCodeRequired;
+        $this->allowedVatCodes = $allowedVatCodes;
+        $this->allowedCountyCodes = $allowedCountyCodes;
+    }
+
     public function validatedBy(): string
     {
-        return \get_class($this).'Validator';
+        return TaxNumberValidator::class;
     }
 }
