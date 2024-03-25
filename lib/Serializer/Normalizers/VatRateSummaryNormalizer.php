@@ -2,11 +2,11 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
-use NAV\OnlineInvoice\Entity\Interfaces\VatRateSummaryInterface;
-use NAV\OnlineInvoice\Entity\Invoice;
-use NAV\OnlineInvoice\Entity\InvoiceItem;
-use NAV\OnlineInvoice\Entity\VatRateSummary;
+use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface;
+use NAV\OnlineInvoice\Model\Invoice;
+use NAV\OnlineInvoice\Model\InvoiceItem;
+use NAV\OnlineInvoice\Model\VatRateSummary;
 use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;

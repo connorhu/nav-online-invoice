@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Entity\ProductCode;
+use NAV\OnlineInvoice\Model\ProductCode;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;

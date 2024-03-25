@@ -2,8 +2,8 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
-use NAV\OnlineInvoice\Entity\InvoiceItem;
+use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Model\InvoiceItem;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareTrait;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;

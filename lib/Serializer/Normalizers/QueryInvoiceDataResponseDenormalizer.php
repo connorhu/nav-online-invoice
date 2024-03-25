@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Model\Invoice;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Http\Request\Software;
 use NAV\OnlineInvoice\Http\Response\Audit;

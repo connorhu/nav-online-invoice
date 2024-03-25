@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Http\Response;
 
-use NAV\OnlineInvoice\Entity\Interfaces\InvoiceInterface;
+use NAV\OnlineInvoice\Model\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Http\Request\Software;
 use NAV\OnlineInvoice\Http\Response;
