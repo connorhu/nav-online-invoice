@@ -15,9 +15,9 @@
     },
     "require": {
         "php": "^8.1",
-        "symfony/intl": "^5.4 | ^6.4 | ^7.0",
+        "ext-zlib": "*",
         "doctrine/collections": "^1.7",
-        "ext-zlib": "*"
+        "symfony/intl": "^5.4 | ^6.4 | ^7.0"
     },
     "require-dev": {
         "symfony/serializer": "^5.4 | ^6.4 | ^7.0",
@@ -26,5 +26,8 @@
         "symfony/http-client": "^5.4 | ^6.4 | ^7.0",
         "symfony/phpunit-bridge": "^5.0",
         "symfony/config": "^5.4 | ^6.4 | ^7.0"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
