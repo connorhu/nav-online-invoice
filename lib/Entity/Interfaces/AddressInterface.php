@@ -1,22 +1,17 @@
 <?php
 
-namespace NAV\OnlineInvoice\Entity\Interfaces;
+namespace NAV\OnlineInvoice\Entity;
 
-interface AddressInterface
-{
-    public function setCountryCode(string $value);
+use NAV\OnlineInvoice\Model\Interfaces as Model;
 
-    public function getCountryCode();
+trigger_deprecation('connorhu/nav-online-invoice', '0.1', 'Use of classes and interfaces in the Entity namespace is deprecated. The `Model` namespace equivalent is recommended.');
 
-    public function setRegion(string $value);
-
-    public function getRegion();
-
-    public function setPostalCode(string $value);
-
-    public function getPostalCode();
-
-    public function setCity(string $value);
-
-    public function getCity();
+if (\false) {
+    /**
+     * @deprecated
+     * @see Model\AddressInterface
+     */
+    interface AddressInterface
+    {
+    }
 }

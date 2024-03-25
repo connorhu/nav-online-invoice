@@ -17,6 +17,7 @@
         "php": "^8.1",
         "ext-zlib": "*",
         "doctrine/collections": "^1.7",
+        "symfony/deprecation-contracts": "^3.4",
         "symfony/intl": "^5.4 | ^6.4 | ^7.0"
     },
     "require-dev": {

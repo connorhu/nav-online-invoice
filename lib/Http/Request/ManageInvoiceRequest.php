@@ -5,7 +5,7 @@ namespace NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\ExchangeTokenAwareRequest;
 use NAV\OnlineInvoice\Http\ExhangeTokenTrait;
 use NAV\OnlineInvoice\Http\Request;
-use NAV\OnlineInvoice\Entity\InvoiceOperation;
+use NAV\OnlineInvoice\Model\InvoiceOperation;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class ManageInvoiceRequest extends Request implements ExchangeTokenAwareRequest, SignableContentInterface, HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest

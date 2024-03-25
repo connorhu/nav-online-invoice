@@ -1,30 +1,17 @@
 <?php
 
-namespace NAV\OnlineInvoice\Entity\Interfaces;
+namespace NAV\OnlineInvoice\Entity;
 
-interface VatRateSummaryInterface
-{
-    public function setNetAmount($value);
+use NAV\OnlineInvoice\Model\Interfaces as Model;
 
-    public function getNetAmount();
+trigger_deprecation('connorhu/nav-online-invoice', '0.1', 'Use of classes and interfaces in the Entity namespace is deprecated. The `Model` namespace equivalent is recommended.');
 
-    public function setNetAmountHUF($value);
-
-    public function getNetAmountHUF();
-
-    public function setVatAmount($value);
-
-    public function getVatAmount();
-
-    public function setVatAmountHUF($value);
-
-    public function getVatAmountHUF();
-
-    public function setGrossAmount($value);
-
-    public function getGrossAmount();
-
-    public function setGrossAmountHUF($value);
-
-    public function getGrossAmountHUF();
+if (\false) {
+    /**
+     * @deprecated
+     * @see Model\VatRateSummaryInterface
+     */
+    interface VatRateSummaryInterface
+    {
+    }
 }

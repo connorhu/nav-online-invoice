@@ -15,7 +15,7 @@ use NAV\OnlineInvoice\Http\ExchangeTokenAwareRequest;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\TokenExchange;
 use NAV\OnlineInvoice\NavRestClient;
-use NAV\OnlineInvoice\Entity\InvoiceInterface;
+use NAV\OnlineInvoice\Model\InvoiceInterface;
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceStatusRequest;
 use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
 use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
