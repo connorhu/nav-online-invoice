@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Model;
 
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface;
+use NAV\OnlineInvoice\Model\Traits\VatRate;
 
 class VatRateSummary implements VatRateInterface, VatRateSummaryInterface
 {

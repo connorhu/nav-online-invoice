@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Model;
 
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Model\Traits\VatRate;
 
 class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 {
