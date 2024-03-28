@@ -1,6 +1,6 @@
 <?php
 
-namespace NAV\OnlineInvoice\Model;
+namespace NAV\OnlineInvoice\Model\Enums;
 
 enum VatRateAmountMismatchCase: int
 {
