@@ -24,10 +24,10 @@ interface VatRateInterface
      *
      * @see VatRateType/vatPercentage
      *
-     * @param float|null $vatPercentage
+     * @param float|null $vatRatePercentage
      * @return VatRateInterface
      */
-    public function setVatRatePercentage(?float $vatPercentage): VatRateInterface;
+    public function setVatRatePercentage(?float $vatRatePercentage): VatRateInterface;
 
     /**
      * VAT content for simplified invoice
@@ -45,10 +45,10 @@ interface VatRateInterface
      *
      * @see VatRateType/vatContent
      *
-     * @param float|null $vatContent
+     * @param float|null $vatRateContent
      * @return VatRateInterface
      */
-    public function setVatRateContent(?float $vatContent): VatRateInterface;
+    public function setVatRateContent(?float $vatRateContent): VatRateInterface;
 
     /**
      * Code indicating tax exemption
@@ -238,92 +238,6 @@ interface VatRateInterface
      * @return VatRateInterface
      */
     public function setVatRateNoVatCharge(?bool $vatRateMarginSchemeNoVat): VatRateInterface;
-
-    /** Deprecated stuffs */
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase::toString
-     */
-    public function getVatRateExemptionCaseString(): ?string;
-
-    /**
-     * @deprecated
-     * @see VatRateOutOfScopeCase
-     */
-    public const VAT_RATE_OUT_OF_SCOPE_CASE_ATK = 1;
-
-    /**
-     * @deprecated
-     * @see VatRateOutOfScopeCase
-     */
-    public const VAT_RATE_OUT_OF_SCOPE_CASE_EUFAD37 = 2;
-
-    /**
-     * @deprecated
-     * @see VatRateOutOfScopeCase
-     */
-    public const VAT_RATE_OUT_OF_SCOPE_CASE_EUFADE = 3;
-
-    /**
-     * @deprecated
-     * @see VatRateOutOfScopeCase
-     */
-    public const VAT_RATE_OUT_OF_SCOPE_CASE_EUE = 4;
-
-    /**
-     * @deprecated
-     * @see VatRateOutOfScopeCase
-     */
-    public const VAT_RATE_OUT_OF_SCOPE_CASE_HO = 5;
-
-    /**
-     * @deprecated
-     * @see VatRateOutOfScopeCase
-     */
-    public const VAT_RATE_OUT_OF_SCOPE_CASE_UNKNOWN = 6;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_AAM = 1;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_TAM = 2;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_KBAET = 3;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_KBAUK = 4;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_EAM = 5;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_NAM = 6;
-
-    /**
-     * @deprecated
-     * @see VatRateExemptionCase
-     */
-    public const VAT_RATE_EXEMPTION_CASE_UNKNOWN = 7;
 }
 
 class_alias(VatRateInterface::class, \NAV\OnlineInvoice\Model\Interfaces\VatRateInterface::class);
