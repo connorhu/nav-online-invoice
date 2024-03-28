@@ -1,7 +1,8 @@
 <?php
 
-namespace NAV\OnlineInvoice\Model;
+namespace NAV\OnlineInvoice\Model\Traits;
 
+use NAV\OnlineInvoice\Model\Enums\VatRateExemptionCase;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 
 trait VatRate
@@ -65,7 +66,7 @@ trait VatRate
 		<lineNetAmount>600000.00</lineNetAmount>
 		<vatExemption>...</vatExemption>
      */
-    protected ?int $vatRateExemptionCase = null;
+    protected int|VatRateExemptionCase|null $vatRateExemptionCase = null;
 
     /**
      * setter for vatRateExemption
@@ -73,7 +74,7 @@ trait VatRate
      * @param int|null $vatRateExemptionCase New Value for vatRateExemptionCase field
      * @return VatRateInterface
      */
-    public function setVatRateExemptionCase(?int $vatRateExemptionCase): VatRateInterface
+    public function setVatRateExemptionCase(int|VatRateExemptionCase|null $vatRateExemptionCase): VatRateInterface
     {
         $this->vatRateExemptionCase = $vatRateExemptionCase;
         return $this;
@@ -89,10 +90,25 @@ trait VatRate
         return $this->vatRateExemptionCase;
     }
 
+    /**
+     * @deprecated
+     * @see VatRateExemptionCase::toString
+     */
     public function getVatRateExemptionCaseString(): ?string
     {
+        if ($this->vatRateExemptionCase === null) {
+            return null;
+        }
+
+        if ($this->vatRateExemptionCase instanceof VatRateExemptionCase) {
+            return $this->vatRateExemptionCase->toString();
+        }
+
+        trigger_deprecation('connorhu/nav-online-invoice', '0.1', 'Use non enum value of vatRateExemptionCase is deprecated. Use "%s" enum instead.', [
+            VatRateExemptionCase::class,
+        ]);
+
         return match ($this->vatRateExemptionCase) {
-            null => null,
             VatRateInterface::VAT_RATE_EXEMPTION_CASE_AAM => 'AAM',
             VatRateInterface::VAT_RATE_EXEMPTION_CASE_TAM => 'TAM',
             VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAET => 'KBAET',
@@ -103,17 +119,13 @@ trait VatRate
         };
     }
 
+    /**
+     * @deprecated
+     * @see VatRateExemptionCase::initWithString
+     */
     public function setVatRateExemptionCaseWithString(string $case): self
     {
-        $this->vatRateExemptionCase = match ($case) {
-            'AAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_AAM,
-            'TAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_TAM,
-            'KBAET' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAET,
-            'KBAUK' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_KBAUK,
-            'EAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_EAM,
-            'NAM' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_NAM,
-            'UNKNOWN' => VatRateInterface::VAT_RATE_EXEMPTION_CASE_UNKNOWN,
-        };
+        $this->vatRateExemptionCase = VatRateExemptionCase::initWithString($case);
 
         return $this;
     }
