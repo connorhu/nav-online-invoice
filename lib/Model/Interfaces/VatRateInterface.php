@@ -2,9 +2,9 @@
 
 namespace NAV\OnlineInvoice\Model\Interfaces;
 
-use NAV\OnlineInvoice\Model\VatRateAmountMismatchCase;
-use NAV\OnlineInvoice\Model\VatRateExemptionCase;
-use NAV\OnlineInvoice\Model\VatRateOutOfScopeCase;
+use NAV\OnlineInvoice\Model\Enums\VatRateAmountMismatchCase;
+use NAV\OnlineInvoice\Model\Enums\VatRateExemptionCase;
+use NAV\OnlineInvoice\Model\Enums\VatRateOutOfScopeCase;
 
 interface VatRateInterface
 {
