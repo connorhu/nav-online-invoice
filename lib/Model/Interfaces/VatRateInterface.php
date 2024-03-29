@@ -6,6 +6,9 @@ use NAV\OnlineInvoice\Model\Enums\VatRateAmountMismatchCase;
 use NAV\OnlineInvoice\Model\Enums\VatRateExemptionCase;
 use NAV\OnlineInvoice\Model\Enums\VatRateOutOfScopeCase;
 
+/**
+ * @see VatRateType
+ */
 interface VatRateInterface
 {
     /**
