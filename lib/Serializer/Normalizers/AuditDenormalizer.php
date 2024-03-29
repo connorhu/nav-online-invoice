@@ -2,14 +2,8 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Model\Address;
 use NAV\OnlineInvoice\Http\Response\Audit;
-use NAV\OnlineInvoice\Serializer\Normalizers\SoftwareNormalizer;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
-use Symfony\Component\Serializer\SerializerAwareInterface;
-use Symfony\Component\Serializer\SerializerAwareTrait;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class AuditDenormalizer implements DenormalizerInterface
 {

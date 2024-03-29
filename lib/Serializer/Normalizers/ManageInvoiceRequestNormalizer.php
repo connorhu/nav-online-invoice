@@ -2,15 +2,12 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Http\ExchangeTokenAwareRequest;
 use NAV\OnlineInvoice\Http\Request;
-use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
 {

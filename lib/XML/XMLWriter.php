@@ -2,8 +2,6 @@
 
 namespace NAV\OnlineInvoice\XML;
 
-use \DateTime;
-use \DateTimeZone;
 use \DomDocument;
 
 class XMLWriter

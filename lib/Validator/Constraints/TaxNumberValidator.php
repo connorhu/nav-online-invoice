@@ -3,7 +3,6 @@
 namespace NAV\OnlineInvoice\Validator\Constraints;
 
 use NAV\OnlineInvoice\Helpers\TaxNumber as TaxNumberHelper;
-use NAV\OnlineInvoice\Validator\Exceptions\InvalidValue;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Exception\InvalidOptionsException;

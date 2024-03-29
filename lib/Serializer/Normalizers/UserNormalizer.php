@@ -5,7 +5,6 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class UserNormalizer implements NormalizerInterface

@@ -2,7 +2,6 @@
 
 namespace NAV\OnlineInvoice\Http\Request;
 
-use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
 
 class Header
 {
