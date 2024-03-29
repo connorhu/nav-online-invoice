@@ -9,7 +9,7 @@ class AuditDenormalizer implements DenormalizerInterface
 {
     public const XMLNS_CONTEXT_KEY = '_audit_xmlns';
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -40,8 +40,15 @@ class AuditDenormalizer implements DenormalizerInterface
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return $type === Audit::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Audit::class => true,
+        ];
     }
 }
