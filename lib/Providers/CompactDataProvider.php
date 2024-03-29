@@ -6,10 +6,6 @@ use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Http\Request\Software;
 
-use NAV\OnlineInvoice\Providers\ApiEndpointUrlProviderInterface;
-use NAV\OnlineInvoice\Providers\UserProviderInterface;
-use NAV\OnlineInvoice\Providers\RequestIdProviderInterface;
-use NAV\OnlineInvoice\Providers\SoftwareProviderInterface;
 
 class CompactDataProvider implements SoftwareProviderInterface, UserProviderInterface, RequestIdProviderInterface, ApiEndpointUrlProviderInterface, CryptoToolsProviderInterface
 {

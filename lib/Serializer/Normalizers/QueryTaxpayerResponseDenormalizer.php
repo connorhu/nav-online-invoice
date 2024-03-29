@@ -3,7 +3,6 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
-use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class QueryTaxpayerResponseDenormalizer implements DenormalizerInterface
