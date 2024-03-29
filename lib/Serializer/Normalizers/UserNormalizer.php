@@ -13,30 +13,37 @@ class UserNormalizer implements NormalizerInterface
     {
     }
 
-    public function normalize($user, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
-        if ($user->getRequest()->getRequestVersion() === Request::REQUEST_VERSION_V30) {
+        if ($object->getRequest()->getRequestVersion() === Request::REQUEST_VERSION_V30) {
             return [
-                'common:login' => $user->getLogin(),
+                'common:login' => $object->getLogin(),
                 'common:passwordHash' => [
-                    '@cryptoType' => $this->cryptoTools->getUserPasswordHashAlgo($user),
-                    '#' => $this->cryptoTools->getUserPasswordHash($user),
+                    '@cryptoType' => $this->cryptoTools->getUserPasswordHashAlgo($object),
+                    '#' => $this->cryptoTools->getUserPasswordHash($object),
                 ],
-                'common:taxNumber' => $user->getTaxNumber(),
+                'common:taxNumber' => $object->getTaxNumber(),
             ];
         }
 
-        $request = $user->getRequest();
+        $request = $object->getRequest();
 
         return [
-            'login' => $user->getLogin(),
+            'login' => $object->getLogin(),
             'passwordHash' => $this->cryptoTools->signRequest($request),
-            'taxNumber' => $user->getTaxNumber(),
+            'taxNumber' => $object->getTaxNumber(),
         ];
     }
 
-    public function supportsNormalization($data, $format = null, array $context = [])
+    public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof User;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            User::class => true,
+        ];
     }
 }

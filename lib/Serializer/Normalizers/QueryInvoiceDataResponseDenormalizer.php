@@ -25,7 +25,7 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
         exit;
     }
 
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $commonNamespacePrefix = self::getNamespaceWithUrl(ResponseDenormalizerInterface::COMMON_SCHEMAS_URL_V10, $data);
         $commonKeyPrefix = self::getNamespaceKeyPrefix(ResponseDenormalizerInterface::COMMON_SCHEMAS_URL_V10, $data);
@@ -68,5 +68,12 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
     public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
     {
         return $type === QueryInvoiceDataResponse::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            QueryInvoiceDataResponse::class => true,
+        ];
     }
 }

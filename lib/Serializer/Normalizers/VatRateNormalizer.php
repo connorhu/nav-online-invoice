@@ -8,38 +8,38 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
 {
-    public function normalize($data, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
 
-        if ($data->getVatRatePercentage()) {
-            $buffer['vatPercentage'] = $data->getVatRatePercentage();
+        if ($object->getVatRatePercentage()) {
+            $buffer['vatPercentage'] = $object->getVatRatePercentage();
         }
 
-        if ($data->getVatRateExemptionCase()) {
+        if ($object->getVatRateExemptionCase()) {
             $buffer['vatExemption'] = [
-                'case' => $data->getVatRateExemptionCaseString(),
-                'reason' => $data->getVatRateExemptionReason(),
+                'case' => $object->getVatRateExemptionCaseString(),
+                'reason' => $object->getVatRateExemptionReason(),
             ];
         }
 
-        if ($data->getVatRateOutOfScopeCase()) {
+        if ($object->getVatRateOutOfScopeCase()) {
             $buffer['vatOutOfScope'] = [
-                'case' => $data->getVatRateOutOfScopeCaseString(),
-                'reason' => $data->getVatRateOutOfScopeReason()
+                'case' => $object->getVatRateOutOfScopeCaseString(),
+                'reason' => $object->getVatRateOutOfScopeReason()
             ];
         }
 
-        if ($data->getVatRateDomesticReverseCharge()) {
-            $buffer['vatDomesticReverseCharge'] = $data->getVatRateDomesticReverseCharge();
+        if ($object->getVatRateDomesticReverseCharge()) {
+            $buffer['vatDomesticReverseCharge'] = $object->getVatRateDomesticReverseCharge();
         }
 
-        if ($data->getVatRateMarginSchemeVat()) {
-            $buffer['marginSchemeVat'] = $data->getVatRateMarginSchemeVat();
+        if ($object->getVatRateMarginSchemeVat()) {
+            $buffer['marginSchemeVat'] = $object->getVatRateMarginSchemeVat();
         }
 
-        if ($data->getVatRateMarginSchemeNoVat()) {
-            $buffer['marginSchemeNoVat'] = $data->getVatRateMarginSchemeNoVat();
+        if ($object->getVatRateMarginSchemeNoVat()) {
+            $buffer['marginSchemeNoVat'] = $object->getVatRateMarginSchemeNoVat();
         }
 
         return $buffer;
@@ -53,7 +53,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
     public const ITEM_FACTORY_CONTEXT_KEY = '_vat_rate_key';
     public const XMLNS_CONTEXT_KEY = '_vat_rate_xmlns';
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -100,9 +100,16 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         return $item;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return in_array(VatRateInterface::class, class_implements($type))
             || VatRateInterface::class === $type;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            VatRateInterface::class => true,
+        ];
     }
 }

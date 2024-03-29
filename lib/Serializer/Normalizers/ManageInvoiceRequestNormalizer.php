@@ -5,11 +5,11 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 
-class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
+class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
 
@@ -105,5 +105,12 @@ class ManageInvoiceRequestNormalizer implements ContextAwareNormalizerInterface,
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof ManageInvoiceRequest;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            ManageInvoiceRequest::class => true,
+        ];
     }
 }

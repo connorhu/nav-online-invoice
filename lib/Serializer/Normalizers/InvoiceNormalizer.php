@@ -298,7 +298,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $address;
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         $object = new Invoice();
 
@@ -376,8 +376,15 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return Invoice::class === $type;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Invoice::class => true,
+        ];
     }
 }

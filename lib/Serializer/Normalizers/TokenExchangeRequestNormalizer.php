@@ -14,9 +14,9 @@ class TokenExchangeRequestNormalizer implements NormalizerInterface
         $this->requestNormalizer = $requestNormalizer;
     }
     
-    public function normalize($request, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
-        return $this->requestNormalizer->normalize($request, $format);
+        return $this->requestNormalizer->normalize($object, $format);
     }
     
     public function supportsNormalization($data, $format = null, array $context = []): bool
@@ -24,4 +24,10 @@ class TokenExchangeRequestNormalizer implements NormalizerInterface
         return $data instanceof TokenExchangeRequest;
     }
 
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            TokenExchangeRequest::class => true,
+        ];
+    }
 }

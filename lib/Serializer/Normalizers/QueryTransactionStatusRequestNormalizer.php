@@ -3,9 +3,9 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request\QueryTransactionStatusRequest;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class QueryTransactionStatusRequestNormalizer implements ContextAwareNormalizerInterface
+class QueryTransactionStatusRequestNormalizer implements NormalizerInterface
 {
     public function __construct(private readonly RequestNormalizer $requestNormalizer)
     {
@@ -25,5 +25,12 @@ class QueryTransactionStatusRequestNormalizer implements ContextAwareNormalizerI
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof QueryTransactionStatusRequest;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            QueryTransactionStatusRequest::class => true,
+        ];
     }
 }

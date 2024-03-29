@@ -11,15 +11,15 @@ class ProductCodeNormalizer implements NormalizerInterface, SerializerAwareInter
 {
     use SerializerAwareTrait;
 
-    public function normalize($code, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = []): array
     {
         $buffer = [];
         
-        $buffer['productCodeCategory'] = $code->getProductCodeCategory();
-        $buffer['productCodeValue'] = $code->getProductCodeValue();
+        $buffer['productCodeCategory'] = $object->getProductCodeCategory();
+        $buffer['productCodeValue'] = $object->getProductCodeValue();
     
-        if ($code->getProductCodeCategory() === ProductCode::PRODUCT_CODE_CATEGORY_OWN) {
-            $buffer['productCodeOwnValue'] = $code->getProductCodeOwnValue();
+        if ($object->getProductCodeCategory() === ProductCode::PRODUCT_CODE_CATEGORY_OWN) {
+            $buffer['productCodeOwnValue'] = $object->getProductCodeOwnValue();
         }
     
         return ['productCode' => $buffer];
@@ -28,5 +28,12 @@ class ProductCodeNormalizer implements NormalizerInterface, SerializerAwareInter
     public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof ProductCode;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            ProductCode::class => true,
+        ];
     }
 }

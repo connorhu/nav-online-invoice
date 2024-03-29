@@ -19,7 +19,7 @@ class QueryInvoiceDataRequestNormalizer implements NormalizerInterface, Normaliz
     /**
      * @param QueryInvoiceDigestRequest $object
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = []): array
     {
         $buffer = [
             'invoiceNumberQuery' => [
@@ -36,5 +36,12 @@ class QueryInvoiceDataRequestNormalizer implements NormalizerInterface, Normaliz
     public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof QueryInvoiceDataRequest;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            QueryInvoiceDataRequest::class => true,
+        ];
     }
 }

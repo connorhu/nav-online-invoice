@@ -3,12 +3,12 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceDigestRequest;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerAwareTrait;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class QueryInvoiceDigestRequestNormalizer implements ContextAwareNormalizerInterface, NormalizerAwareInterface
+class QueryInvoiceDigestRequestNormalizer implements NormalizerInterface, NormalizerAwareInterface
 {
     use NormalizerAwareTrait;
 
@@ -19,7 +19,7 @@ class QueryInvoiceDigestRequestNormalizer implements ContextAwareNormalizerInter
     /**
      * @param QueryInvoiceDigestRequest $object
      */
-    public function normalize($object, string $format = null, array $context = [])
+    public function normalize($object, string $format = null, array $context = []): array
     {
         $buffer = [
             'page' => $object->getPage(),
@@ -51,5 +51,12 @@ class QueryInvoiceDigestRequestNormalizer implements ContextAwareNormalizerInter
     public function supportsNormalization($data, string $format = null, array $context = []): bool
     {
         return $data instanceof QueryInvoiceDigestRequest;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            QueryInvoiceDigestRequest::class => true,
+        ];
     }
 }
