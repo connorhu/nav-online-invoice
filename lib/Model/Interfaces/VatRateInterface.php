@@ -243,4 +243,4 @@ interface VatRateInterface
     public function setVatRateNoVatCharge(?bool $vatRateMarginSchemeNoVat): VatRateInterface;
 }
 
-class_alias(VatRateInterface::class, \NAV\OnlineInvoice\Model\Interfaces\VatRateInterface::class);
+class_alias(VatRateInterface::class, \NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface::class);
