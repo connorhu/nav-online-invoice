@@ -85,7 +85,7 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
         return $response;
     }
 
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
 
@@ -96,8 +96,15 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
         throw new \LogicException('Unknown response interface.');
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return $type === QueryTransactionStatusResponse::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            QueryTransactionStatusResponse::class => true,
+        ];
     }
 }

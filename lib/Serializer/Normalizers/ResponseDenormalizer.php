@@ -11,7 +11,7 @@ class ResponseDenormalizer implements DenormalizerInterface, SerializerAwareInte
 {
     use SerializerAwareTrait;
 
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $inNormalizerContext = $context;
         $inNormalizerContext['_in_request_normalizer'] = true;
@@ -25,5 +25,12 @@ class ResponseDenormalizer implements DenormalizerInterface, SerializerAwareInte
         }
 
         return $type === Response::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Response::class => true,
+        ];
     }
 }

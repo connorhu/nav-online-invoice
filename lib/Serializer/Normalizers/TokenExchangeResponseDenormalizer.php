@@ -14,7 +14,7 @@ class TokenExchangeResponseDenormalizer implements DenormalizerInterface
     {
     }
 
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
 
@@ -37,5 +37,12 @@ class TokenExchangeResponseDenormalizer implements DenormalizerInterface
     public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === TokenExchangeResponse::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            TokenExchangeResponse::class => true,
+        ];
     }
 }

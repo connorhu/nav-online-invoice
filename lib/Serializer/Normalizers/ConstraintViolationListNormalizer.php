@@ -11,11 +11,11 @@ class ConstraintViolationListNormalizer implements NormalizerInterface
     {
     }
 
-    public function normalize($violationList, $format = null, array $context = []): array
+    public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
 
-        foreach ($violationList as $violation) {
+        foreach ($object as $violation) {
             $buffer[] = $this->normalizer->normalize($violation, $format, $context);
         }
         
@@ -27,5 +27,12 @@ class ConstraintViolationListNormalizer implements NormalizerInterface
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof ConstraintViolationList;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            ConstraintViolationList::class => true,
+        ];
     }
 }

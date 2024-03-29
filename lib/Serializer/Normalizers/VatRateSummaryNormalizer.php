@@ -17,7 +17,7 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
     use NormalizerAwareTrait;
     use DenormalizerAwareTrait;
 
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
 
@@ -49,7 +49,7 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
 
     public const XMLNS_CONTEXT_KEY = '_vat_rate_xmlns';
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -78,8 +78,15 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null)
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return $type === VatRateSummaryInterface::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            VatRateSummaryInterface::class => true,
+        ];
     }
 }

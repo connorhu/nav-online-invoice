@@ -10,7 +10,7 @@ class SoftwareNormalizer implements NormalizerInterface, DenormalizerInterface
 {
     public const XMLNS_CONTEXT_KEY = '_software_xmlns';
 
-    public function normalize($object, $format = null, array $context = [])
+    public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [
             'softwareId' => $object->getId(),
@@ -37,7 +37,7 @@ class SoftwareNormalizer implements NormalizerInterface, DenormalizerInterface
         return $data instanceof Software;
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = [])
+    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -66,8 +66,15 @@ class SoftwareNormalizer implements NormalizerInterface, DenormalizerInterface
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return Software::class === $type;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Software::class => true,
+        ];
     }
 }

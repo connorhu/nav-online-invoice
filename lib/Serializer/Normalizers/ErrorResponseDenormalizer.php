@@ -12,7 +12,7 @@ class ErrorResponseDenormalizer implements DenormalizerInterface, SerializerAwar
 {
     use SerializerAwareTrait;
     
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         switch ($type) {
             case GeneralErrorResponse::class:
@@ -42,9 +42,17 @@ class ErrorResponseDenormalizer implements DenormalizerInterface, SerializerAwar
         return $response;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return $type === GeneralErrorResponse::class ||
             $type === GeneralExceptionResponse::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            GeneralErrorResponse::class => true,
+            GeneralExceptionResponse::class => true,
+        ];
     }
 }

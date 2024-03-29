@@ -128,7 +128,7 @@ class QueryTaxpayerResponseDenormalizer implements DenormalizerInterface
         return $taxpayerResponse;
     }
 
-    public function denormalize($data, string $type, ?string $format = null, array $context = [])
+    public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
 
@@ -139,8 +139,15 @@ class QueryTaxpayerResponseDenormalizer implements DenormalizerInterface
         throw new \LogicException('Unknown response interface.');
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null): bool
+    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
     {
         return $type === QueryTaxpayerResponse::class;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            QueryTaxpayerResponse::class => true,
+        ];
     }
 }

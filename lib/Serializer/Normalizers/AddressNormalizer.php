@@ -3,11 +3,11 @@
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Model\Address;
-use Symfony\Component\Serializer\Normalizer\ContextAwareNormalizerInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
 
-class AddressNormalizer implements ContextAwareNormalizerInterface, SerializerAwareInterface
+class AddressNormalizer implements NormalizerInterface, SerializerAwareInterface
 {
     use SerializerAwareTrait;
 
@@ -83,5 +83,12 @@ class AddressNormalizer implements ContextAwareNormalizerInterface, SerializerAw
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
         return $data instanceof Address;
+    }
+
+    public function getSupportedTypes(?string $format): array
+    {
+        return [
+            Address::class => true,
+        ];
     }
 }
