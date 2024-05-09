@@ -62,7 +62,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         return $buffer;
     }
 
-    public function supportsNormalization(mixed $data, string $format = null)
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         return $data instanceof VatRateInterface;
     }
