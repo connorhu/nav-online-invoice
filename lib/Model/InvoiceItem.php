@@ -4,10 +4,11 @@ namespace NAV\OnlineInvoice\Model;
 
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Model\Traits\VatRateTrait;
 
 class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 {
-    use VatRate;
+    use VatRateTrait;
     
     /*
      * A tétel sorszáma

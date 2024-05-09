@@ -4,10 +4,11 @@ namespace NAV\OnlineInvoice\Model;
 
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface;
+use NAV\OnlineInvoice\Model\Traits\VatRateTrait;
 
 class VatRateSummary implements VatRateInterface, VatRateSummaryInterface
 {
-    use VatRate;
+    use VatRateTrait;
     
     /*
      * Az adott adómértékhez tartozó értékesítés vagy szolgáltatásnyújtás nettó összege a számla pénznemében

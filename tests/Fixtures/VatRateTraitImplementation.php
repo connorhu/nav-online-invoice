@@ -2,10 +2,10 @@
 
 namespace NAV\OnlineInvoice\Tests\Fixtures;
 
-use NAV\OnlineInvoice\Entity\Interfaces\VatRateInterface;
-use NAV\OnlineInvoice\Entity\VatRate;
+use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Model\Traits\VatRateTrait;
 
 class VatRateTraitImplementation implements VatRateInterface
 {
-    use VatRate;
+    use VatRateTrait;
 }

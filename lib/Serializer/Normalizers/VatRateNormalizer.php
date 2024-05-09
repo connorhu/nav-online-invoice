@@ -12,34 +12,51 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
     {
         $buffer = [];
 
-        if ($object->getVatRatePercentage()) {
+        if ($object->getVatRatePercentage() !== null) {
             $buffer['vatPercentage'] = $object->getVatRatePercentage();
         }
 
-        if ($object->getVatRateExemptionCase()) {
+        if ($object->getVatRateContent() !== null) {
+            $buffer['vatContent'] = $object->getVatRateContent();
+        }
+
+        if ($object->getVatRateExemptionCase() !== null) {
             $buffer['vatExemption'] = [
-                'case' => $object->getVatRateExemptionCaseString(),
-                'reason' => $object->getVatRateExemptionReason(),
+                'case' => $object->getVatRateExemptionCase()->toString(),
             ];
+
+            if ($object->getVatRateExemptionReason() !== null) {
+                $buffer['vatExemption']['reason'] = $object->getVatRateExemptionReason();
+            }
         }
 
-        if ($object->getVatRateOutOfScopeCase()) {
+        if ($object->getVatRateOutOfScopeCase() !== null) {
             $buffer['vatOutOfScope'] = [
-                'case' => $object->getVatRateOutOfScopeCaseString(),
-                'reason' => $object->getVatRateOutOfScopeReason()
+                'case' => $object->getVatRateOutOfScopeCase()->toString(),
             ];
+
+            if ($object->getVatRateExemptionReason() !== null) {
+                $buffer['vatOutOfScope']['reason'] = $object->getVatRateOutOfScopeReason();
+            }
         }
 
-        if ($object->getVatRateDomesticReverseCharge()) {
+        if ($object->getVatRateDomesticReverseCharge() !== null) {
             $buffer['vatDomesticReverseCharge'] = $object->getVatRateDomesticReverseCharge();
         }
 
-        if ($object->getVatRateMarginSchemeVat()) {
-            $buffer['marginSchemeVat'] = $object->getVatRateMarginSchemeVat();
+        if ($object->getVatRateMarginSchemeIndicator() !== null) {
+            $buffer['marginSchemeIndicator'] = $object->getVatRateMarginSchemeIndicator();
         }
 
-        if ($object->getVatRateMarginSchemeNoVat()) {
-            $buffer['marginSchemeNoVat'] = $object->getVatRateMarginSchemeNoVat();
+        if ($object->getVatRateAmountMismatchCase() !== null && $object->getVatRateAmountMismatchRate() !== null) {
+            $buffer['vatAmountMismatch'] = [
+                'vatRate' => $object->getVatRateAmountMismatchRate(),
+                'case' => $object->getVatRateAmountMismatchCase()->toString(),
+            ];
+        }
+
+        if ($object->getVatRateNoVatCharge() !== null) {
+            $buffer['noVatCharge'] = $object->getVatRateNoVatCharge();
         }
 
         return $buffer;
