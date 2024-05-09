@@ -181,7 +181,7 @@ trait VatRateTrait
 
     public function setVatRateAmountMismatchRate(?float $vatRateAmountMismatchRate): VatRateInterface
     {
-        $this->vatRateMarginSchemeIndicator = $vatRateAmountMismatchRate;
+        $this->vatRateAmountMismatchRate = $vatRateAmountMismatchRate;
 
         return $this;
     }
@@ -193,7 +193,7 @@ trait VatRateTrait
 
     public function setVatRateAmountMismatchCase(?VatRateAmountMismatchCase $vatRateAmountMismatchCase): VatRateInterface
     {
-        $this->vatRateMarginSchemeIndicator = $vatRateAmountMismatchCase;
+        $this->vatRateAmountMismatchCase = $vatRateAmountMismatchCase;
 
         return $this;
     }
@@ -204,9 +204,9 @@ trait VatRateTrait
 
     }
 
-    public function setVatRateNoVatCharge(?bool $vatRateMarginSchemeNoVat): VatRateInterface
+    public function setVatRateNoVatCharge(?bool $vatRateNoVatCharge): VatRateInterface
     {
-        $this->vatRateMarginSchemeIndicator = $vatRateMarginSchemeNoVat;
+        $this->vatRateNoVatCharge = $vatRateNoVatCharge;
 
         return $this;
     }

@@ -12,6 +12,10 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
     {
         $buffer = [];
 
+        if (!$object instanceof VatRateInterface) {
+            exit;
+        }
+
         if ($object->getVatRatePercentage() !== null) {
             $buffer['vatPercentage'] = $object->getVatRatePercentage();
         }
@@ -35,7 +39,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
                 'case' => $object->getVatRateOutOfScopeCase()->toString(),
             ];
 
-            if ($object->getVatRateExemptionReason() !== null) {
+            if ($object->getVatRateOutOfScopeReason() !== null) {
                 $buffer['vatOutOfScope']['reason'] = $object->getVatRateOutOfScopeReason();
             }
         }
@@ -62,7 +66,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         return $buffer;
     }
 
-    public function supportsNormalization(mixed $data, string $format = null)
+    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
     {
         return $data instanceof VatRateInterface;
     }
