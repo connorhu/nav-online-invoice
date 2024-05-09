@@ -211,5 +211,3 @@ trait VatRateTrait
         return $this;
     }
 }
-
-class_alias(VatRateTrait::class, \NAV\OnlineInvoice\Model\VatRate::class);
