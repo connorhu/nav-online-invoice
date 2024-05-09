@@ -9,6 +9,9 @@ use NAV\OnlineInvoice\Serializer\Normalizers\VatRateNormalizer;
 use NAV\OnlineInvoice\Tests\Fixtures\VatRateTraitImplementation;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @covers \NAV\OnlineInvoice\Serializer\Normalizers\VatRateNormalizer
+ */
 class VatRateNormalizerTest extends TestCase
 {
     private VatRateNormalizer $normalizer;
@@ -18,11 +21,10 @@ class VatRateNormalizerTest extends TestCase
         $this->normalizer = new VatRateNormalizer();
     }
 
-    public function testEmpty(): void
+    public function testSupport(): void
     {
         $vatRate = new VatRateTraitImplementation();
-
-        $this->assertSame([], $this->normalizer->normalize($vatRate));
+        $this->assertTrue($this->normalizer->supportsNormalization($vatRate));
     }
 
     /**
