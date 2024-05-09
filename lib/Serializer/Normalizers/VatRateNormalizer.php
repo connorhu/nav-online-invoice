@@ -2,12 +2,21 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Factories\VatRateFactoryInterface;
+use NAV\OnlineInvoice\Model\Enums\VatRateAmountMismatchCase;
+use NAV\OnlineInvoice\Model\Enums\VatRateExemptionCase;
+use NAV\OnlineInvoice\Model\Enums\VatRateOutOfScopeCase;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
 {
+    public function __construct(
+        private readonly VatRateFactoryInterface $vatRateFactory
+    ) {
+    }
+
     public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
@@ -71,38 +80,34 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         return $data instanceof VatRateInterface;
     }
 
-    public const ITEM_FACTORY_CONTEXT_KEY = '_vat_rate_key';
     public const XMLNS_CONTEXT_KEY = '_vat_rate_xmlns';
 
     public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
-            throw new \RuntimeException('Context key missing: '. self::XMLNS_CONTEXT_KEY);
+            throw new \RuntimeException(sprintf('Context key missing: "%s"', self::XMLNS_CONTEXT_KEY));
         }
 
-        if (!key_exists(self::ITEM_FACTORY_CONTEXT_KEY, $context)) {
-            // TODO create exception type
-            throw new \RuntimeException('Context key missing: '. self::ITEM_FACTORY_CONTEXT_KEY);
-        }
-
-        $itemFactory = $context[self::ITEM_FACTORY_CONTEXT_KEY];
         $keyPrefix = !empty($context[self::XMLNS_CONTEXT_KEY]) ? ($context[self::XMLNS_CONTEXT_KEY].':') : '';
 
-        /** @var VatRateInterface $item */
-        $item = $itemFactory();
+        $item = $this->vatRateFactory->createVatRate();
 
         if (isset($data[$keyPrefix.'vatPercentage'])) {
             $item->setVatRatePercentage($data[$keyPrefix.'vatPercentage']);
         }
 
+        if (isset($data[$keyPrefix.'vatContent'])) {
+            $item->setVatRateContent($data[$keyPrefix.'vatContent']);
+        }
+
         if (isset($data[$keyPrefix.'vatExemption'])) {
-            $item->setVatRateExemptionCaseWithString($data[$keyPrefix.'vatExemption'][$keyPrefix.'case']);
+            $item->setVatRateExemptionCase(VatRateExemptionCase::initWithString($data[$keyPrefix.'vatExemption'][$keyPrefix.'case']));
             $item->setVatRateExemptionReason($data[$keyPrefix.'vatExemption'][$keyPrefix.'reason']);
         }
 
         if (isset($data[$keyPrefix.'vatOutOfScope'])) {
-            $item->setVatRateOutOfScopeCaseWithString($data[$keyPrefix.'vatOutOfScope'][$keyPrefix.'case']);
+            $item->setVatRateOutOfScopeCase(VatRateOutOfScopeCase::initWithString($data[$keyPrefix.'vatOutOfScope'][$keyPrefix.'case']));
             $item->setVatRateOutOfScopeReason($data[$keyPrefix.'vatOutOfScope'][$keyPrefix.'reason']);
         }
 
@@ -110,12 +115,17 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
             $item->setVatRateDomesticReverseCharge($data[$keyPrefix.'vatDomesticReverseCharge']);
         }
 
-        if (isset($data[$keyPrefix.'marginSchemeVat'])) {
-            $item->setVatRateMarginSchemeVat($data[$keyPrefix.'marginSchemeVat']);
+        if (isset($data[$keyPrefix.'marginSchemeIndicator'])) {
+            $item->setVatRateMarginSchemeIndicator($data[$keyPrefix.'marginSchemeIndicator']);
         }
 
-        if (isset($data[$keyPrefix.'marginSchemeNoVat'])) {
-            $item->setVatRateMarginSchemeNoVat($data[$keyPrefix.'marginSchemeNoVat']);
+        if (isset($data[$keyPrefix.'vatAmountMismatch'])) {
+            $item->setVatRateAmountMismatchCase(VatRateAmountMismatchCase::initWithString($data[$keyPrefix.'vatAmountMismatch'][$keyPrefix.'case']));
+            $item->setVatRateAmountMismatchRate($data[$keyPrefix.'vatAmountMismatch'][$keyPrefix.'vatRate']);
+        }
+
+        if (isset($data[$keyPrefix.'noVatCharge'])) {
+            $item->setVatRateNoVatCharge($data[$keyPrefix.'noVatCharge']);
         }
 
         return $item;
