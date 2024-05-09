@@ -47,14 +47,14 @@ trait VatRateTrait
 		<lineNetAmount>600000.00</lineNetAmount>
 		<vatExemption>...</vatExemption>
      */
-    protected int|VatRateExemptionCase|null $vatRateExemptionCase = null;
+    protected ?VatRateExemptionCase $vatRateExemptionCase = null;
 
     /*
      * Az adómentesség jelölés leírása
      */
     protected ?string $vatRateExemptionReason = null;
 
-    protected int|VatRateOutOfScopeCase|null $vatRateOutOfScopeCase = null;
+    protected ?VatRateOutOfScopeCase $vatRateOutOfScopeCase = null;
 
     protected ?string $vatRateOutOfScopeReason = null;
 
@@ -102,12 +102,12 @@ trait VatRateTrait
         return $this;
     }
 
-    public function getVatRateExemptionCase(): int|VatRateExemptionCase|null
+    public function getVatRateExemptionCase(): ?VatRateExemptionCase
     {
         return $this->vatRateExemptionCase;
     }
 
-    public function setVatRateExemptionCase(int|VatRateExemptionCase|null $vatRateExemptionCase): VatRateInterface
+    public function setVatRateExemptionCase(?VatRateExemptionCase $vatRateExemptionCase): VatRateInterface
     {
         $this->vatRateExemptionCase = $vatRateExemptionCase;
 
@@ -126,12 +126,12 @@ trait VatRateTrait
         return $this;
     }
 
-    public function getVatRateOutOfScopeCase(): int|VatRateOutOfScopeCase|null
+    public function getVatRateOutOfScopeCase(): ?VatRateOutOfScopeCase
     {
         return $this->vatRateOutOfScopeCase;
     }
 
-    public function setVatRateOutOfScopeCase(int|VatRateOutOfScopeCase|null $vatRateOutOfScopeCase): VatRateInterface
+    public function setVatRateOutOfScopeCase(?VatRateOutOfScopeCase $vatRateOutOfScopeCase): VatRateInterface
     {
         $this->vatRateOutOfScopeCase = $vatRateOutOfScopeCase;
 

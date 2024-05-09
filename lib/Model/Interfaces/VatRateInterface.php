@@ -59,9 +59,9 @@ interface VatRateInterface
      *
      * @see VatRateType/vatExemption/case
      *
-     * @return int|VatRateExemptionCase|null
+     * @return VatRateExemptionCase|null
      */
-    public function getVatRateExemptionCase(): int|VatRateExemptionCase|null;
+    public function getVatRateExemptionCase(): ?VatRateExemptionCase;
 
     /**
      * Code indicating tax exemption
@@ -69,10 +69,10 @@ interface VatRateInterface
      *
      * @see VatRateType/vatExemption/case
      *
-     * @param int|VatRateExemptionCase|null $vatRateExemptionCase
+     * @param VatRateExemptionCase|null $vatRateExemptionCase
      * @return VatRateInterface
      */
-    public function setVatRateExemptionCase(int|VatRateExemptionCase|null $vatRateExemptionCase): VatRateInterface;
+    public function setVatRateExemptionCase(?VatRateExemptionCase $vatRateExemptionCase): VatRateInterface;
 
     /**
      * Reasoning for tax exemption
@@ -101,9 +101,9 @@ interface VatRateInterface
      *
      * @see VatRateType/vatOutOfScope/case
      *
-     * @return int|VatRateOutOfScopeCase|null
+     * @return VatRateOutOfScopeCase|null
      */
-    public function getVatRateOutOfScopeCase(): int|VatRateOutOfScopeCase|null;
+    public function getVatRateOutOfScopeCase(): ?VatRateOutOfScopeCase;
 
     /**
      * Code indicating exemption from the scope of the VAT Act
@@ -111,10 +111,10 @@ interface VatRateInterface
      *
      * @see VatRateType/vatOutOfScope/case
      *
-     * @param int|VatRateOutOfScopeCase|null $vatRateOutOfScopeCase
+     * @param VatRateOutOfScopeCase|null $vatRateOutOfScopeCase
      * @return VatRateInterface
      */
-    public function setVatRateOutOfScopeCase(int|VatRateOutOfScopeCase|null $vatRateOutOfScopeCase): VatRateInterface;
+    public function setVatRateOutOfScopeCase(?VatRateOutOfScopeCase $vatRateOutOfScopeCase): VatRateInterface;
 
     /**
      * Reasoning for exemption from the scope of the VAT Act
