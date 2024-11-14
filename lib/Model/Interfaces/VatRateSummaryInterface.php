@@ -28,5 +28,3 @@ interface VatRateSummaryInterface
 
     public function getGrossAmountHUF();
 }
-
-class_alias(VatRateSummaryInterface::class, \NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface::class);

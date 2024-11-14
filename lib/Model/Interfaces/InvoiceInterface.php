@@ -52,5 +52,3 @@ interface InvoiceInterface
     public function removeVatRateSummary(VatRateSummaryInterface $vatRateSummary): InvoiceInterface;
     public function getVatRateSummaries(): Collection;
 }
-
-class_alias(InvoiceInterface::class, \NAV\OnlineInvoice\Model\Interfaces\InvoiceInterface::class);
