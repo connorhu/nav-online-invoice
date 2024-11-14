@@ -20,5 +20,3 @@ interface AddressInterface
 
     public function getCity();
 }
-
-class_alias(AddressInterface::class, \NAV\OnlineInvoice\Model\Interfaces\AddressInterface::class);
