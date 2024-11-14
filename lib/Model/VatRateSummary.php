@@ -214,5 +214,3 @@ class VatRateSummary implements VatRateInterface, VatRateSummaryInterface
         return $this->grossAmountHUF;
     }
 }
-
-class_alias(VatRateSummary::class, \NAV\OnlineInvoice\Model\VatRateSummary::class);

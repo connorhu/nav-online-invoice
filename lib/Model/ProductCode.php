@@ -129,5 +129,3 @@ class ProductCode
         return $this->productCodeOwnValue;
     }
 }
-
-class_alias(ProductCode::class, \NAV\OnlineInvoice\Model\ProductCode::class);

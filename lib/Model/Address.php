@@ -445,5 +445,3 @@ class Address implements AddressInterface
         }
     }
 }
-
-class_alias(Address::class, \NAV\OnlineInvoice\Model\Address::class);

@@ -1663,5 +1663,3 @@ class Invoice implements InvoiceInterface
         return $this->modificationIndex;
     }
 }
-
-class_alias(Invoice::class, \NAV\OnlineInvoice\Model\Invoice::class);
