@@ -72,5 +72,3 @@ class InvoiceOperation
         return $this->invoice;
     }
 }
-
-class_alias(InvoiceOperation::class, \NAV\OnlineInvoice\Model\InvoiceOperation::class);

@@ -732,5 +732,3 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     }
 }
 
-class_alias(InvoiceItem::class, \NAV\OnlineInvoice\Model\InvoiceItem::class);
-
