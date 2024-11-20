@@ -2,7 +2,6 @@
 
 namespace NAV\OnlineInvoice\Providers;
 
-use NAV\OnlineInvoice\Http\InvoiceServiceRequest;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Http\Request\Software;
