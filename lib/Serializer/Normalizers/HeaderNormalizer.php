@@ -56,7 +56,7 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
     public function getSupportedTypes(?string $format): array
     {
         return [
-            Header::class,
+            Header::class => true,
         ];
     }
 }
