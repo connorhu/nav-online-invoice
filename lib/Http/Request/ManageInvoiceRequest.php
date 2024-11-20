@@ -51,7 +51,7 @@ class ManageInvoiceRequest extends Request implements ExchangeTokenAwareRequest,
      * @param InvoiceOperation $invoiceOperation
      * @return ManageInvoiceRequest
      */
-    public function addInvoiceOperation(InvoiceOperation $invoiceOperation)
+    public function addInvoiceOperation(InvoiceOperation $invoiceOperation): self
     {
         $this->invoiceOperations[] = $invoiceOperation;
         return $this;
@@ -63,16 +63,19 @@ class ManageInvoiceRequest extends Request implements ExchangeTokenAwareRequest,
      * @param InvoiceOperation $invoiceOperation
      * @return ManageInvoiceRequest
      */
-    public function removeInvoiceOperation(InvoiceOperation $invoiceOperation)
+    public function removeInvoiceOperation(InvoiceOperation $invoiceOperation): self
     {
-        $this->invoiceOperations->removeElement($invoiceOperation);
+        $key = array_search($invoiceOperation, $this->invoiceOperations, true);
+
+        if ($key !== false) {
+            unset($this->invoiceOperations[$key]);
+        }
+
         return $this;
     }
 
     /**
-     * Getter for invoiceOperations
-     *
-     * @return mixed return value for Doctrine\Common\Collections\ArrayCollection|null
+     * @return array<int, InvoiceOperation>
      */
     public function getInvoiceOperations(): array
     {
@@ -80,14 +83,13 @@ class ManageInvoiceRequest extends Request implements ExchangeTokenAwareRequest,
     }
 
     /**
-     * setter for invoiceOperation
+     * @param array<int, InvoiceOperation> $invoiceOperations
      *
-     * @param mixed
      * @return self
      */
-    public function setInvoiceOperations($value): ManageInvoiceRequest
+    public function setInvoiceOperations(array $invoiceOperations): ManageInvoiceRequest
     {
-        $this->invoiceOperations = $value;
+        $this->invoiceOperations = $invoiceOperations;
         return $this;
     }
 
