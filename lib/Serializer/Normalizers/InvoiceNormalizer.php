@@ -198,7 +198,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $invoiceSummary;
     }
 
-    public function normalize($invoice, $format = null, array $context = [])
+    public function normalize($invoice, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $context[DateTimeNormalizer::FORMAT_KEY] = 'Y-m-d';
 
