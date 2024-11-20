@@ -7,19 +7,23 @@ use NAV\OnlineInvoice\Model\Address;
 
 interface InvoiceInterface
 {
-    public function setSupplierTaxNumber(string $value): InvoiceInterface;
     public function getSupplierTaxNumber(): string;
-    public function setSupplierGroupMemberTaxNumber(?string $value): InvoiceInterface;
-    public function getSupplierGroupMemberTaxNumber(): ?string;
-    public function setSupplierCommunityVatNumber(?string $value): InvoiceInterface;
-    public function getSupplierCommunityVatNumber(): ?string;
-    public function setSupplierName(string $value): InvoiceInterface;
-    public function getSupplierName(): string;
+    public function setSupplierTaxNumber(string $supplierTaxNumber): InvoiceInterface;
 
-    public function setSupplierAddress(Address $supplierAddress): InvoiceInterface;
+    public function getSupplierGroupMemberTaxNumber(): ?string;
+    public function setSupplierGroupMemberTaxNumber(?string $supplierGroupMemberTaxNumber): InvoiceInterface;
+
+    public function getSupplierCommunityVatNumber(): ?string;
+    public function setSupplierCommunityVatNumber(?string $supplierCommunityVatNumber): InvoiceInterface;
+
+    public function getSupplierName(): string;
+    public function setSupplierName(string $supplierName): InvoiceInterface;
+
     public function getSupplierAddress(): Address;
-    public function setSupplierBankAccountNumber(?string $supplierBankAccountNumber): InvoiceInterface;
+    public function setSupplierAddress(Address $supplierAddress): InvoiceInterface;
+
     public function getSupplierBankAccountNumber(): ?string;
+    public function setSupplierBankAccountNumber(?string $supplierBankAccountNumber): InvoiceInterface;
 
     public const CUSTOMER_VAT_STATUS_DOMESTIC = 1;
     public const CUSTOMER_VAT_STATUS_OTHER = 2;
