@@ -46,7 +46,7 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
 
             $buffer['invoiceOperations']['invoiceOperation'][] = [
                 'index' => $index + 1,
-                'invoiceOperation' => $invoiceOperation->getOperation(),
+                'invoiceOperation' => $invoiceOperation->getOperation()->value,
                 'invoiceData' => $encodedInvoiceData,
             ];
         }
@@ -74,7 +74,7 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
 
             $contentToSign['invoiceOperations']['invoiceOperation'][] = [
                 'index' => $index + 1,
-                'invoiceOperation' => $invoiceOperation->getOperation(),
+                'invoiceOperation' => $invoiceOperation->getOperation()->value,
                 'invoiceData' => $encodedInvoiceData,
             ];
         }

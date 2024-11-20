@@ -2,73 +2,53 @@
 
 namespace NAV\OnlineInvoice\Model;
 
+use NAV\OnlineInvoice\Model\Enums\InvoiceOperationEnum;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class InvoiceOperation
 {
-    const OPERATION_CREATE = 'CREATE';
-    const OPERATION_MODIFY = 'MODIFY';
-    const OPERATION_STORNO = 'STORNO';
-    const OPERATION_ANNUL = 'ANNUL'; // deprecated and separated
-    
-    public function __construct($operation, InvoiceInterface $invoice)
-    {
-        $this->operation = $operation;
-        $this->invoice = $invoice;
+    public function __construct(
+        #[Assert\NotBlank]
+        protected InvoiceOperationEnum $operation,
+        #[Assert\Valid]
+        protected InvoiceInterface $invoice
+    ) {
     }
-    
+
     /**
-     * @Assert\NotBlank()
+     * @return InvoiceOperationEnum
      */
-    protected $operation;
-    
-    /**
-     * setter for operation
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setOperation(string $value): self
-    {
-        $this->operation = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for operation
-     * 
-     * @return mixed return value for 
-     */
-    public function getOperation(): string
+    public function getOperation(): InvoiceOperationEnum
     {
         return $this->operation;
     }
-    
+
     /**
-     * @Assert\Valid()
-     */
-    protected $invoice;
-    
-    /**
-     * setter for invoice
-     *
-     * @param mixed 
+     * @param InvoiceOperationEnum $operation
      * @return self
      */
-    public function setInvoice(InvoiceInterface $value): self
+    public function setOperation(InvoiceOperationEnum $operation): self
     {
-        $this->invoice = $value;
+        $this->operation = $operation;
         return $this;
     }
-    
+
     /**
-     * getter for invoice
-     * 
-     * @return mixed return value for 
+     * @return InvoiceInterface
      */
     public function getInvoice(): InvoiceInterface
     {
         return $this->invoice;
+    }
+
+    /**
+     * @param InvoiceInterface $invoice
+     * @return self
+     */
+    public function setInvoice(InvoiceInterface $invoice): self
+    {
+        $this->invoice = $invoice;
+        return $this;
     }
 }
