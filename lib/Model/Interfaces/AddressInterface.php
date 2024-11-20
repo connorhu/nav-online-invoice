@@ -4,19 +4,19 @@ namespace NAV\OnlineInvoice\Model\Interfaces;
 
 interface AddressInterface
 {
-    public function setCountryCode(string $value);
+    public function setCountryCode(string $countryCode);
 
     public function getCountryCode();
 
-    public function setRegion(string $value);
+    public function setRegion(string $region);
 
     public function getRegion();
 
-    public function setPostalCode(string $value);
+    public function setPostalCode(string $postalCode);
 
     public function getPostalCode();
 
-    public function setCity(string $value);
+    public function setCity(string $city);
 
     public function getCity();
 }

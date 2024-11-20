@@ -16,13 +16,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class Invoice implements InvoiceInterface
 {
-    public function __construct()
-    {
-        $this->supplierAddress = new Address();
-        $this->vatRateSummaries = new ArrayCollection();
-        $this->items = new ArrayCollection();
-    }
-
     /**
      * Belföldi adószám, amely alatt a számlán szereplő termékértékesítés vagy szolgáltatás nyújtás történt. Lehet csoportazonosító szám is.
      * The domestic tax number under which the sale of the product or provision of service was carried out. It can also be a group ID.
@@ -45,79 +38,33 @@ class Invoice implements InvoiceInterface
      *                    <countyCode>42</countyCode>
      *                </supplierTaxNumber>
      * </code>
-     *
-     * @Assert\NotBlank(groups={"v2.0"})
-     * @NavAssert\TaxNumber(groups={"v2.0"})
      */
-    protected $supplierTaxNumber;
+    #[Assert\NotBlank(groups: ['v2.0'])]
+    #[NavAssert\TaxNumber(groups: ['v2.0'])]
+    protected string $supplierTaxNumber;
 
     /**
-     * setter for supplierTaxNumber
-     *
-     * @param string
-     * @return self
-     */
-    public function setSupplierTaxNumber(string $value): InvoiceInterface
-    {
-        $this->supplierTaxNumber = str_replace('-', '', $value);
-        return $this;
-    }
-
-    /**
-     * getter for supplierTaxNumber
-     *
-     * @return string
-     */
-    public function getSupplierTaxNumber(): string
-    {
-        return $this->supplierTaxNumber;
-    }
-
-    /*
      * Csoport tag adószáma, ha a termékértékesítés vagy szolgáltatásnyújtás csoportazonosító szám alatt történt
      *
      * requirements: not required
      * node name: groupMemberTaxNumber
      * xml type: TaxNumberType
      * simple type: xs:complexType
-     * pattern: 
-
-    <invoiceExchange>
-        <invoiceHead>
-            <supplierInfo>
-                <groupMemberTaxNumber>
-                    <taxpayerId>11111111</taxpayerId>
-                    <vatCode>2</vatCode>
-                    <countyCode>42</countyCode>
-                </groupMemberTaxNumber>
+     * pattern:
      *
-     * @NavAssert\TaxNumber(groups={"v2.0"})
+     * <invoiceExchange>
+     *     <invoiceHead>
+     *         <supplierInfo>
+     *             <groupMemberTaxNumber>
+     *                 <taxpayerId>11111111</taxpayerId>
+     *                 <vatCode>2</vatCode>
+     *                 <countyCode>42</countyCode>
+     *             </groupMemberTaxNumber>
      */
-    protected $supplierGroupMemberTaxNumber;
+    #[NavAssert\TaxNumber(groups: ['v2.0'])]
+    protected ?string $supplierGroupMemberTaxNumber = null;
 
     /**
-     * setter for supplierGroupMemberTaxNumber
-     *
-     * @param mixed
-     * @return self
-     */
-    public function setSupplierGroupMemberTaxNumber(?string $value): InvoiceInterface
-    {
-        $this->supplierGroupMemberTaxNumber = $value;
-        return $this;
-    }
-
-    /**
-     * getter for supplierGroupMemberTaxNumber
-     *
-     * @return mixed return value for
-     */
-    public function getSupplierGroupMemberTaxNumber(): ?string
-    {
-        return $this->supplierGroupMemberTaxNumber;
-    }
-
-    /*
      * Közösségi adószám
      *
      * requirements: not required
@@ -125,37 +72,15 @@ class Invoice implements InvoiceInterface
      * xml type: CommunityVatNumberType
      * simple type: CommunityVatNumberType
      * pattern: [A-Z]{2}[0-9A-Z]{2,13}
-
-    <invoiceExchange>
-        <invoiceHead>
-            <supplierInfo>
-                <communityVatNumber>ZZ1111111111111</communityVatNumber>
+     *
+     * <invoiceExchange>
+     *     <invoiceHead>
+     *         <supplierInfo>
+     *             <communityVatNumber>ZZ1111111111111</communityVatNumber>
      */
     protected ?string $supplierCommunityVatNumber = null;
 
     /**
-     * setter for supplierCommunityVatNumber
-     *
-     * @param mixed
-     * @return self
-     */
-    public function setSupplierCommunityVatNumber(?string $value): InvoiceInterface
-    {
-        $this->supplierCommunityVatNumber = $value;
-        return $this;
-    }
-
-    /**
-     * getter for supplierCommunityVatNumber
-     *
-     * @return mixed return value for
-     */
-    public function getSupplierCommunityVatNumber(): ?string
-    {
-        return $this->supplierCommunityVatNumber;
-    }
-
-    /*
      * Az eladó (szállító) neve
      *
      * @ requirements required
@@ -172,35 +97,12 @@ class Invoice implements InvoiceInterface
      *            <supplierInfo>
      *                <supplierName>Szállító Kft</supplierName>
      * </code>
-     * 
-     * @Assert\NotBlank()
-     * @Assert\Length(max = 512)
      */
+    #[Assert\NotBlank()]
+    #[Assert\Length(max: 512)]
     protected string $supplierName = '';
 
     /**
-     * setter for supplierName
-     *
-     * @param mixed
-     * @return self
-     */
-    public function setSupplierName(string $value): InvoiceInterface
-    {
-        $this->supplierName = $value;
-        return $this;
-    }
-
-    /**
-     * getter for supplierName
-     *
-     * @return mixed return value for
-     */
-    public function getSupplierName(): string
-    {
-        return $this->supplierName;
-    }
-
-    /*
      * Az eladó (szállító) címe
      *
      * @ requirements required
@@ -228,35 +130,12 @@ class Invoice implements InvoiceInterface
      *                     </detailedAddress>
      *                 </supplierAddress>
      * </code>
-     *
-     * @Assert\NotBlank()
-     * @Assert\Valid(group="v2.0")
      */
+    #[Assert\NotBlank()]
+    #[Assert\Valid(groups: ['v2.0'])]
     protected Address $supplierAddress;
 
     /**
-     * setter for supplierAddress
-     *
-     * @param Address $supplierAddress
-     * @return self
-     */
-    public function setSupplierAddress(Address $supplierAddress): InvoiceInterface
-    {
-        $this->supplierAddress = $supplierAddress;
-        return $this;
-    }
-
-    /**
-     * getter for supplierAddress
-     *
-     * @return Address
-     */
-    public function getSupplierAddress(): Address
-    {
-        return $this->supplierAddress;
-    }
-
-    /*
      * Az eladó (szállító) bankszámlaszáma
      *
      * requirements: not required
@@ -269,35 +148,128 @@ class Invoice implements InvoiceInterface
      * 12345678-12345678-12345678 vagy,
      * Kétbetűs országkód + kétjegyű ellenőrzőszám + 11-30 számjegyű belföldi pénzforgalmi jelzőszám IBAN
      *
-
-	<invoiceExchange>
-		<invoiceHead>
-			<supplierInfo>
-				<supplierBankAccountNumber>88888888-66666666-12345678</supplierBankAccountNumber>
-    
+     * <invoiceExchange>
+     *     <invoiceHead>
+     *         <supplierInfo>
+     *             <supplierBankAccountNumber>88888888-66666666-12345678</supplierBankAccountNumber>
      */
     protected ?string $supplierBankAccountNumber = null;
 
+    public function __construct()
+    {
+        $this->supplierAddress = new Address();
+        $this->vatRateSummaries = new ArrayCollection();
+        $this->items = new ArrayCollection();
+    }
+
     /**
-     * setter for supplierBankAccountNumber
+     * @return string
+     */
+    public function getSupplierTaxNumber(): string
+    {
+        return $this->supplierTaxNumber;
+    }
+
+    /**
+     * @param string $supplierTaxNumber
+     * @return self
+     */
+    public function setSupplierTaxNumber(string $supplierTaxNumber): InvoiceInterface
+    {
+        $this->supplierTaxNumber = str_replace('-', '', $supplierTaxNumber);
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSupplierGroupMemberTaxNumber(): ?string
+    {
+        return $this->supplierGroupMemberTaxNumber;
+    }
+
+    /**
+     * @param string|null $supplierGroupMemberTaxNumber
+     * @return self
+     */
+    public function setSupplierGroupMemberTaxNumber(?string $supplierGroupMemberTaxNumber): InvoiceInterface
+    {
+        $this->supplierGroupMemberTaxNumber = $supplierGroupMemberTaxNumber;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSupplierCommunityVatNumber(): ?string
+    {
+        return $this->supplierCommunityVatNumber;
+    }
+
+    /**
+     * @param string|null $supplierCommunityVatNumber
+     * @return self
+     */
+    public function setSupplierCommunityVatNumber(?string $supplierCommunityVatNumber): InvoiceInterface
+    {
+        $this->supplierCommunityVatNumber = $supplierCommunityVatNumber;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSupplierName(): string
+    {
+        return $this->supplierName;
+    }
+
+    /**
+     * setter for supplierName
      *
-     * @param mixed
+     * @param string $supplierName
+     * @return self
+     */
+    public function setSupplierName(string $supplierName): InvoiceInterface
+    {
+        $this->supplierName = $supplierName;
+        return $this;
+    }
+
+    /**
+     * @return Address
+     */
+    public function getSupplierAddress(): Address
+    {
+        return $this->supplierAddress;
+    }
+
+    /**
+     * @param Address $supplierAddress
+     * @return self
+     */
+    public function setSupplierAddress(Address $supplierAddress): InvoiceInterface
+    {
+        $this->supplierAddress = $supplierAddress;
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getSupplierBankAccountNumber(): ?string
+    {
+        return $this->supplierBankAccountNumber;
+    }
+
+    /**
+     * @param string|null $supplierBankAccountNumber
      * @return self
      */
     public function setSupplierBankAccountNumber(?string $supplierBankAccountNumber): InvoiceInterface
     {
         $this->supplierBankAccountNumber = $supplierBankAccountNumber;
         return $this;
-    }
-
-    /**
-     * getter for supplierBankAccountNumber
-     *
-     * @return mixed return value for
-     */
-    public function getSupplierBankAccountNumber(): ?string
-    {
-        return $this->supplierBankAccountNumber;
     }
 
     protected int $customerVatStatus = self::CUSTOMER_VAT_STATUS_DOMESTIC;
