@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Providers;
 
+use NAV\OnlineInvoice\Http\InvoiceServiceRequest;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Http\Request\Software;
@@ -61,11 +62,12 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
     
     public function getEndpointUrl(Request $request): string
     {
-        $host = $this->infoJson['test'] ? 'api-test.onlineszamla.nav.gov.hu' : 'api.onlineszamla.nav.gov.hu';
-        
-        $version = '/v3';
-        
-        return 'https://'. $host .'/'. $request::SERVICE_NAME . $version . $request->getEndpointPath();
+        return sprintf('https://%s/%s%s%s',
+            $this->infoJson['test'] ? 'api-test.onlineszamla.nav.gov.hu' : 'api.onlineszamla.nav.gov.hu',
+            $request->getServiceKind()->value,
+            '/v3',
+            $request->getEndpointPath(),
+        );
     }
     
     public function getUserPasswordHash(User $user): string
