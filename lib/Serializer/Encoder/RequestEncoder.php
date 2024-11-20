@@ -35,7 +35,7 @@ class RequestEncoder implements EncoderInterface, DecoderInterface
         return 'request' === $format || 'invoice_xml' === $format;;
     }
 
-    public function decode(string $data, string $format, array $context = [])
+    public function decode(string $data, string $format, array $context = []): mixed
     {
         return $this->xmlEncoder->decode($data, 'xml', $context);
     }
