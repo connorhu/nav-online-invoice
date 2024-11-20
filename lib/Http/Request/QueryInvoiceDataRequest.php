@@ -3,8 +3,9 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
+use NAV\OnlineInvoice\Http\RequestServiceKindEnum;
 
-class QueryInvoiceDataRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
+class QueryInvoiceDataRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
     use HeaderAwareTrait;
     use SoftwareAwareTrait;
@@ -15,6 +16,11 @@ class QueryInvoiceDataRequest extends Request implements HeaderAwareRequest, Use
     public function getEndpointPath(): string
     {
         return '/queryInvoiceData';
+    }
+
+    public function getServiceKind(): RequestServiceKindEnum
+    {
+        return RequestServiceKindEnum::InvoiceService;
     }
 
     private string $invoiceNumber;

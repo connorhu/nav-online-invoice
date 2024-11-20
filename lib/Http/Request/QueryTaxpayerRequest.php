@@ -3,9 +3,10 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
+use NAV\OnlineInvoice\Http\RequestServiceKindEnum;
 use Symfony\Component\Validator\Constraints as Assert;
 
-class QueryTaxpayerRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
+class QueryTaxpayerRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
     use HeaderAwareTrait;
     use SoftwareAwareTrait;
@@ -17,7 +18,12 @@ class QueryTaxpayerRequest extends Request implements HeaderAwareRequest, UserAw
     {
         return '/queryTaxpayer';
     }
-    
+
+    public function getServiceKind(): RequestServiceKindEnum
+    {
+        return RequestServiceKindEnum::InvoiceService;
+    }
+
     /**
      * @Assert\NotBlank(groups={"v1.0", "v1.1", "v2.0", "v3.0"})
      * @Assert\Length(max=8, min=8, groups={"v1.0", "v1.1", "v2.0", "v3.0"})

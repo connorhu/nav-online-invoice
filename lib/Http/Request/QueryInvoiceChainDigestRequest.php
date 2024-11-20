@@ -3,8 +3,9 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
+use NAV\OnlineInvoice\Http\RequestServiceKindEnum;
 
-class QueryInvoiceChainDigestRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
+class QueryInvoiceChainDigestRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
     use HeaderAwareTrait;
     use SoftwareAwareTrait;
@@ -15,6 +16,11 @@ class QueryInvoiceChainDigestRequest extends Request implements HeaderAwareReque
     public function getEndpointPath(): string
     {
         return '/queryInvoiceChainDigest';
+    }
+
+    public function getServiceKind(): RequestServiceKindEnum
+    {
+        return RequestServiceKindEnum::InvoiceService;
     }
 
     private int $page = 1;

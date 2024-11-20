@@ -10,6 +10,7 @@ abstract class Request
     const REQUEST_VERSION_V30 = '3.0';
 
     abstract public function getEndpointPath(): string;
+    abstract public function getServiceKind(): RequestServiceKindEnum;
 
     /**
      * @var string
