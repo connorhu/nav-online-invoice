@@ -3,8 +3,9 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
+use NAV\OnlineInvoice\Http\RequestServiceKindEnum;
 
-class TokenExchangeRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest, InvoiceService
+class TokenExchangeRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
     use HeaderAwareTrait;
     use SoftwareAwareTrait;
@@ -15,5 +16,10 @@ class TokenExchangeRequest extends Request implements HeaderAwareRequest, UserAw
     public function getEndpointPath(): string
     {
         return '/tokenExchange';
+    }
+
+    public function getServiceKind(): RequestServiceKindEnum
+    {
+        return RequestServiceKindEnum::InvoiceService;
     }
 }

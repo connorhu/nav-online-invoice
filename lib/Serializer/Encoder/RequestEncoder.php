@@ -32,7 +32,7 @@ class RequestEncoder implements EncoderInterface, DecoderInterface
 
     public function supportsEncoding(string $format): bool
     {
-        return 'request' === $format || 'invoice_xml' === $format;;
+        return 'request' === $format || 'invoice_xml' === $format;
     }
 
     public function decode(string $data, string $format, array $context = []): mixed
