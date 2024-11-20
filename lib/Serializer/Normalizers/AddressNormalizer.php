@@ -68,16 +68,14 @@ class AddressNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
 
         if ($object->getAdditionalAddressDetail()) {
-            $buffer = [
+            return [
                 'base:simpleAddress' => $addressData,
             ];
-        } else {
-            $buffer = [
-                'base:detailedAddress' => $addressData,
-            ];
         }
-        
-        return $buffer;
+
+        return [
+            'base:detailedAddress' => $addressData,
+        ];
     }
     
     public function supportsNormalization($data, $format = null, array $context = []): bool
