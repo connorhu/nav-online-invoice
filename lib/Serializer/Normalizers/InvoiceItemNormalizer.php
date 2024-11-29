@@ -42,7 +42,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
         }
 
         foreach ($object->getProductCodes() as $code) {
-            $buffer['productCodes'][] = $this->serializer->normalize($code, $format, $context);
+            $buffer['productCodes'][] = $this->normalizer->normalize($code, $format, $context);
         }
 
         $buffer['lineExpressionIndicator'] = $object->getLineExpressionIndicator() === true ? 'true' : 'false';
