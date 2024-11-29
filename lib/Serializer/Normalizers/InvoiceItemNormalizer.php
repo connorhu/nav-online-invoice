@@ -26,6 +26,10 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
     {
         $buffer = [];
 
+        if (!$object instanceof InvoiceItemInterface) {
+            throw new \RuntimeException('invalid type to normalize');
+        }
+
         $buffer['lineNumber'] = $object->getItemNumber();
 
         if ($object->getLineModificationReferenceNumber()) {
@@ -62,7 +66,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
         }
 
         if ($object->getUnitOfMeasure()) {
-            $buffer['unitOfMeasure'] = $object->getUnitOfMeasure();
+            $buffer['unitOfMeasure'] = $object->getUnitOfMeasure()->rawString();
         }
         if ($object->getUnitOfMeasureOwn()) {
             $buffer['unitOfMeasureOwn'] = $object->getUnitOfMeasureOwn();
