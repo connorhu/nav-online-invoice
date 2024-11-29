@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice;
 
+use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
 use Psr\Log\LoggerInterface;
 use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
 use NAV\OnlineInvoice\Http\Request;
@@ -132,9 +133,9 @@ class OnlineInvoiceRestClient
             XmlEncoder::FORMAT_OUTPUT => true,
         ];
 
-        $xmlStringBody = $this->serializer->serialize($request, 'request', $options);
-
         try {
+            $xmlStringBody = $this->serializer->serialize($request, 'request', $options);
+
             $endpointUrl = $this->urlProvider->getEndpointUrl($request);
             
             if ($this->logger) {
@@ -184,6 +185,10 @@ class OnlineInvoiceRestClient
 
             $responseClass = ResponseClassProvider::getResponseClass($responseXmlString, 'xml');
             $response = $this->serializer->deserialize($responseXmlString, $responseClass, 'xml');
+        }
+        catch (InvalidXMLException $exception) {
+            dump($exception->getLibXmlErrors());
+            exit;
         }
         catch (\Exception $e) {
             if ($this->logger) {
