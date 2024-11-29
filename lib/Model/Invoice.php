@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use NAV\OnlineInvoice\Model\Enums\PaymentMethodEnum;
 use NAV\OnlineInvoice\Model\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
@@ -1007,13 +1008,7 @@ class Invoice implements InvoiceInterface
         return $this->selfBillingIndicator;
     }
 
-    const PATMENT_METHOD_TRANSFER = 'TRANSFER';
-    const PATMENT_METHOD_CASH = 'CASH';
-    const PATMENT_METHOD_CARD = 'CARD';
-    const PATMENT_METHOD_VOUCHER = 'VOUCHER';
-    const PATMENT_METHOD_OTHER = 'OTHER';
-
-    /*
+    /**
      * Fizetés módja
      *
      * requirements: not required
@@ -1021,35 +1016,31 @@ class Invoice implements InvoiceInterface
      * xml type: xs:string
      * simple type: PaymentMethodType
      * pattern: -
-     * enum: TRANSFER CASH CARD VOUCHER OTHER 
+     * enum: TRANSFER CASH CARD VOUCHER OTHER
 
 	<invoiceExchange>
 		<invoiceHead>
 			<invoiceData>
 				<paymentMethod>TRANSFER</paymentMethod>
      */
-    protected $paymentMethod;
+    protected ?PaymentMethodEnum $paymentMethod = null;
 
     /**
-     * setter for paymentMethod
-     *
-     * @param mixed
-     * @return self
+     * @return PaymentMethodEnum|null
      */
-    public function setPaymentMethod($value)
+    public function getPaymentMethod(): ?PaymentMethodEnum
     {
-        $this->paymentMethod = $value;
-        return $this;
+        return $this->paymentMethod;
     }
 
     /**
-     * getter for paymentMethod
-     *
-     * @return mixed return value for
+     * @param PaymentMethodEnum|null $paymentMethod
+     * @return self
      */
-    public function getPaymentMethod()
+    public function setPaymentMethod(?PaymentMethodEnum $paymentMethod)
     {
-        return $this->paymentMethod;
+        $this->paymentMethod = $paymentMethod;
+        return $this;
     }
 
     /*
