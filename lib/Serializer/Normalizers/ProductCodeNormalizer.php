@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Model\Enums\ProductCodeCategoryEnum;
 use NAV\OnlineInvoice\Model\Interfaces\ProductCodeInterface;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ProductCodeNormalizer
 {
@@ -16,7 +17,7 @@ class ProductCodeNormalizer
         }
         
         $buffer['productCodeCategory'] = $object->getProductCodeCategory()->rawString();
-        $buffer['productCodeValue'] = $object->getProductCodeValue();
+        $buffer['productCodeValue'] = str_replace(['.'], '', $object->getProductCodeValue());
     
         if ($object->getProductCodeCategory() === ProductCodeCategoryEnum::Own) {
             $buffer['productCodeOwnValue'] = $object->getProductCodeOwnValue();
