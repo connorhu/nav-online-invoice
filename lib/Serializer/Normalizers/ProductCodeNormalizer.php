@@ -6,7 +6,7 @@ use NAV\OnlineInvoice\Model\Enums\ProductCodeCategoryEnum;
 use NAV\OnlineInvoice\Model\Interfaces\ProductCodeInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-class ProductCodeNormalizer
+class ProductCodeNormalizer implements NormalizerInterface
 {
     public function normalize($object, string $format = null, array $context = []): array
     {
