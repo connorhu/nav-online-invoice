@@ -174,7 +174,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
     public function getSupportedTypes(?string $format): array
     {
         return [
-            InvoiceItem::class => true,
+            InvoiceItemInterface::class => true,
         ];
     }
 }
