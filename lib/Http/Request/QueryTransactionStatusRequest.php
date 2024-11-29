@@ -3,6 +3,7 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request;
+use NAV\OnlineInvoice\Http\RequestServiceKindEnum;
 
 class QueryTransactionStatusRequest extends Request implements HeaderAwareRequest, UserAwareRequest, SoftwareAwareRequest
 {
@@ -16,7 +17,12 @@ class QueryTransactionStatusRequest extends Request implements HeaderAwareReques
     {
         return '/queryTransactionStatus';
     }
-    
+
+    public function getServiceKind(): RequestServiceKindEnum
+    {
+        return RequestServiceKindEnum::InvoiceService;
+    }
+
     protected $transactionId;
     
     /**
