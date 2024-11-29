@@ -17,11 +17,17 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
     use NormalizerAwareTrait;
     use DenormalizerAwareTrait;
 
+    public function __construct(
+        private readonly VatRateNormalizer $vatRateNormalizer
+    )
+    {
+    }
+
     public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
 
-        $buffer['vatRate'] = $this->normalizer->normalize($object, $format, $context);
+        $buffer['vatRate'] = $this->vatRateNormalizer->normalize($object, $format, $context);
 
         $buffer['vatRateNetData'] = [
             'vatRateNetAmount' => $object->getNetAmount(),
