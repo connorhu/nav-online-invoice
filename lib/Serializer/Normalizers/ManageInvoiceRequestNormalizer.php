@@ -78,7 +78,7 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
             $this->xsdValidator->validate($serializedInvoice);
 
             if (count($errors = $this->xsdValidator->getErrors()) > 0) {
-                throw new InvalidXMLException($errors);
+                throw new InvalidXMLException($errors, $this->xsdValidator->getFormattedXml());
             }
 
             $encodedInvoiceData = $this->cryptoTools->encodeInvoiceData($serializedInvoice);

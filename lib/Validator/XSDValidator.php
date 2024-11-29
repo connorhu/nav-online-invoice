@@ -14,6 +14,8 @@ class XSDValidator
     public function __construct(private readonly string $schemaFile)
     {
         $this->domHandler = new \DOMDocument('1.0', 'utf-8');
+        $this->domHandler->preserveWhiteSpace = false;
+        $this->domHandler->formatOutput = true;
     }
 
     /**
@@ -28,12 +30,18 @@ class XSDValidator
             $this->errors = libxml_get_errors();
         }
     }
+
     /**
      * @return array<int, \LibXMLError>
      */
     public function getErrors(): array
     {
         return $this->errors;
+    }
+
+    public function getFormattedXml(): string
+    {
+        return $this->domHandler->saveXML();
     }
 }
 

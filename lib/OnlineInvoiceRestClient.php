@@ -188,6 +188,7 @@ class OnlineInvoiceRestClient
         }
         catch (InvalidXMLException $exception) {
             dump($exception->getLibXmlErrors());
+            dump($exception->getXmlContent());
             exit;
         }
         catch (\Exception $e) {
