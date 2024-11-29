@@ -139,7 +139,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
 
         if ($invoice->getPaymentMethod() !== null) {
-            $invoiceData['paymentMethod'] = $invoice->getPaymentMethod();
+            $invoiceData['paymentMethod'] = $invoice->getPaymentMethod()->rawString();
         }
 
         if ($invoice->getPaymentDate()) {
