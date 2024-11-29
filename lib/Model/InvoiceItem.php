@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Model;
 
+use NAV\OnlineInvoice\Model\Enums\UnitOfMeasureEnum;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Model\Traits\VatRateTrait;
@@ -348,7 +349,7 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->quantity;
     }
     
-    /*
+    /**
      * Mennyiségi egység
      *
      * requirements: not required
@@ -360,30 +361,28 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 <line>
 	<unitOfMeasure>kg</unitOfMeasure>
      */
-    protected $unitOfMeasure;
-    
+    protected ?UnitOfMeasureEnum $unitOfMeasure = null;
+
     /**
-     * setter for unitOfMeasure
-     *
-     * @param mixed 
-     * @return self
+     * @return UnitOfMeasureEnum|null
      */
-    public function setUnitOfMeasure($value)
-    {
-        $this->unitOfMeasure = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for unitOfMeasure
-     * 
-     * @return mixed return value for 
-     */
-    public function getUnitOfMeasure()
+    public function getUnitOfMeasure(): ?UnitOfMeasureEnum
     {
         return $this->unitOfMeasure;
     }
-    
+
+    /**
+     * setter for unitOfMeasure
+     *
+     * @param UnitOfMeasureEnum|null $unitOfMeasure
+     * @return self
+     */
+    public function setUnitOfMeasure(?UnitOfMeasureEnum $unitOfMeasure): InvoiceItemInterface
+    {
+        $this->unitOfMeasure = $unitOfMeasure;
+        return $this;
+    }
+
     /*
      * Mennyiségi egység
      *
