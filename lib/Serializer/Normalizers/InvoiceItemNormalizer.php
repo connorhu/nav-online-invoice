@@ -94,7 +94,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $buffer['intermediatedService'] = $object->getIntermediatedService();
         }
 
-        foreach ($object->getAdditionalData() as $key => $data) {
+        foreach ($object->getAdditionalItemData() as $key => $data) {
             $buffer['additionalLineData'][] = [
                 'dataName' => $key,
                 'dataDescription' => $data['description'],
@@ -160,7 +160,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $lineData = $data[$keyPrefix.'additionalLineData'];
         }
         foreach ($lineData as $additionalLineData) {
-            $object->addAdditionalData($additionalLineData[$keyPrefix.'dataName'], $additionalLineData[$keyPrefix.'dataDescription'], $additionalLineData[$keyPrefix.'dataValue']);
+            $object->addAdditionalItemData($additionalLineData[$keyPrefix.'dataName'], $additionalLineData[$keyPrefix.'dataDescription'], $additionalLineData[$keyPrefix.'dataValue']);
         }
 
         return $object;
