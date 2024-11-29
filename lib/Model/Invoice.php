@@ -5,6 +5,7 @@ namespace NAV\OnlineInvoice\Model;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use NAV\OnlineInvoice\Model\Enums\PaymentMethodEnum;
+use NAV\OnlineInvoice\Model\Enums\InvoiceAppearanceEnum;
 use NAV\OnlineInvoice\Model\Interfaces\AddressInterface;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
@@ -1119,12 +1120,7 @@ class Invoice implements InvoiceInterface
         return $this->cashAccountingIndicator;
     }
 
-    const INVOCE_APPEARANCE_PAPER = 'PAPER';
-    const INVOCE_APPEARANCE_ELECTRONIC = 'ELECTRONIC';
-    const INVOCE_APPEARANCE_EDI = 'EDI';
-    const INVOCE_APPEARANCE_UNKNOWN = 'UNKNOWN';
-
-    /*
+    /**
      * A számla vagy módosító okirat megjelenési formája.
      *
      * requirements: required
@@ -1141,14 +1137,14 @@ class Invoice implements InvoiceInterface
      *
      * @Assert\NotBlank(groups="v2.0")
      */
-    protected $invoiceAppearance;
+    protected ?InvoiceAppearanceEnum $invoiceAppearance;
 
     /**
      * getter for invoiceAppearance
      *
      * @return mixed return value for
      */
-    public function getInvoiceAppearance()
+    public function getInvoiceAppearance(): ?InvoiceAppearanceEnum
     {
         return $this->invoiceAppearance;
     }
@@ -1159,7 +1155,7 @@ class Invoice implements InvoiceInterface
      * @param mixed
      * @return self
      */
-    public function setInvoiceAppearance($value)
+    public function setInvoiceAppearance(?InvoiceAppearanceEnum $value)
     {
         $this->invoiceAppearance = $value;
         return $this;
