@@ -152,7 +152,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
             $invoiceData['cashAccountingIndicator'] = $invoice->getCashAccountingIndicator();
         }
 
-        $invoiceData['invoiceAppearance'] = $invoice->getInvoiceAppearance();
+        $invoiceData['invoiceAppearance'] = $invoice->getInvoiceAppearance()->rawString();
 
         if ($invoice->getElectronicInvoiceHash()) {
             $invoiceData['electronicInvoiceHash'] = $invoice->getElectronicInvoiceHash();
