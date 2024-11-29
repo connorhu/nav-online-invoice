@@ -24,7 +24,7 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
 
     public function __construct(private readonly RequestNormalizer $requestNormalizer, private readonly CryptoToolsProviderInterface $cryptoTools)
     {
-        $this->xsdValidator = new XSDValidator(__DIR__.'/../../Resources/catalog.xsd');
+        $this->xsdValidator = new XSDValidator(__DIR__.'/../../Resources/XSD/catalog.xsd');
     }
 
     protected function normalizeV20(ManageInvoiceRequest $object, $format = null, array $context = []): array
