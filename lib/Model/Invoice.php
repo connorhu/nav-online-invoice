@@ -1140,9 +1140,7 @@ class Invoice implements InvoiceInterface
     protected ?InvoiceAppearanceEnum $invoiceAppearance;
 
     /**
-     * getter for invoiceAppearance
-     *
-     * @return mixed return value for
+     * @return InvoiceAppearanceEnum|null
      */
     public function getInvoiceAppearance(): ?InvoiceAppearanceEnum
     {
@@ -1150,14 +1148,12 @@ class Invoice implements InvoiceInterface
     }
 
     /**
-     * setter for invoiceAppearance
-     *
-     * @param mixed
+     * @param InvoiceAppearanceEnum|null $invoiceAppearance
      * @return self
      */
-    public function setInvoiceAppearance(?InvoiceAppearanceEnum $value)
+    public function setInvoiceAppearance(?InvoiceAppearanceEnum $invoiceAppearance)
     {
-        $this->invoiceAppearance = $value;
+        $this->invoiceAppearance = $invoiceAppearance;
         return $this;
     }
 
