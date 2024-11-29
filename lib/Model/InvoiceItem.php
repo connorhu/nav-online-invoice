@@ -719,16 +719,16 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->intermediatedService;
     }
     
-    private $additionalData = [];
+    private $additionalItemData = [];
     
-    public function addAdditionalData($key, $description, $value)
+    public function addAdditionalItemData($key, $description, $value)
     {
-        $this->additionalData[$key] = ['description' => $description, 'value' => $value];
+        $this->additionalItemData[$key] = ['description' => $description, 'value' => $value];
     }
     
-    public function getAdditionalData(): array
+    public function getAdditionalItemData(): array
     {
-        return $this->additionalData;
+        return $this->additionalItemData;
     }
 }
 
