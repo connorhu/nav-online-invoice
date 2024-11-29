@@ -1144,6 +1144,16 @@ class Invoice implements InvoiceInterface
     protected $invoiceAppearance;
 
     /**
+     * getter for invoiceAppearance
+     *
+     * @return mixed return value for
+     */
+    public function getInvoiceAppearance()
+    {
+        return $this->invoiceAppearance;
+    }
+
+    /**
      * setter for invoiceAppearance
      *
      * @param mixed
@@ -1153,16 +1163,6 @@ class Invoice implements InvoiceInterface
     {
         $this->invoiceAppearance = $value;
         return $this;
-    }
-
-    /**
-     * getter for invoiceAppearance
-     *
-     * @return mixed return value for
-     */
-    public function getInvoiceAppearance()
-    {
-        return $this->invoiceAppearance;
     }
 
     /*
