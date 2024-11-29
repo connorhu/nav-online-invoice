@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Model\InvoiceItem;
 use Symfony\Component\Serializer\Normalizer\DenormalizerAwareInterface;
@@ -101,7 +102,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
 
     public function supportsNormalization($data, $format = null, array $context = []): bool
     {
-        return $data instanceof InvoiceItem;
+        return $data instanceof InvoiceItemInterface;
     }
 
     public const XMLNS_CONTEXT_KEY = '_invoice_item_xmlns';
