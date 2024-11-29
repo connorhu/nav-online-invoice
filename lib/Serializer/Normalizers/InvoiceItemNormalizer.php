@@ -17,6 +17,11 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
     use NormalizerAwareTrait;
     use DenormalizerAwareTrait;
 
+    public function __construct(
+        private readonly VatRateNormalizer $vatRateNormalizer,
+    ) {
+    }
+
     public function normalize($object, $format = null, array $context = []): array
     {
         $buffer = [];
@@ -72,7 +77,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             'lineNetAmountHUF' => $object->getNetAmountHUF(),
         ];
 
-        $buffer['lineAmountsNormal']['lineVatRate'] = $this->normalizer->normalize($object, $format, $context);
+        $buffer['lineAmountsNormal']['lineVatRate'] = $this->vatRateNormalizer->normalize($object, $format, $context);
         $buffer['lineAmountsNormal']['lineVatData'] = [
             'lineVatAmount' => $object->getVatAmount(),
             'lineVatAmountHUF' => $object->getVatAmountHUF(),
