@@ -21,6 +21,11 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
     use DenormalizerAwareTrait;
     use ResponseDenormalizerTrait;
 
+    public function __construct(
+        private readonly VatRateSummaryNormalizer $vatRateSummaryNormalizer,
+    ) {
+    }
+
     protected function normalizeSupplierInfo(Invoice $invoice, string $format = null, array $context = []): array
     {
         $taxNumber = $invoice->getSupplierTaxNumber();
@@ -194,7 +199,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         ];
 
         foreach ($invoice->getVatRateSummaries() as $summary) {
-            $invoiceSummary['summaryNormal']['summaryByVatRate'][] = $this->serializer->normalize($summary, $format, $context);
+            $invoiceSummary['summaryNormal']['summaryByVatRate'][] = $this->vatRateSummaryNormalizer->normalize($summary, $format, $context);
         }
 
         return $invoiceSummary;
