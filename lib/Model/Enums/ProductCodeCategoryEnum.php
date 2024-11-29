@@ -29,7 +29,7 @@ enum ProductCodeCategoryEnum: int
         };
     }
 
-    public static function initWithRawString(string $rawString): PaymentMethodEnum
+    public static function initWithRawString(string $rawString): self
     {
         return match ($rawString) {
             'TRANSFER' => self::Transfer,

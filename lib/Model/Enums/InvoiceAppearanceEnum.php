@@ -19,7 +19,7 @@ enum InvoiceAppearanceEnum: int
         };
     }
 
-    public static function initWithRawString(string $rawString): InvoiceAppearanceEnum
+    public static function initWithRawString(string $rawString): self
     {
         return match ($rawString) {
             'PAPER' => self::Paper,
