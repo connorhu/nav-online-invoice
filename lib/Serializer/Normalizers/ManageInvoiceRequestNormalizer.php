@@ -5,6 +5,8 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
+use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
+use NAV\OnlineInvoice\Validator\XSDValidator;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
 use Symfony\Component\Serializer\SerializerAwareTrait;
@@ -18,8 +20,11 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
      */
     private InvoiceNormalizer $invoiceNormalizer;
 
+    private XSDValidator $xsdValidator;
+
     public function __construct(private readonly RequestNormalizer $requestNormalizer, private readonly CryptoToolsProviderInterface $cryptoTools)
     {
+        $this->xsdValidator = new XSDValidator(__DIR__.'/../../../resources/catalog.xsd');
     }
 
     protected function normalizeV20(ManageInvoiceRequest $object, $format = null, array $context = []): array
@@ -69,6 +74,12 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
             $serializedInvoice = $this->serializer->serialize($invoiceOperation->getInvoice(), 'invoice_xml', [
                 'request_version' => $object->getRequestVersion(),
             ]);
+
+            $this->xsdValidator->validate($serializedInvoice);
+
+            if (count($errors = $this->xsdValidator->getErrors()) > 0) {
+                throw new InvalidXMLException($errors);
+            }
 
             $encodedInvoiceData = $this->cryptoTools->encodeInvoiceData($serializedInvoice);
 
