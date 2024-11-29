@@ -132,6 +132,8 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         if ($invoice->getExchangeRate()) {
             $invoiceData['exchangeRate'] = $invoice->getExchangeRate();
+        } else {
+            $invoiceData['exchangeRate'] = 1;
         }
 
         if ($invoice->getSelfBillingIndicator() !== null) {
