@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Model\Address;
+use NAV\OnlineInvoice\Model\Enums\CustomerVatStatusEnum;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface;
 use NAV\OnlineInvoice\Model\Invoice;
 use NAV\OnlineInvoice\Model\InvoiceItem;
@@ -65,8 +66,8 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
     {
         $customerInfo = [];
 
-        $customerInfo['customerVatStatus'] = $invoice->getCustomerVatStatusString();
-        if ($invoice->getCustomerVatStatus() === Invoice::CUSTOMER_VAT_STATUS_PRIVATE_PERSON) {
+        $customerInfo['customerVatStatus'] = $invoice->getCustomerVatStatus()->rawString();
+        if ($invoice->getCustomerVatStatus() === CustomerVatStatusEnum::PrivatePerson) {
             return $customerInfo;
         }
 
@@ -333,7 +334,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         $customerInfo = $invoiceHead[$dataKeyPrefix.'customerInfo'];
         $customerVatData = $customerInfo[$dataKeyPrefix.'customerVatData'];
 
-        $object->setCustomerVatStatus(Invoice::getCustomerVatStatusWithString($customerInfo[$dataKeyPrefix.'customerVatStatus']));
+        $object->setCustomerVatStatus(CustomerVatStatusEnum::initWithRawString($customerInfo[$dataKeyPrefix.'customerVatStatus']));
         $object->setCustomerName($customerInfo[$dataKeyPrefix.'customerName']);
         $object->setCustomerAddress($this->denormalizeAddress($customerInfo[$dataKeyPrefix.'customerAddress'], $baseKeyPrefix));
 
