@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
@@ -15,7 +16,7 @@ class UserNormalizer implements NormalizerInterface
 
     public function normalize($object, $format = null, array $context = []): array
     {
-        if ($object->getRequest()->getRequestVersion() === Request::REQUEST_VERSION_V30) {
+        if ($object->getRequest()->getRequestVersion() === RequestVersionEnum::v30) {
             return [
                 'common:login' => $object->getLogin(),
                 'common:passwordHash' => [

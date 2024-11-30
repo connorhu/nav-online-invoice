@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
@@ -36,7 +37,7 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
             'invoiceOperation' => [],
         ];
 
-        if (($requestVersion = $object->getHeader()->getRequestVersion()) !== Request::REQUEST_VERSION_V20) {
+        if (($requestVersion = $object->getHeader()->getRequestVersion()) !== RequestVersionEnum::v20) {
             throw new \Exception('request version not supported: '. $requestVersion);
         }
 
@@ -104,9 +105,9 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
      */
     public function normalize($object, $format = null, array $context = []): array
     {
-        if ($object->getRequestVersion() === Request::REQUEST_VERSION_V20) {
+        if ($object->getRequestVersion() === RequestVersionEnum::v20) {
             return $this->normalizeV20($object, $format, $context);
-        } elseif ($object->getRequestVersion() === Request::REQUEST_VERSION_V30) {
+        } elseif ($object->getRequestVersion() === RequestVersionEnum::v30) {
             return $this->normalizeV30($object, $format, $context);
         }
 

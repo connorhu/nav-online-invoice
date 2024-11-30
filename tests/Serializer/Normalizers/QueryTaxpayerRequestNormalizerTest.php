@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Tests\Fixtures\CryptoToolsProvider;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
@@ -77,7 +78,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
         $request->setHeader($header);
         $request->setSoftware($software);
         $request->setRequestId('abc');
-        $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $request->setRequestVersion(RequestVersionEnum::v30);
         $request->setUser($this->user);
         $request->setTaxNumber('69061864-1-33');
         
@@ -126,7 +127,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
         $request->setHeader($header);
         $request->setSoftware($software);
         $request->setRequestId('abc');
-        $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $request->setRequestVersion(RequestVersionEnum::v30);
         $request->setUser($this->user);
         $request->setTaxNumber('69061864-1-33');
         
@@ -170,7 +171,7 @@ EOS;
     public function testEndpoint()
     {
         $request = new QueryTaxpayerRequest();
-        $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $request->setRequestVersion(RequestVersionEnum::v30);
         $this->assertSame($request->getEndpointPath(), '/queryTaxpayer');
     }
 }

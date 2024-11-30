@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Model\Address;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface;
 use NAV\OnlineInvoice\Model\Invoice;
@@ -211,12 +212,12 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         $buffer = [];
 
-        if ($format === 'invoice_xml' && $context['request_version'] === Request::REQUEST_VERSION_V20) {
+        if ($format === 'invoice_xml' && $context['request_version'] === RequestVersionEnum::v20) {
             $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/2.0/data';
             $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
             $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/2.0/data invoiceData.xsd';
         }
-        elseif ($format === 'invoice_xml' && $context['request_version'] === Request::REQUEST_VERSION_V30) {
+        elseif ($format === 'invoice_xml' && $context['request_version'] === RequestVersionEnum::v30) {
             $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/3.0/data';
             $buffer['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
             $buffer['@xsi:schemaLocation'] = 'http://schemas.nav.gov.hu/OSA/3.0/data invoiceData.xsd';

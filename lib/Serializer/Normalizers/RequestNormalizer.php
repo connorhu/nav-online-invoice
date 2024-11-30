@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
 use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
@@ -37,7 +38,7 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
         
         $commonNamespace = '';
         if ($format === 'request') {
-            if ($object->getRequestVersion() === Request::REQUEST_VERSION_V30) {
+            if ($object->getRequestVersion() === RequestVersionEnum::v30) {
                 $buffer['@xmlns'] = 'http://schemas.nav.gov.hu/OSA/3.0/api';
                 $buffer['@xmlns:common'] = 'http://schemas.nav.gov.hu/NTCA/1.0/common';
                 

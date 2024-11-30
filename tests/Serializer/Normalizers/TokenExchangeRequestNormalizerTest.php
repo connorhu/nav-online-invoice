@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Tests\Fixtures\CryptoToolsProvider;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
@@ -77,7 +78,7 @@ class TokenExchangeRequestNormalizerTest extends TestCase
         $request->setHeader($header);
         $request->setSoftware($software);
         $request->setRequestId('abc');
-        $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $request->setRequestVersion(RequestVersionEnum::v30);
         $request->setUser($this->user);
         
         $this->assertSame($this->serializer->normalize($request, 'request'), [
@@ -124,7 +125,7 @@ class TokenExchangeRequestNormalizerTest extends TestCase
         $request->setHeader($header);
         $request->setSoftware($software);
         $request->setRequestId('abc');
-        $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $request->setRequestVersion(RequestVersionEnum::v30);
         $request->setUser($this->user);
         
         $options = [
@@ -166,7 +167,7 @@ EOS;
     public function testEndpoint()
     {
         $request = new TokenExchangeRequest();
-        $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $request->setRequestVersion(RequestVersionEnum::v30);
         $this->assertSame($request->getEndpointPath(), '/tokenExchange');
     }
 }

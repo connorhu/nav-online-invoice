@@ -3,6 +3,7 @@
 namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
@@ -25,7 +26,7 @@ class HeaderNormalizerTest extends TestCase
         $header = $this->getEmptyHeader();
 
         $header->getRequest()->setRequestId('abc123');
-        $header->getRequest()->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $header->getRequest()->setRequestVersion(RequestVersionEnum::v30);
         $header->setTimestamp(new \DateTimeImmutable('2020-01-01 11:00:00 UTC'));
         
         $normalizer = new HeaderNormalizer();
@@ -42,7 +43,7 @@ class HeaderNormalizerTest extends TestCase
     {
         $header = $this->getEmptyHeader();
         $header->getRequest()->setRequestId('abc123');
-        $header->getRequest()->setRequestVersion(Request::REQUEST_VERSION_V30);
+        $header->getRequest()->setRequestVersion(RequestVersionEnum::v30);
         $header->setTimestamp(new \DateTimeImmutable('2020-01-01 11:00:00 CET'));
         
         $normalizer = new HeaderNormalizer();
@@ -60,7 +61,7 @@ class HeaderNormalizerTest extends TestCase
         $header = $this->getEmptyHeader();
 
         $header->getRequest()->setRequestId('abc123');
-        $header->getRequest()->setRequestVersion(Request::REQUEST_VERSION_V20);
+        $header->getRequest()->setRequestVersion(RequestVersionEnum::v20);
         $header->setTimestamp(new \DateTimeImmutable('2020-01-01 11:00:00 UTC'));
         
         $normalizer = new HeaderNormalizer();
