@@ -4,7 +4,6 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Exceptions\InvalidArgumentException;
 use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
-use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
@@ -19,16 +18,16 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
             throw new InvalidArgumentException($object, Header::class);
         }
 
-        if (in_array($object->getRequest()->getRequestVersion(), [Request::REQUEST_VERSION_V10, Request::REQUEST_VERSION_V11, Request::REQUEST_VERSION_V20])) {
-            $namespace = '';
-        } else {
+        if ($object->getRequest()->getRequestVersion()->toInt() >= 300) {
             $namespace = 'common:';
+        } else {
+            $namespace = '';
         }
         
         return [
             $namespace.'requestId' => $object->getRequest()->getRequestId(),
             $namespace.'timestamp' => $object->getTimestamp()->format('Y-m-d\TH:i:s.000\Z'),
-            $namespace.'requestVersion' => $object->getRequest()->getRequestVersion(),
+            $namespace.'requestVersion' => $object->getRequest()->getRequestVersion()->value,
             $namespace.'headerVersion' => $object->getHeaderVersion()->value,
         ];
     }

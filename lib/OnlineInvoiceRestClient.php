@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
 use Psr\Log\LoggerInterface;
 use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
@@ -87,7 +88,7 @@ class OnlineInvoiceRestClient
         $this->version = $version;
     }
     
-    public function sendRequest($request)
+    public function sendRequest(Request $request)
     {
         if ($request instanceof SoftwareAwareRequest) {
             $request->setSoftware($this->softwareProvider->getSoftware());
@@ -105,16 +106,13 @@ class OnlineInvoiceRestClient
         }
 
         if ($this->version === self::VERSION_10) {
-            $request->setRequestVersion(Request::REQUEST_VERSION_V10);
-        }
-        elseif ($this->version === self::VERSION_11) {
-            $request->setRequestVersion(Request::REQUEST_VERSION_V11);
-        }
-        elseif ($this->version === self::VERSION_20) {
-            $request->setRequestVersion(Request::REQUEST_VERSION_V20);
-        }
-        elseif ($this->version === self::VERSION_30) {
-            $request->setRequestVersion(Request::REQUEST_VERSION_V30);
+            $request->setRequestVersion(RequestVersionEnum::v10);
+        } elseif ($this->version === self::VERSION_11) {
+            $request->setRequestVersion(RequestVersionEnum::v11);
+        } elseif ($this->version === self::VERSION_20) {
+            $request->setRequestVersion(RequestVersionEnum::v20);
+        } elseif ($this->version === self::VERSION_30) {
+            $request->setRequestVersion(RequestVersionEnum::v30);
         }
         
         $request->setRequestId($this->requestIdProvider->getRequestId());

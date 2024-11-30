@@ -2,6 +2,9 @@
 
 namespace NAV\OnlineInvoice\Providers;
 
+use NAV\OnlineInvoice\Exceptions\InvalidArgumentException;
+use NAV\OnlineInvoice\Exceptions\UnexpectedTypeException;
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Http\Request\Software;
@@ -9,9 +12,29 @@ use NAV\OnlineInvoice\Http\Request\Software;
 
 class CompactDataProvider implements SoftwareProviderInterface, UserProviderInterface, RequestIdProviderInterface, ApiEndpointUrlProviderInterface, CryptoToolsProviderInterface
 {
-    private $infoJson;
-    private $software;
-    private $user;
+    /**
+     * @var array{
+     *     "software": array{
+     *         id: string,
+     *         name: string,
+     *         operation: string,
+     *         mainVersion: string,
+     *         devName: string,
+     *         devContact: string,
+     *         devCountryCode: string,
+     *         devTaxNumber: string
+     *     },
+     *     "user": array{
+     *         login: string,
+     *         password: string,
+     *         taxNumber: string,
+     *         signKey: string
+     *     }
+     * }
+     */
+    private array $infoJson;
+    private Software $software;
+    private User $user;
     
     public function __construct(string $infoJsonFilePath)
     {
@@ -51,7 +74,7 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
     
     public function getRequestId(): string
     {
-        return $this->infoJson['requestPrefix'] . str_replace('.', '', microtime(true));;
+        return $this->infoJson['requestPrefix'] . str_replace('.', '', microtime(true));
     }
     
     public function getUser(): User
@@ -81,8 +104,15 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
     
     public function signRequest(Request $request, iterable $content = null): string
     {
-        $buffer = '';
-        $buffer .= $request->getRequestId();
+        if (!$request instanceof Request\UserAwareRequest) {
+            throw new UnexpectedTypeException($request, Request\UserAwareRequest::class);
+        }
+
+        if (!$request instanceof Request\HeaderAwareRequest) {
+            throw new UnexpectedTypeException($request, Request\HeaderAwareRequest::class);
+        }
+
+        $buffer = $request->getRequestId();
         $buffer .= $request->getHeader()->getTimestamp()->format('YmdHis');
         $buffer .= $request->getUser()->getSignKey();
         
@@ -93,12 +123,14 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
         }
         
         $requestVersion = $request->getRequestVersion();
-        if ($requestVersion === Request::REQUEST_VERSION_V10 || $requestVersion === Request::REQUEST_VERSION_V11) {
+        if ($requestVersion === RequestVersionEnum::v10 || $requestVersion === RequestVersionEnum::v11) {
             return strtoupper(hash('sha512', $buffer));
         }
-        if ($requestVersion === Request::REQUEST_VERSION_V20 || $requestVersion === Request::REQUEST_VERSION_V30) {
+        if ($requestVersion === RequestVersionEnum::v20 || $requestVersion === RequestVersionEnum::v30) {
             return strtoupper(hash('sha3-512', $buffer));
         }
+
+        throw new InvalidArgumentException(sprintf('Invalid request version: "%s"', $requestVersion->name));
     }
     
     public function getRequestSignatureHashAlgo(Request $request): string
