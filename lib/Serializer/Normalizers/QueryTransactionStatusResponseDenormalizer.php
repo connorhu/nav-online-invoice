@@ -2,7 +2,13 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Response\QueryTransactionStatusResponse;
+use NAV\OnlineInvoice\Model\BusinessValidationMessage;
+use NAV\OnlineInvoice\Model\Enums\InvoiceStatusEnum;
+use NAV\OnlineInvoice\Model\Enums\ValidationResultCodeEnum;
+use NAV\OnlineInvoice\Model\ProcessingResult;
+use NAV\OnlineInvoice\Model\TechnicalValidationMessage;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterface
@@ -20,66 +26,68 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
         $rawProcessingResults = $data[$apiKeyPrefix.'processingResults'];
 
         $response = new QueryTransactionStatusResponse();
-        if (!isset($rawProcessingResults[$apiKeyPrefix.'originalRequestVersion'])) {
-            $response->setOriginalRequestVersion($rawProcessingResults[$apiKeyPrefix.'originalRequestVersion']);
-        }
+        $response->setOriginalRequestVersion(RequestVersionEnum::initWithRawString($rawProcessingResults[$apiKeyPrefix.'originalRequestVersion']));
 
         $processingResults = [];
         if (isset($rawProcessingResults[$apiKeyPrefix.'processingResult'][$apiKeyPrefix.'index'])) {
             $processingResults = [$rawProcessingResults[$apiKeyPrefix.'processingResult']];
-        }
-        elseif (isset($rawProcessingResults[$apiKeyPrefix.'processingResult'][0])) {
+        } elseif (isset($rawProcessingResults[$apiKeyPrefix.'processingResult'][0])) {
             $processingResults = $rawProcessingResults[$apiKeyPrefix.'processingResult'];
         }
 
         foreach ($processingResults as $processingResult) {
-            $buffer = [
-                'index' => $processingResult[$apiKeyPrefix.'index'],
-                'invoiceStatus' => $processingResult[$apiKeyPrefix.'invoiceStatus'],
-                'technicalValidationMessages' => [],
-                'businessValidationMessages' => [],
-            ];
+            $resultObject = new ProcessingResult();
+            $resultObject->index = (int) $processingResult[$apiKeyPrefix.'index'];
+
+            if (isset($processingResult[$apiKeyPrefix.'batchIndex'])) {
+                $resultObject->batchIndex = (int) $processingResult[$apiKeyPrefix.'batchIndex'];
+            }
+
+            $resultObject->status = InvoiceStatusEnum::initWithRawString($processingResult[$apiKeyPrefix.'invoiceStatus']);
+            $resultObject->compressedContent = $processingResult[$apiKeyPrefix.'compressedContentIndicator'];
 
             if (isset($processingResult[$apiKeyPrefix.'technicalValidationMessages'])) {
                 foreach ($processingResult[$apiKeyPrefix.'technicalValidationMessages'] as $message) {
-                    $buffer['technicalValidationMessages'][] = [
-                        'validationResultCode' => $message[$commonKeyPrefix.'validationResultCode'],
-                        'validationErrorCode' => $message[$commonKeyPrefix.'validationErrorCode'],
-                        'message' => $message[$commonKeyPrefix.'message'],
-                    ];
+                    $technicalValidationMessage = new TechnicalValidationMessage();
+                    $technicalValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$commonKeyPrefix.'validationResultCode']);
+                    $technicalValidationMessage->errorCode = $message[$commonKeyPrefix.'validationErrorCode'];
+                    $technicalValidationMessage->message = $message[$commonKeyPrefix.'message'];
+
+                    $resultObject->technicalValidationMessages[] = $technicalValidationMessage;
                 }
             }
 
             if (isset($processingResult[$apiKeyPrefix.'businessValidationMessages'])) {
-                $businessValidationMessages = [];
-
                 if (isset($processingResult[$apiKeyPrefix.'businessValidationMessages'][$apiKeyPrefix.'validationResultCode'])) {
                     $businessValidationMessages = [$processingResult[$apiKeyPrefix.'businessValidationMessages']];
-                }
-                else {
+                } else {
                     $businessValidationMessages = $processingResult[$apiKeyPrefix.'businessValidationMessages'];
                 }
 
                 foreach ($businessValidationMessages as $message) {
-                    $pointer = [];
+                    $businessValidationMessage = new BusinessValidationMessage();
+                    $businessValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$commonKeyPrefix.'validationResultCode']);
+                    $businessValidationMessage->errorCode = $message[$commonKeyPrefix.'validationErrorCode'];
+                    $businessValidationMessage->message = $message[$commonKeyPrefix.'message'];
 
                     if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'])) {
-                        $pointer['tag'] = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'];
+                        $businessValidationMessage->pointerTag = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'];
                     }
                     if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'value'])) {
-                        $pointer['value'] = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'value'];
+                        $businessValidationMessage->pointerValue = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'value'];
+                    }
+                    if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'line'])) {
+                        $businessValidationMessage->pointerLine = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'line'];
+                    }
+                    if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'originalInvoiceNumber'])) {
+                        $businessValidationMessage->pointerOriginalInvoiceNumber = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'originalInvoiceNumber'];
                     }
 
-                    $buffer['businessValidationMessages'][] = [
-                        'validationResultCode' => $message[$apiKeyPrefix.'validationResultCode'],
-                        'validationErrorCode' => $message[$apiKeyPrefix.'validationErrorCode'],
-                        'message' => $message[$apiKeyPrefix.'message'],
-                        'pointer' => $pointer,
-                    ];
+                    $resultObject->businessValidationMessages[] = $businessValidationMessage;
                 }
             }
 
-            $response->addProcessingResult($buffer);
+            $response->addProcessingResult($resultObject);
         }
 
         return $response;
