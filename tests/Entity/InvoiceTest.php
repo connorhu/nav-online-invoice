@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Tests\Entity;
 
-use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Model\Invoice;
 use PHPUnit\Framework\TestCase;
 
 class InvoiceTest extends TestCase

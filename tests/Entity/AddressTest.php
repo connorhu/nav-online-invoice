@@ -2,7 +2,7 @@
 
 namespace NAV\OnlineInvoice\Tests\Entity;
 
-use NAV\OnlineInvoice\Entity\Address;
+use NAV\OnlineInvoice\Model\Address;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintViolation;
