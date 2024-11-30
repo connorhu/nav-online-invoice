@@ -10,14 +10,14 @@ use PHPUnit\Framework\TestCase;
 class ResponseClassProviderTest extends TestCase
 {
     /**
-     * @dataProvider dataSet
+     * @dataProvider dataSetDataProvider
      */
     public function testResponseClass($content, $classProvided)
     {
         $this->assertSame(ResponseClassProvider::getResponseClass($content), $classProvided);
     }
     
-    public function dataSet()
+    public static function dataSetDataProvider()
     {
         return [
             ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><ns2:QueryTaxpayerResponse xmlns="http:...', QueryTaxpayerResponse::class],
