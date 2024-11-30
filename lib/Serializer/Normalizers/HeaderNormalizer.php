@@ -2,6 +2,8 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Exceptions\InvalidArgumentException;
+use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -13,6 +15,10 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public function normalize($object, $format = null, array $context = []): array
     {
+        if (!$object instanceof Header) {
+            throw new InvalidArgumentException($object, Header::class);
+        }
+
         if (in_array($object->getRequest()->getRequestVersion(), [Request::REQUEST_VERSION_V10, Request::REQUEST_VERSION_V11, Request::REQUEST_VERSION_V20])) {
             $namespace = '';
         } else {
@@ -23,7 +29,7 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
             $namespace.'requestId' => $object->getRequest()->getRequestId(),
             $namespace.'timestamp' => $object->getTimestamp()->format('Y-m-d\TH:i:s.000\Z'),
             $namespace.'requestVersion' => $object->getRequest()->getRequestVersion(),
-            $namespace.'headerVersion' => $object->getHeaderVersion(),
+            $namespace.'headerVersion' => $object->getHeaderVersion()->value,
         ];
     }
 
@@ -42,8 +48,8 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
         $keyPrefix = empty($context[self::XMLNS_CONTEXT_KEY]) ? '' : ($context[self::XMLNS_CONTEXT_KEY].':');
 
         $object = new Header();
-        $object->setHeaderVersion($data[$keyPrefix.'headerVersion']);
-        $object->setTimestamp(new \DateTime($data[$keyPrefix.'timestamp']));
+        $object->setHeaderVersion(HeaderVersionEnum::from($data[$keyPrefix.'headerVersion']));
+        $object->setTimestamp(new \DateTimeImmutable($data[$keyPrefix.'timestamp']));
 
         return $object;
     }
