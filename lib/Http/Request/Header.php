@@ -3,86 +3,74 @@
 namespace NAV\OnlineInvoice\Http\Request;
 
 
+use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
+
 class Header
 {
-    const HEADER_VERSION_V10 = '1.0';
-    
-    protected $request;
-    
+    protected ?HeaderAwareRequest $request = null;
+
+    protected HeaderVersionEnum $headerVersion = HeaderVersionEnum::V1;
+
+    protected \DateTimeImmutable $timestamp;
+
     /**
-     * setter for request
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setRequest(HeaderAwareRequest $value): self
-    {
-        if ($this->request !== $value) {
-            $this->request = $value;
-        }
-        
-        return $this;
-    }
-    
-    /**
-     * getter for request
-     * 
-     * @return mixed return value for 
+     * @return HeaderAwareRequest
      */
     public function getRequest(): HeaderAwareRequest
     {
         return $this->request;
     }
 
-    protected string $headerVersion = self::HEADER_VERSION_V10;
-    
     /**
-     * setter for headerVersion
-     *
-     * @param mixed 
+     * @param HeaderAwareRequest $request
      * @return self
      */
-    public function setHeaderVersion(string $value): self
+    public function setRequest(HeaderAwareRequest $request): self
     {
-        $this->headerVersion = $value;
+        if ($this->request !== $request) {
+            $this->request = $request;
+        }
+        
         return $this;
     }
-    
+
     /**
-     * getter for headerVersion
-     * 
-     * @return mixed return value for 
+     * @return HeaderVersionEnum
      */
-    public function getHeaderVersion(): string
+    public function getHeaderVersion(): HeaderVersionEnum
     {
         return $this->headerVersion;
     }
-    
-    protected $timestamp;
-    
+
     /**
-     * setter for timestamp
-     *
-     * @param mixed 
+     * @param HeaderVersionEnum $headerVersion
      * @return self
      */
-    public function setTimestamp(\DateTime $value): self
+    public function setHeaderVersion(HeaderVersionEnum $headerVersion): self
     {
-        if ($value->getTimezone()->getName() !== 'UTC') {
-            $value->setTimezone(new \DateTimeZone('UTC'));
-        }
-
-        $this->timestamp = $value;
+        $this->headerVersion = $headerVersion;
         return $this;
     }
-    
+
     /**
-     * getter for timestamp
-     * 
-     * @return mixed return value for 
+     * @return \DateTimeImmutable
      */
-    public function getTimestamp(): \DateTime
+    public function getTimestamp(): \DateTimeImmutable
     {
         return $this->timestamp;
+    }
+
+    /**
+     * @param \DateTimeImmutable $timestamp
+     * @return self
+     */
+    public function setTimestamp(\DateTimeImmutable $timestamp): self
+    {
+        if ($timestamp->getTimezone()->getName() !== 'UTC') {
+            $timestamp->setTimezone(new \DateTimeZone('UTC'));
+        }
+
+        $this->timestamp = $timestamp;
+        return $this;
     }
 }

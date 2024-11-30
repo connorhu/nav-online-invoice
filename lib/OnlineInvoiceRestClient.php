@@ -13,7 +13,8 @@ use NAV\OnlineInvoice\Providers\SoftwareProviderInterface;
 use NAV\OnlineInvoice\Providers\UserProviderInterface;
 
 use NAV\OnlineInvoice\Http\ExchangeTokenAwareRequest;
-use NAV\OnlineInvoice\Http\Request\Header;use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
+use NAV\OnlineInvoice\Http\Request\Header;
+use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
 use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
 use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
 use NAV\OnlineInvoice\Http\Request\UserAwareRequest;
@@ -95,7 +96,7 @@ class OnlineInvoiceRestClient
         if ($request instanceof HeaderAwareRequest) {
             // basic request type :: basic header type
             $header = new Header();
-            $header->setTimestamp(new \DateTime());
+            $header->setTimestamp(new \DateTimeImmutable());
             $request->setHeader($header);
         }
         

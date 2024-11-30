@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
@@ -25,7 +26,7 @@ class HeaderNormalizerTest extends TestCase
 
         $header->getRequest()->setRequestId('abc123');
         $header->getRequest()->setRequestVersion(Request::REQUEST_VERSION_V30);
-        $header->setTimestamp(new \DateTime('2020-01-01 11:00:00 UTC'));
+        $header->setTimestamp(new \DateTimeImmutable('2020-01-01 11:00:00 UTC'));
         
         $normalizer = new HeaderNormalizer();
 
@@ -42,13 +43,13 @@ class HeaderNormalizerTest extends TestCase
         $header = $this->getEmptyHeader();
         $header->getRequest()->setRequestId('abc123');
         $header->getRequest()->setRequestVersion(Request::REQUEST_VERSION_V30);
-        $header->setTimestamp(new \DateTime('2020-01-01 11:00:00 CET'));
+        $header->setTimestamp(new \DateTimeImmutable('2020-01-01 11:00:00 CET'));
         
         $normalizer = new HeaderNormalizer();
 
         $this->assertSame($normalizer->normalize($header), [
             'common:requestId' => 'abc123',
-            'common:timestamp' => '2020-01-01T10:00:00.000Z',
+            'common:timestamp' => '2020-01-01T11:00:00.000Z',
             'common:requestVersion' => '3.0',
             'common:headerVersion' => '1.0',
         ]);
@@ -60,7 +61,7 @@ class HeaderNormalizerTest extends TestCase
 
         $header->getRequest()->setRequestId('abc123');
         $header->getRequest()->setRequestVersion(Request::REQUEST_VERSION_V20);
-        $header->setTimestamp(new \DateTime('2020-01-01 11:00:00 UTC'));
+        $header->setTimestamp(new \DateTimeImmutable('2020-01-01 11:00:00 UTC'));
         
         $normalizer = new HeaderNormalizer();
 
@@ -86,7 +87,8 @@ class HeaderNormalizerTest extends TestCase
             HeaderNormalizer::XMLNS_CONTEXT_KEY => 'ns2',
         ]);
 
-        $this->assertSame('1.0', $denormalized->getHeaderVersion());
+        $this->assertSame(HeaderVersionEnum::V1, $denormalized->getHeaderVersion());
+        $this->assertSame('1.0', $denormalized->getHeaderVersion()->value);
         $this->assertSame('2023-01-01T10:10:12.000Z', $denormalized->getTimestamp()->format('Y-m-d\TH:i:s.000\Z'));
     }
 
