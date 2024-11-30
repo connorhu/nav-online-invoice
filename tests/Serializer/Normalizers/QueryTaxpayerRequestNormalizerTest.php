@@ -63,7 +63,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
     private function getHeader(): Header
     {
         $header = new Header();
-        $header->setTimestamp(new \DateTime('2020-01-01 12:12:12 CET'));
+        $header->setTimestamp(new \DateTimeImmutable('2020-01-01 12:12:12 CET'));
 
         return $header;
     }
