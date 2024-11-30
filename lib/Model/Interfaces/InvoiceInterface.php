@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Model\Interfaces;
 
 use Doctrine\Common\Collections\Collection;
 use NAV\OnlineInvoice\Model\Address;
+use NAV\OnlineInvoice\Model\Enums\CustomerVatStatusEnum;
 
 interface InvoiceInterface
 {
@@ -25,13 +26,8 @@ interface InvoiceInterface
     public function getSupplierBankAccountNumber(): ?string;
     public function setSupplierBankAccountNumber(?string $supplierBankAccountNumber): InvoiceInterface;
 
-    public const CUSTOMER_VAT_STATUS_DOMESTIC = 1;
-    public const CUSTOMER_VAT_STATUS_OTHER = 2;
-    public const CUSTOMER_VAT_STATUS_PRIVATE_PERSON = 3;
-
-    public function getCustomerVatStatus(): int;
-    public function getCustomerVatStatusString(): string;
-    public function setCustomerVatStatus(int $customerVatStatus): InvoiceInterface;
+    public function getCustomerVatStatus(): CustomerVatStatusEnum;
+    public function setCustomerVatStatus(CustomerVatStatusEnum $customerVatStatus): InvoiceInterface;
 
     public function setCustomerTaxNumber(string $customerTaxNumber): InvoiceInterface;
     public function getCustomerTaxNumber(): ?string;

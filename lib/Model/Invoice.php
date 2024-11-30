@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Model;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use NAV\OnlineInvoice\Model\Enums\CustomerVatStatusEnum;
 use NAV\OnlineInvoice\Model\Enums\PaymentMethodEnum;
 use NAV\OnlineInvoice\Model\Enums\InvoiceAppearanceEnum;
 use NAV\OnlineInvoice\Model\Interfaces\AddressInterface;
@@ -274,44 +275,21 @@ class Invoice implements InvoiceInterface
         return $this;
     }
 
-    protected int $customerVatStatus = self::CUSTOMER_VAT_STATUS_DOMESTIC;
+    protected CustomerVatStatusEnum $customerVatStatus = CustomerVatStatusEnum::Domestic;
 
     /**
-     * @return int
+     * @return CustomerVatStatusEnum
      */
-    public function getCustomerVatStatus(): int
+    public function getCustomerVatStatus(): CustomerVatStatusEnum
     {
         return $this->customerVatStatus;
     }
 
     /**
-     * @return string
-     * @throws \Exception
+     * @param CustomerVatStatusEnum $customerVatStatus
+     * @return InvoiceInterface
      */
-    public function getCustomerVatStatusString(): string
-    {
-        return match ($this->customerVatStatus) {
-            self::CUSTOMER_VAT_STATUS_DOMESTIC => 'DOMESTIC',
-            self::CUSTOMER_VAT_STATUS_OTHER => 'OTHER',
-            self::CUSTOMER_VAT_STATUS_PRIVATE_PERSON => 'PRIVATE_PERSON',
-            default => throw new \Exception(sprintf('invalid customerVatStatus value: "%d"', $this->customerVatStatus)),
-        };
-    }
-
-    public static function getCustomerVatStatusWithString(string $customerVatStatus): string
-    {
-        return match($customerVatStatus) {
-            'DOMESTIC' => self::CUSTOMER_VAT_STATUS_DOMESTIC,
-            'OTHER' => self::CUSTOMER_VAT_STATUS_OTHER,
-            'PRIVATE_PERSON' => self::CUSTOMER_VAT_STATUS_PRIVATE_PERSON,
-            default => throw new \Exception(sprintf('invalid customerVatStatus value: "%s"', $customerVatStatus)),
-        };
-    }
-
-    /**
-     * @param int $customerVatStatus
-     */
-    public function setCustomerVatStatus(int $customerVatStatus): InvoiceInterface
+    public function setCustomerVatStatus(CustomerVatStatusEnum $customerVatStatus): InvoiceInterface
     {
         $this->customerVatStatus = $customerVatStatus;
 
