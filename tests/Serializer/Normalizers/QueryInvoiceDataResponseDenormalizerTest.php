@@ -51,7 +51,7 @@ class QueryInvoiceDataResponseDenormalizerTest extends TestCase
         $this->assertSame('ONLINE_SERVICE', $denormalized->getSoftware()->getOperation());
         $this->assertSame('1.0', $denormalized->getSoftware()->getMainVersion());
         $this->assertSame('Software Dev Corp Inc.', $denormalized->getSoftware()->getDevName());
-        $this->assertSame('szamlazas@puzzlepix.hu', $denormalized->getSoftware()->getDevContact());
+        $this->assertSame('invoicing@corp.tld', $denormalized->getSoftware()->getDevContact());
         $this->assertSame('HU', $denormalized->getSoftware()->getDevCountryCode());
         $this->assertSame('12345678-1-99', $denormalized->getSoftware()->getDevTaxNumber());
         $this->assertSame('2022-12-01T10:00:05.000Z', $denormalized->getAudit()->getInsertDate()->format('Y-m-d\TH:i:s.000\Z'));

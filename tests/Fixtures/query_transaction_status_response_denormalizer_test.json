@@ -1,0 +1,9 @@
+{
+    "@xmlns:ns4": "http://schemas.nav.gov.hu/OSA/3.0/data",
+    "@xmlns:ns3": "http://schemas.nav.gov.hu/OSA/3.0/base",
+    "@xmlns:ns2": "http://schemas.nav.gov.hu/OSA/3.0/api",
+    "@xmlns": "http://schemas.nav.gov.hu/NTCA/1.0/common",
+    "ns2:processingResults": {
+        "ns2:originalRequestVersion": "3.0"
+    }
+}
