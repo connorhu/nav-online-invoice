@@ -27,6 +27,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class OnlineInvoiceRestClient
 {
@@ -72,7 +73,12 @@ class OnlineInvoiceRestClient
      */
     private ?LoggerInterface $logger;
 
-    public function __construct(SoftwareProviderInterface $softwareProvider, ValidatorInterface $validator, SerializerInterface $serializer, RequestIdProviderInterface $requestIdProvider, UserProviderInterface $userProvider, ApiEndpointUrlProviderInterface $urlProvider, LoggerInterface $logger = null)
+    /**
+     * @var HttpClientInterface|null
+     */
+    private ?HttpClientInterface $httpClient;
+
+    public function __construct(SoftwareProviderInterface $softwareProvider, ValidatorInterface $validator, SerializerInterface $serializer, RequestIdProviderInterface $requestIdProvider, UserProviderInterface $userProvider, ApiEndpointUrlProviderInterface $urlProvider, LoggerInterface $logger = null, HttpClientInterface $httpClient = null)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;
@@ -81,6 +87,7 @@ class OnlineInvoiceRestClient
         $this->userProvider = $userProvider;
         $this->urlProvider = $urlProvider;
         $this->logger = $logger;
+        $this->httpClient = $httpClient ?? HttpClient::create();
     }
     
     public function setVersion(string $version)
@@ -142,8 +149,7 @@ class OnlineInvoiceRestClient
                 $this->logger->info('Request body: '. $xmlStringBody);
             }
 
-            $client = HttpClient::create();
-            $response = $client->request('POST', $endpointUrl, [
+            $response = $this->httpClient->request('POST', $endpointUrl, [
                 'headers' => [
                     'content-type' => 'application/xml',
                     'accept' => 'application/xml',
