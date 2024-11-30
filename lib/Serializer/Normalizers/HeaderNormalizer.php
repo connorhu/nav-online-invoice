@@ -27,7 +27,7 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
         return [
             $namespace.'requestId' => $object->getRequest()->getRequestId(),
             $namespace.'timestamp' => $object->getTimestamp()->format('Y-m-d\TH:i:s.000\Z'),
-            $namespace.'requestVersion' => $object->getRequest()->getRequestVersion(),
+            $namespace.'requestVersion' => $object->getRequest()->getRequestVersion()->value,
             $namespace.'headerVersion' => $object->getHeaderVersion()->value,
         ];
     }
