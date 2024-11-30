@@ -6,11 +6,6 @@ use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 
 abstract class Request
 {
-    const REQUEST_VERSION_V10 = '1.0';
-    const REQUEST_VERSION_V11 = '1.1';
-    const REQUEST_VERSION_V20 = '2.0';
-    const REQUEST_VERSION_V30 = '3.0';
-
     /**
      * @var RequestVersionEnum
      */
