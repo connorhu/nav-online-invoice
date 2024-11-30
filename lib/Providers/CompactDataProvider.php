@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Providers;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Http\Request\Software;
@@ -81,8 +82,7 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
     
     public function signRequest(Request $request, iterable $content = null): string
     {
-        $buffer = '';
-        $buffer .= $request->getRequestId();
+        $buffer = $request->getRequestId();
         $buffer .= $request->getHeader()->getTimestamp()->format('YmdHis');
         $buffer .= $request->getUser()->getSignKey();
         
@@ -93,10 +93,10 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
         }
         
         $requestVersion = $request->getRequestVersion();
-        if ($requestVersion === Request::REQUEST_VERSION_V10 || $requestVersion === Request::REQUEST_VERSION_V11) {
+        if ($requestVersion === RequestVersionEnum::v10 || $requestVersion === RequestVersionEnum::v11) {
             return strtoupper(hash('sha512', $buffer));
         }
-        if ($requestVersion === Request::REQUEST_VERSION_V20 || $requestVersion === Request::REQUEST_VERSION_V30) {
+        if ($requestVersion === RequestVersionEnum::v20 || $requestVersion === RequestVersionEnum::v30) {
             return strtoupper(hash('sha3-512', $buffer));
         }
     }
