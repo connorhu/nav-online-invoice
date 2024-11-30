@@ -96,7 +96,7 @@ class OnlineInvoiceRestClient
         if ($request instanceof HeaderAwareRequest) {
             // basic request type :: basic header type
             $header = new Header();
-            $header->setTimestamp(new \DateTime());
+            $header->setTimestamp(new \DateTimeImmutable());
             $request->setHeader($header);
         }
         
