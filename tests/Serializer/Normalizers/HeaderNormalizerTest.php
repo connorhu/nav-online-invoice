@@ -4,7 +4,6 @@ namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
 use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
-use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
 use NAV\OnlineInvoice\Tests\Fixtures\HeaderAwareRequest;
