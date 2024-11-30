@@ -4,7 +4,6 @@ namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
 use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Tests\Fixtures\CryptoToolsProvider;
-use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\Header;
 use NAV\OnlineInvoice\Http\Request\Software;
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
