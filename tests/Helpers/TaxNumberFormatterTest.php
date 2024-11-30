@@ -15,7 +15,7 @@ class TaxNumberFormatterTest extends TestCase
         $this->assertSame($expectedTaxNumber, TaxNumberFormatter::formatHU($taxNumber));
     }
 
-    public function formatHUDataProvider(): \Generator
+    public static function formatHUDataProvider(): \Generator
     {
         yield ['1234', '1234'];
         yield ['12345678', '12345678'];
