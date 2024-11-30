@@ -28,7 +28,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
     
     /**
-     * @dataProvider getValidTaxNumbers
+     * @dataProvider validTaxNumbersDataProvider
      */
     public function testValidTaxNumbers($taxNumber)
     {
@@ -37,7 +37,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public function getValidTaxNumbers()
+    public static function validTaxNumbersDataProvider()
     {
         return [
             ['12345678102'],
