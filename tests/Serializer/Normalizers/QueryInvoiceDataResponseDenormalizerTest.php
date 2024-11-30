@@ -2,7 +2,8 @@
 
 namespace NAV\OnlineInvoice\Tests\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Entity\Invoice;
+use NAV\OnlineInvoice\Http\Enums\HeaderVersionEnum;
+use NAV\OnlineInvoice\Model\Invoice;
 use NAV\OnlineInvoice\Http\Response\QueryInvoiceDataResponse;
 use NAV\OnlineInvoice\Serializer\Normalizers\AuditDenormalizer;
 use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
@@ -43,7 +44,8 @@ class QueryInvoiceDataResponseDenormalizerTest extends TestCase
         $denormalized = $denormalizer->denormalize($data, $type, $format);
 
         $this->assertSame('2023-01-01T10:10:01.000Z', $denormalized->getHeader()->getTimestamp()->format('Y-m-d\TH:i:s.000\Z'));
-        $this->assertSame('1.0', $denormalized->getHeader()->getHeaderVersion());
+        $this->assertSame(HeaderVersionEnum::V1, $denormalized->getHeader()->getHeaderVersion());
+        $this->assertSame('1.0', $denormalized->getHeader()->getHeaderVersion()->value);
         $this->assertSame('HUSOFTWARE_ID', $denormalized->getSoftware()->getId());
         $this->assertSame('Very special invoice software', $denormalized->getSoftware()->getName());
         $this->assertSame('ONLINE_SERVICE', $denormalized->getSoftware()->getOperation());
