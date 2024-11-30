@@ -45,7 +45,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
         $this->user->setTaxNumber('12345678-2-11');
     }
     
-    private function getSoftware()
+    private function getSoftware(): Software
     {
         $software = new Software();
         $software->setId('HU69061864-1234567');
