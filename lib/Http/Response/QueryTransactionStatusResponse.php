@@ -2,37 +2,44 @@
 
 namespace NAV\OnlineInvoice\Http\Response;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Response;
+use NAV\OnlineInvoice\Model\ProcessingResult;
 
 class QueryTransactionStatusResponse extends Response
 {
-    private $originalRequestVersion;
-    
-    public function setOriginalRequestVersion(string $originalRequestVersion): self
+    private RequestVersionEnum $originalRequestVersion;
+
+    /**
+     * @var array<int, ProcessingResult>
+     */
+    private array $processingResults = [];
+
+    public function getOriginalRequestVersion(): RequestVersionEnum
+    {
+        return $this->originalRequestVersion;
+    }
+
+    public function setOriginalRequestVersion(RequestVersionEnum $originalRequestVersion): self
     {
         $this->originalRequestVersion = $originalRequestVersion;
         
         return $this;
     }
-    
-    public function getOriginalRequestVersion(): ?string
+
+    /**
+     * @return array<int, ProcessingResult>
+     */
+    public function getProcessingResults(): array
     {
-        return $this->originalRequestVersion;
+        return $this->processingResults;
     }
-    
-    private $processingResults = [];
-    
-    public function addProcessingResult(array $processingResult): self
+
+    public function addProcessingResult(ProcessingResult $processingResult): self
     {
         $this->processingResults[] = $processingResult;
         
         return $this;
     }
-    
-    public function getProcessingResults(): array
-    {
-        return $this->processingResults;
-    }
-    
-    
+
 }
