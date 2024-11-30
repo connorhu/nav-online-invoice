@@ -32,7 +32,7 @@ class HeaderTest extends TestCase
         $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
 
         // valid
-        $header->setTimestamp($date = new \DateTime());
+        $header->setTimestamp($date = new \DateTimeImmutable());
         $errors = $this->validator->validateProperty($header, 'timestamp', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
         $this->assertEquals(0, count($errors));
         $this->assertEquals($header->getTimestamp(), $date);
