@@ -12,16 +12,16 @@
                 "ns2:invoiceStatus": "DONE",
                 "ns2:technicalValidationMessages": [
                     {
-                        "validationResultCode": "CRITICAL",
-                        "validationErrorCode": "1234",
-                        "message": "Technical Validation Message"
+                        "ns2:validationResultCode": "CRITICAL",
+                        "ns2:validationErrorCode": "1234",
+                        "ns2:message": "Technical Validation Message"
                     }
                 ],
                 "ns2:businessValidationMessages": [
                     {
-                        "validationResultCode": "INFO",
-                        "validationErrorCode": "5678",
-                        "message": "Business Validation Message",
+                        "ns2:validationResultCode": "INFO",
+                        "ns2:validationErrorCode": "5678",
+                        "ns2:message": "Business Validation Message",
                         "ns2:pointer": {
                             "ns2:tag": "tag",
                             "ns2:line": "line",

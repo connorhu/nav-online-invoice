@@ -49,9 +49,9 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
             if (isset($processingResult[$apiKeyPrefix.'technicalValidationMessages'])) {
                 foreach ($processingResult[$apiKeyPrefix.'technicalValidationMessages'] as $message) {
                     $technicalValidationMessage = new TechnicalValidationMessage();
-                    $technicalValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$commonKeyPrefix.'validationResultCode']);
-                    $technicalValidationMessage->errorCode = $message[$commonKeyPrefix.'validationErrorCode'];
-                    $technicalValidationMessage->message = $message[$commonKeyPrefix.'message'];
+                    $technicalValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$apiKeyPrefix.'validationResultCode']);
+                    $technicalValidationMessage->errorCode = $message[$apiKeyPrefix.'validationErrorCode'];
+                    $technicalValidationMessage->message = $message[$apiKeyPrefix.'message'];
 
                     $resultObject->technicalValidationMessages[] = $technicalValidationMessage;
                 }
@@ -66,9 +66,9 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
 
                 foreach ($businessValidationMessages as $message) {
                     $businessValidationMessage = new BusinessValidationMessage();
-                    $businessValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$commonKeyPrefix.'validationResultCode']);
-                    $businessValidationMessage->errorCode = $message[$commonKeyPrefix.'validationErrorCode'];
-                    $businessValidationMessage->message = $message[$commonKeyPrefix.'message'];
+                    $businessValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$apiKeyPrefix.'validationResultCode']);
+                    $businessValidationMessage->errorCode = $message[$apiKeyPrefix.'validationErrorCode'];
+                    $businessValidationMessage->message = $message[$apiKeyPrefix.'message'];
 
                     if (isset($message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'])) {
                         $businessValidationMessage->pointerTag = $message[$apiKeyPrefix.'pointer'][$apiKeyPrefix.'tag'];
