@@ -72,7 +72,7 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
     
     public function getRequestId(): string
     {
-        return $this->infoJson['requestPrefix'] . str_replace('.', '', microtime(true));;
+        return $this->infoJson['requestPrefix'] . str_replace('.', '', microtime(true));
     }
     
     public function getUser(): User
