@@ -70,7 +70,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
 
     /**
-     * @dataProvider getShortTaxNumbers
+     * @dataProvider shortTaxNumbersDataProvider
      */
     public function testShortTaxPayerId(string $taxNumber)
     {
@@ -86,14 +86,14 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getShortTaxNumbers(): \Generator
+    public static function shortTaxNumbersDataProvider(): \Generator
     {
         yield ['1111'];
         yield ['abc214'];
     }
 
     /**
-     * @dataProvider getInvalidTaxNumbers
+     * @dataProvider invalidTaxNumbersDataProvider
      */
     public function testInvalidTaxPayerId(string $taxNumber)
     {
@@ -109,14 +109,14 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidTaxNumbers(): \Generator
+    public static function invalidTaxNumbersDataProvider(): \Generator
     {
         yield ['1234567s'];
         yield ['..123456'];
     }
     
     /**
-     * @dataProvider getInvalidVatCodes
+     * @dataProvider invalidVatCodesDataProvider
      */
     public function testInvalidVatCodes(string $taxNumber, string $expectedVatCode)
     {
@@ -133,7 +133,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidVatCodes(): \Generator
+    public static function invalidVatCodesDataProvider(): \Generator
     {
         yield ['123456786', '6'];
         yield ['12345678a', 'a'];
@@ -174,7 +174,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
     
     /**
-     * @dataProvider getInvalidCountyCodes
+     * @dataProvider invalidCountyCodesDataProvider
      */
     public function testInvalidCountyCodes(string $taxNumber, string $expectedCountyCode)
     {
@@ -191,7 +191,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidCountyCodes(): \Generator
+    public static function invalidCountyCodesDataProvider(): \Generator
     {
         yield ['12345678100', '00'];
         yield ['123456781bb', 'bb'];
