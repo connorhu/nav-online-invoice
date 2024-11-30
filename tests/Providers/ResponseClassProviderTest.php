@@ -5,7 +5,6 @@ namespace NAV\OnlineInvoice\Tests\Providers;
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
 use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use NAV\OnlineInvoice\Providers\ResponseClassProvider;
-use NAV\OnlineInvoice\Serializer\Normalizers\HeaderNormalizer;
 use PHPUnit\Framework\TestCase;
 
 class ResponseClassProviderTest extends TestCase
