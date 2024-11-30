@@ -64,7 +64,7 @@ class TokenExchangeRequestNormalizerTest extends TestCase
     private function getHeader(): Header
     {
         $header = new Header();
-        $header->setTimestamp(new \DateTime('2020-01-01 12:12:12 CET'));
+        $header->setTimestamp(new \DateTimeImmutable('2020-01-01 12:12:12 CET'));
 
         return $header;
     }
@@ -87,7 +87,7 @@ class TokenExchangeRequestNormalizerTest extends TestCase
             '@root_node_name' => 'TokenExchangeRequest',
             'common:header' => [
                 'common:requestId' => 'abc',
-                'common:timestamp' => '2020-01-01T11:12:12.000Z',
+                'common:timestamp' => '2020-01-01T12:12:12.000Z',
                 'common:requestVersion' => '3.0',
                 'common:headerVersion' => '1.0',
             ],
@@ -95,12 +95,12 @@ class TokenExchangeRequestNormalizerTest extends TestCase
                 'common:login' => 'testuserlogin',
                 'common:passwordHash' => [
                     '@cryptoType' => 'SHA-512',
-                    '#' => 'C70B5DD9EBFB6F51D09D4132B7170C9D20750A7852F00680F65658F0310E810056E6763C34C9A00B0E940076F54495C169FC2302CCEB312039271C43469507DC',
+                    '#' => 'user-password-hash',
                 ],
                 'common:taxNumber' => '12345678',
                 'common:requestSignature' => [
                     '@cryptoType' => 'SHA3-512',
-                    '#' => 'B9EE2DB14E12C271551548C38B6E21224D1BBC1C06BCDE23DC1D0D61E29AC97BFE5F149E2DF48C73BD5D4CB1AA77B6C6ED9EF2E0D97AD72377A850F451334A41'
+                    '#' => 'request-signature'
                 ],
             ],
             'software' => [
@@ -137,15 +137,15 @@ class TokenExchangeRequestNormalizerTest extends TestCase
 <TokenExchangeRequest xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common">
   <common:header>
     <common:requestId>abc</common:requestId>
-    <common:timestamp>2020-01-01T11:12:12.000Z</common:timestamp>
+    <common:timestamp>2020-01-01T12:12:12.000Z</common:timestamp>
     <common:requestVersion>3.0</common:requestVersion>
     <common:headerVersion>1.0</common:headerVersion>
   </common:header>
   <common:user>
     <common:login>testuserlogin</common:login>
-    <common:passwordHash cryptoType="SHA-512">C70B5DD9EBFB6F51D09D4132B7170C9D20750A7852F00680F65658F0310E810056E6763C34C9A00B0E940076F54495C169FC2302CCEB312039271C43469507DC</common:passwordHash>
+    <common:passwordHash cryptoType="SHA-512">user-password-hash</common:passwordHash>
     <common:taxNumber>12345678</common:taxNumber>
-    <common:requestSignature cryptoType="SHA3-512">B9EE2DB14E12C271551548C38B6E21224D1BBC1C06BCDE23DC1D0D61E29AC97BFE5F149E2DF48C73BD5D4CB1AA77B6C6ED9EF2E0D97AD72377A850F451334A41</common:requestSignature>
+    <common:requestSignature cryptoType="SHA3-512">request-signature</common:requestSignature>
   </common:user>
   <software>
     <softwareId>HU69061864-1234567</softwareId>
