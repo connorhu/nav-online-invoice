@@ -2,6 +2,8 @@
 
 namespace NAV\OnlineInvoice\Http;
 
+use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
+
 abstract class Request
 {
     const REQUEST_VERSION_V10 = '1.0';
@@ -9,33 +11,33 @@ abstract class Request
     const REQUEST_VERSION_V20 = '2.0';
     const REQUEST_VERSION_V30 = '3.0';
 
+    /**
+     * @var RequestVersionEnum
+     */
+    protected RequestVersionEnum $requestVersion = RequestVersionEnum::v30;
+
     abstract public function getEndpointPath(): string;
     abstract public function getServiceKind(): RequestServiceKindEnum;
 
     /**
-     * @var string
+     * @return RequestVersionEnum
      */
-    protected string $requestVersion = self::REQUEST_VERSION_V11;
-    
+    public function getRequestVersion(): RequestVersionEnum
+    {
+        return $this->requestVersion;
+    }
+
     /**
-     * @param string $requestVersion One of self::REQUEST_VERSION_*
+     * @param RequestVersionEnum $requestVersion
      * @return self
      */
-    public function setRequestVersion(string $requestVersion): self
+    public function setRequestVersion(RequestVersionEnum $requestVersion): self
     {
         $this->requestVersion = $requestVersion;
 
         return $this;
     }
-    
-    /**
-     * @return string One of self::REQUEST_VERSION_*
-     */
-    public function getRequestVersion(): string
-    {
-        return $this->requestVersion;
-    }
-    
+
     // TODO [+a-zA-Z0-9_]{1,30}
     private string $requestId;
     
