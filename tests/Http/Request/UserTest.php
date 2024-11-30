@@ -42,7 +42,7 @@ class UserTest extends TestCase
         }
     }
 
-    public function invalidTaxNumberValidationDataProvider(): \Generator
+    public static function invalidTaxNumberValidationDataProvider(): \Generator
     {
         yield [
             (new User()), 2, [
@@ -87,7 +87,7 @@ class UserTest extends TestCase
         $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
     }
 
-    public function notBlankFieldsValidationDataProvider(): \Generator
+    public static function notBlankFieldsValidationDataProvider(): \Generator
     {
         yield [
             'signKey',
@@ -112,7 +112,7 @@ class UserTest extends TestCase
         $this->assertEquals($value, $user->{'get'.$methodName}());
     }
 
-    public function validNotBlankFieldsValidationDataProvider(): \Generator
+    public static function validNotBlankFieldsValidationDataProvider(): \Generator
     {
         yield [
             'SignKey', 'abc', 'signKey'
