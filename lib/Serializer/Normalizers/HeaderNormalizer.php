@@ -19,9 +19,9 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
         }
 
         if ($object->getRequest()->getRequestVersion()->toInt() >= 300) {
-            $namespace = '';
-        } else {
             $namespace = 'common:';
+        } else {
+            $namespace = '';
         }
         
         return [
