@@ -8,4 +8,9 @@ enum RequestVersionEnum: string
     case v11 = '1.1';
     case v20 = '2.0';
     case v30 = '3.0';
+
+    public function toInt(): int
+    {
+        return (int) str_replace('.', '0', $this->value);
+    }
 }
