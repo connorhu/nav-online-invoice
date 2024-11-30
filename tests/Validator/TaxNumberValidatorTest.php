@@ -4,11 +4,12 @@ namespace NAV\OnlineInvoice\Tests\Validator;
 
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumber;
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumberValidator;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 {
-    protected function createValidator()
+    protected function createValidator(): ConstraintValidatorInterface
     {
         return new TaxNumberValidator();
     }
