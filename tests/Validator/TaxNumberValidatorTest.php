@@ -4,11 +4,12 @@ namespace NAV\OnlineInvoice\Tests\Validator;
 
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumber;
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumberValidator;
+use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 
 class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 {
-    protected function createValidator()
+    protected function createValidator(): ConstraintValidatorInterface
     {
         return new TaxNumberValidator();
     }
@@ -28,7 +29,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
     
     /**
-     * @dataProvider getValidTaxNumbers
+     * @dataProvider validTaxNumbersDataProvider
      */
     public function testValidTaxNumbers($taxNumber)
     {
@@ -37,7 +38,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
 
-    public function getValidTaxNumbers()
+    public static function validTaxNumbersDataProvider()
     {
         return [
             ['12345678102'],
@@ -69,7 +70,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
 
     /**
-     * @dataProvider getShortTaxNumbers
+     * @dataProvider shortTaxNumbersDataProvider
      */
     public function testShortTaxPayerId(string $taxNumber)
     {
@@ -85,14 +86,14 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getShortTaxNumbers(): \Generator
+    public static function shortTaxNumbersDataProvider(): \Generator
     {
         yield ['1111'];
         yield ['abc214'];
     }
 
     /**
-     * @dataProvider getInvalidTaxNumbers
+     * @dataProvider invalidTaxNumbersDataProvider
      */
     public function testInvalidTaxPayerId(string $taxNumber)
     {
@@ -108,14 +109,14 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidTaxNumbers(): \Generator
+    public static function invalidTaxNumbersDataProvider(): \Generator
     {
         yield ['1234567s'];
         yield ['..123456'];
     }
     
     /**
-     * @dataProvider getInvalidVatCodes
+     * @dataProvider invalidVatCodesDataProvider
      */
     public function testInvalidVatCodes(string $taxNumber, string $expectedVatCode)
     {
@@ -132,7 +133,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidVatCodes(): \Generator
+    public static function invalidVatCodesDataProvider(): \Generator
     {
         yield ['123456786', '6'];
         yield ['12345678a', 'a'];
@@ -141,10 +142,11 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 
     public function testMissingVatCode()
     {
-        $constraint = new TaxNumber([
-            'messageVatCodeMissing' => 'myMessage',
-            'vatCodeRequired' => true,
-        ]);
+        $constraint = new TaxNumber(
+            options: [
+                'messageVatCodeMissing' => 'myMessage',
+            ],
+            vatCodeRequired: true);
 
         $this->validator->validate('12345678', $constraint);
 
@@ -156,11 +158,13 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 
     public function testNotAllowedVatCode()
     {
-        $constraint = new TaxNumber([
-            'messageVatCodeNotAllowed' => 'myMessage',
-            'vatCodeRequired' => true,
-            'allowedVatCodes' => [1, 2]
-        ]);
+        $constraint = new TaxNumber(
+            options: [
+                'messageVatCodeNotAllowed' => 'myMessage',
+            ],
+            vatCodeRequired: true,
+            allowedVatCodes: [1, 2]
+        );
 
         $this->validator->validate('123456785', $constraint);
 
@@ -173,7 +177,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     }
     
     /**
-     * @dataProvider getInvalidCountyCodes
+     * @dataProvider invalidCountyCodesDataProvider
      */
     public function testInvalidCountyCodes(string $taxNumber, string $expectedCountyCode)
     {
@@ -190,7 +194,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    public function getInvalidCountyCodes(): \Generator
+    public static function invalidCountyCodesDataProvider(): \Generator
     {
         yield ['12345678100', '00'];
         yield ['123456781bb', 'bb'];
@@ -199,10 +203,12 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 
     public function testMissingCountyCode()
     {
-        $constraint = new TaxNumber([
-            'messageCountyCodeMissing' => 'myMessage',
-            'countyCodeRequired' => true,
-        ]);
+        $constraint = new TaxNumber(
+            options: [
+                'messageCountyCodeMissing' => 'myMessage',
+            ],
+            countyCodeRequired: true,
+        );
 
         $this->validator->validate('123456781', $constraint);
 
@@ -214,13 +220,15 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 
     public function testNotAllowedCountyCode()
     {
-        $constraint = new TaxNumber([
-            'messageCountyCodeNotAllowed' => 'myMessage',
-            'vatCodeRequired' => true,
-            'countyCodeRequired' => true,
-            'allowedVatCodes' => [1, 2],
-            'allowedCountyCodes' => [13, 33],
-        ]);
+        $constraint = new TaxNumber(
+            options: [
+                'messageCountyCodeNotAllowed' => 'myMessage',
+            ],
+            vatCodeRequired: true,
+            countyCodeRequired: true,
+            allowedVatCodes: [1, 2],
+            allowedCountyCodes: [13, 33],
+        );
 
         $this->validator->validate('12345678141', $constraint);
 
@@ -234,14 +242,16 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 
     public function testNotAllowedCountyAndVatCode()
     {
-        $constraint = new TaxNumber([
-            'messageCountyCodeNotAllowed' => 'myMessage',
-            'messageVatCodeNotAllowed' => 'myMessage2',
-            'vatCodeRequired' => true,
-            'countyCodeRequired' => true,
-            'allowedVatCodes' => [1, 2],
-            'allowedCountyCodes' => [13, 33],
-        ]);
+        $constraint = new TaxNumber(
+            options: [
+                'messageCountyCodeNotAllowed' => 'myMessage',
+                'messageVatCodeNotAllowed' => 'myMessage2',
+            ],
+            vatCodeRequired: true,
+            countyCodeRequired: true,
+            allowedVatCodes: [1, 2],
+            allowedCountyCodes: [13, 33],
+        );
 
         $this->validator->validate('12345678541', $constraint);
 

@@ -12,43 +12,43 @@ class TaxNumberTest extends TestCase
         $this->assertEquals([
             'taxpayer_id' => '11111111',
             'vat_code' => '1',
-            'country_code' => '11',
+            'county_code' => '11',
         ], TaxNumber::parse('111111111111'));
 
         $this->assertEquals([
             'taxpayer_id' => '11111111',
             'vat_code' => '1',
-            'country_code' => '11',
+            'county_code' => '11',
         ], TaxNumber::parse('11111111111'));
 
         $this->assertEquals([
             'taxpayer_id' => '11111111',
             'vat_code' => '1',
-            'country_code' => '1',
+            'county_code' => '1',
         ], TaxNumber::parse('1111111111'));
 
         $this->assertEquals([
             'taxpayer_id' => '11111111',
             'vat_code' => '1',
-            'country_code' => null,
+            'county_code' => null,
         ], TaxNumber::parse('111111111'));
 
         $this->assertEquals([
             'taxpayer_id' => '11111111',
             'vat_code' => null,
-            'country_code' => null,
+            'county_code' => null,
         ], TaxNumber::parse('11111111'));
 
         $this->assertEquals([
             'taxpayer_id' => '1111111',
             'vat_code' => null,
-            'country_code' => null,
+            'county_code' => null,
         ], TaxNumber::parse('1111111'));
 
         $this->assertEquals([
             'taxpayer_id' => null,
             'vat_code' => null,
-            'country_code' => null,
+            'county_code' => null,
         ], TaxNumber::parse(''));
 
         $this->assertEquals([
@@ -60,7 +60,7 @@ class TaxNumberTest extends TestCase
         ], TaxNumber::parse('11111111111', TaxNumber::PART_VAT_CODE));
 
         $this->assertEquals([
-            'country_code' => '11',
+            'county_code' => '11',
         ], TaxNumber::parse('11111111111', TaxNumber::PART_COUNTY_CODE));
 
         $this->assertEquals([

@@ -35,36 +35,36 @@ class QueryTaxpayerRequestTest extends TestCase
         $asserts($errors, $request);
     }
 
-    public function taxNumberValidationDataProvider(): \Generator
+    public static function taxNumberValidationDataProvider(): \Generator
     {
         yield [function (QueryTaxpayerRequest $request) {
 
-        }, 1, function ($errors) {
-            $this->assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
+        }, 1, function ($errors, $request) {
+            self::assertEquals(NotBlank::IS_BLANK_ERROR, $errors[0]->getCode());
         }];
 
         yield [function (QueryTaxpayerRequest $request) {
             $request->setTaxNumber(str_repeat('1', 7));
-        }, 2, function ($errors) {
-            $this->assertEquals(Length::NOT_EQUAL_LENGTH_ERROR, $errors[0]->getCode());
-            $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[1]->getCode());
+        }, 2, function ($errors, $request) {
+            self::assertEquals(Length::NOT_EQUAL_LENGTH_ERROR, $errors[0]->getCode());
+            self::assertEquals(Regex::REGEX_FAILED_ERROR, $errors[1]->getCode());
         }];
 
         yield [function (QueryTaxpayerRequest $request) {
             $request->setTaxNumber(str_repeat('1', 10));
-        }, 0, function ($errors) {
+        }, 0, function ($errors, $request) {
         }];
 
         yield [function (QueryTaxpayerRequest $request) {
             $request->setTaxNumber(str_repeat('a', 8));
-        }, 1, function ($errors) {
-            $this->assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
+        }, 1, function ($errors, $request) {
+            self::assertEquals(Regex::REGEX_FAILED_ERROR, $errors[0]->getCode());
         }];
 
         yield [function (QueryTaxpayerRequest $request) {
             $request->setTaxNumber('69061864-1-33');
         }, 0, function ($errors, $request) {
-            $this->assertEquals('69061864', $request->getTaxNumber());
+            self::assertEquals('69061864', $request->getTaxNumber());
         }];
     }
 }
