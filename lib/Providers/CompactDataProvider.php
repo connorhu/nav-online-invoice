@@ -10,9 +10,29 @@ use NAV\OnlineInvoice\Http\Request\Software;
 
 class CompactDataProvider implements SoftwareProviderInterface, UserProviderInterface, RequestIdProviderInterface, ApiEndpointUrlProviderInterface, CryptoToolsProviderInterface
 {
-    private $infoJson;
-    private $software;
-    private $user;
+    /**
+     * @var array{
+     *     "software": array{
+     *         id: string,
+     *         name: string,
+     *         operation: string,
+     *         mainVersion: string,
+     *         devName: string,
+     *         devContact: string,
+     *         devCountryCode: string,
+     *         devTaxNumber: string
+     *     },
+     *     "user": array{
+     *         login: string,
+     *         password: string,
+     *         taxNumber: string,
+     *         signKey: string
+     *     }
+     * }
+     */
+    private array $infoJson;
+    private Software $software;
+    private User $user;
     
     public function __construct(string $infoJsonFilePath)
     {
