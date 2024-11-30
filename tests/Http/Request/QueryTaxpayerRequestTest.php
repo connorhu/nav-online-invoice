@@ -35,7 +35,7 @@ class QueryTaxpayerRequestTest extends TestCase
         $asserts($errors, $request);
     }
 
-    public function taxNumberValidationDataProvider(): \Generator
+    public static function taxNumberValidationDataProvider(): \Generator
     {
         yield [function (QueryTaxpayerRequest $request) {
 
