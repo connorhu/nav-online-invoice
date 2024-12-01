@@ -4,6 +4,7 @@ namespace NAV\OnlineInvoice\Tests\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Tests\Fixtures\UserAwareTraitImplementation;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Length;
@@ -30,9 +31,7 @@ class UserTest extends TestCase
         $this->assertEquals('69061864', $user->getTaxNumber());
     }
 
-    /**
-     * @dataProvider invalidTaxNumberValidationDataProvider
-     */
+    #[DataProvider('invalidTaxNumberValidationDataProvider')]
     public function testInvalidTaxNumberValidation(User $user, int $numberOfErrors, array $errorAsserts)
     {
         $errors = $this->validator->validateProperty($user, 'taxNumber', ['v1.0', 'v1.1', 'v2.0', 'v3.0']);
@@ -76,9 +75,7 @@ class UserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider notBlankFieldsValidationDataProvider
-     */
+    #[DataProvider('notBlankFieldsValidationDataProvider')]
     public function testNotBlankFieldsValidation($propertyName)
     {
         $user = new User();
@@ -100,9 +97,7 @@ class UserTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider validNotBlankFieldsValidationDataProvider
-     */
+    #[DataProvider('validNotBlankFieldsValidationDataProvider')]
     public function testValidNotBlankFieldsValidation(string $methodName, string $value, string $propertyName)
     {
         $user = new User();

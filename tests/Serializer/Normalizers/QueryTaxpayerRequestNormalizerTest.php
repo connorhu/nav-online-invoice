@@ -20,6 +20,9 @@ use Symfony\Component\Serializer\Serializer;
 
 class QueryTaxpayerRequestNormalizerTest extends TestCase
 {
+    private Serializer $serializer;
+    private User $user;
+
     public function setUp(): void
     {
         $cryptoToolProvider = new CryptoToolsProvider();

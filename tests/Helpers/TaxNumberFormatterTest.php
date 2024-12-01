@@ -3,13 +3,12 @@
 namespace NAV\OnlineInvoice\Tests\Helpers;
 
 use NAV\OnlineInvoice\Helpers\TaxNumberFormatter;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class TaxNumberFormatterTest extends TestCase
 {
-    /**
-     * @dataProvider formatHUDataProvider
-     */
+    #[DataProvider('formatHUDataProvider')]
     public function testFormatHU($taxNumber, $expectedTaxNumber)
     {
         $this->assertSame($expectedTaxNumber, TaxNumberFormatter::formatHU($taxNumber));
