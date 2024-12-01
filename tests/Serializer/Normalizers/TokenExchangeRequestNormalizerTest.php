@@ -21,6 +21,9 @@ use Symfony\Component\Serializer\Serializer;
 
 class TokenExchangeRequestNormalizerTest extends TestCase
 {
+    private Serializer $serializer;
+    private User $user;
+
     public function setUp(): void
     {
         $cryptoToolProvider = new CryptoToolsProvider();

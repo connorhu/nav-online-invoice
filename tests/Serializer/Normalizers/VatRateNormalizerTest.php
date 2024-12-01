@@ -9,11 +9,11 @@ use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Serializer\Normalizers\VatRateNormalizer;
 use NAV\OnlineInvoice\Tests\Fixtures\AllInOneFactory;
 use NAV\OnlineInvoice\Tests\Fixtures\VatRateTraitImplementation;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \NAV\OnlineInvoice\Serializer\Normalizers\VatRateNormalizer
- */
+#[CoversClass(VatRateNormalizer::class)]
 class VatRateNormalizerTest extends TestCase
 {
     private VatRateNormalizer $normalizer;
@@ -31,9 +31,7 @@ class VatRateNormalizerTest extends TestCase
         $this->assertTrue($this->normalizer->supportsNormalization($vatRate));
     }
 
-    /**
-     * @dataProvider fieldsDataProvider
-     */
+    #[DataProvider('fieldsDataProvider')]
     public function testFields(VatRateTraitImplementation $vatRate, array $expected): void
     {
         $this->assertSame($expected, $this->normalizer->normalize($vatRate));

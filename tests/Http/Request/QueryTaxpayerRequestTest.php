@@ -3,6 +3,7 @@
 namespace NAV\OnlineInvoice\Tests\Http\Request;
 
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Constraints\Choice;
@@ -22,9 +23,7 @@ class QueryTaxpayerRequestTest extends TestCase
             ->getValidator();
     }
 
-    /**
-     * @dataProvider taxNumberValidationDataProvider
-     */
+    #[DataProvider('taxNumberValidationDataProvider')]
     public function testTaxNumberValidation(callable $setup, int $numberOfError, callable $asserts)
     {
         $request = new QueryTaxpayerRequest();

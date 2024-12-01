@@ -6,6 +6,7 @@ use NAV\OnlineInvoice\Validator\Constraints\TaxNumber;
 use NAV\OnlineInvoice\Validator\Constraints\TaxNumberValidator;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
+use PHPUnit\Framework\Attributes\DataProvider;
 
 class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 {
@@ -28,9 +29,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
         $this->assertNoViolation();
     }
     
-    /**
-     * @dataProvider validTaxNumbersDataProvider
-     */
+    #[DataProvider('validTaxNumbersDataProvider')]
     public function testValidTaxNumbers($taxNumber)
     {
         $this->validator->validate($taxNumber, new TaxNumber());
@@ -69,9 +68,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
 
-    /**
-     * @dataProvider shortTaxNumbersDataProvider
-     */
+    #[DataProvider('shortTaxNumbersDataProvider')]
     public function testShortTaxPayerId(string $taxNumber)
     {
         $constraint = new TaxNumber([
@@ -92,9 +89,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
         yield ['abc214'];
     }
 
-    /**
-     * @dataProvider invalidTaxNumbersDataProvider
-     */
+    #[DataProvider('invalidTaxNumbersDataProvider')]
     public function testInvalidTaxPayerId(string $taxNumber)
     {
         $constraint = new TaxNumber([
@@ -115,9 +110,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
         yield ['..123456'];
     }
     
-    /**
-     * @dataProvider invalidVatCodesDataProvider
-     */
+    #[DataProvider('invalidVatCodesDataProvider')]
     public function testInvalidVatCodes(string $taxNumber, string $expectedVatCode)
     {
         $constraint = new TaxNumber([
@@ -176,9 +169,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->assertRaised();
     }
     
-    /**
-     * @dataProvider invalidCountyCodesDataProvider
-     */
+    #[DataProvider('invalidCountyCodesDataProvider')]
     public function testInvalidCountyCodes(string $taxNumber, string $expectedCountyCode)
     {
         $constraint = new TaxNumber([

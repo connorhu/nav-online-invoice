@@ -5,18 +5,17 @@ namespace NAV\OnlineInvoice\Tests\Model;
 use NAV\OnlineInvoice\Model\Enums\VatRateExemptionCase;
 use NAV\OnlineInvoice\Model\Enums\VatRateOutOfScopeCase;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
+use NAV\OnlineInvoice\Model\Traits\VatRateTrait;
 use NAV\OnlineInvoice\Tests\Fixtures\VatRateTraitImplementation;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
-/**
- * @covers \NAV\OnlineInvoice\Model\Interfaces\VatRateInterface
- * @covers \NAV\OnlineInvoice\Model\Traits\VatRateTrait
- */
+#[CoversClass(VatRateInterface::class)]
+#[CoversClass(VatRateTrait::class)]
 class VatRateTraitTest extends TestCase
 {
-    /**
-     * @dataProvider vatRateExemptionCaseStringDataProvider
-     */
+    #[DataProvider('vatRateExemptionCaseStringDataProvider')]
     public function testVatRateExemptionCaseString(VatRateInterface $object, ?string $stringValue)
     {
         $this->assertSame($stringValue, $object->getVatRateExemptionCase()?->toString());
@@ -57,9 +56,7 @@ class VatRateTraitTest extends TestCase
         yield [$object, 'UNKNOWN'];
     }
 
-    /**
-     * @dataProvider vatRateOutOfScopeCaseStringDataProvider
-     */
+    #[DataProvider('vatRateOutOfScopeCaseStringDataProvider')]
     public function testVatRateOutOfScopeCaseString(VatRateInterface $object, ?string $stringValue)
     {
         $this->assertSame($stringValue, $object->getVatRateOutOfScopeCase()?->toString());
@@ -96,9 +93,7 @@ class VatRateTraitTest extends TestCase
         yield [$object, 'UNKNOWN'];
     }
 
-    /**
-     * @dataProvider optionalFieldsDataProvider
-     */
+    #[DataProvider('optionalFieldsDataProvider')]
     public function testOptionalFields(VatRateInterface $object, string $getter): void
     {
         $this->assertNull($object->{$getter}());
