@@ -32,10 +32,14 @@ enum ProductCodeCategoryEnum: int
     public static function initWithRawString(string $rawString): self
     {
         return match ($rawString) {
-            'TRANSFER' => self::Transfer,
-            'CASH' => self::Cash,
-            'CARD' => self::Card,
-            'VOUCHER' => self::Voucher,
+            'VTSZ' => self::Vtsz,
+            'SZJ' => self::Szj,
+            'KN' => self::Kn,
+            'AHK' => self::Ahk,
+            'CSK' => self::Csk,
+            'KT' => self::Kt,
+            'EJ' => self::Ej,
+            'OWN' => self::Own,
             'OTHER' => self::Other,
         };
     }
