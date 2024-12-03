@@ -5,6 +5,7 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Logger\InvoiceLoggerInterface;
+use NAV\OnlineInvoice\Logger\NullInvoiceLogger;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
 use NAV\OnlineInvoice\Validator\XSDValidator;
