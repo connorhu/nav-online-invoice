@@ -13,7 +13,7 @@ class QueryInvoiceDataResponse extends Response
 
     protected Software $software;
 
-    protected Audit $audit;
+    protected ?Audit $audit = null;
 
     protected bool $compressedContentIndicator = false;
 

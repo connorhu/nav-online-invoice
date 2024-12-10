@@ -41,26 +41,28 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
             SoftwareNormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
         ]);
 
-        $invoiceDataResult = $data[$apiKeyPrefix.'invoiceDataResult'];
-
-        $audit = $this->denormalizer->denormalize($invoiceDataResult[$apiKeyPrefix.'auditData'], Audit::class, $format, [
-            AuditDenormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
-        ]);
-
         $object = new QueryInvoiceDataResponse();
         $object->setHeader($header);
         $object->setSoftware($software);
-        $object->setAudit($audit);
-        $object->setCompressedContentIndicator($invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator'] === 'true');
 
-        $stringInvoiceContent = base64_decode($invoiceDataResult[$apiKeyPrefix.'invoiceData']);
-        if ($object->getCompressedContentIndicator()) {
-            $stringInvoiceContent = gzinflate($stringInvoiceContent);
+        if (isset($data[$apiKeyPrefix.'invoiceDataResult'])) {
+            $invoiceDataResult = $data[$apiKeyPrefix.'invoiceDataResult'];
+            $audit = $this->denormalizer->denormalize($invoiceDataResult[$apiKeyPrefix.'auditData'], Audit::class, $format, [
+                AuditDenormalizer::XMLNS_CONTEXT_KEY => $apiNamespacePrefix,
+            ]);
+
+            $object->setAudit($audit);
+            $object->setCompressedContentIndicator($invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator'] === 'true');
+
+            $stringInvoiceContent = base64_decode($invoiceDataResult[$apiKeyPrefix.'invoiceData']);
+            if ($object->getCompressedContentIndicator()) {
+                $stringInvoiceContent = gzinflate($stringInvoiceContent);
+            }
+
+            $invoice = $this->serializer->deserialize($stringInvoiceContent, Invoice::class, 'xml');
+
+            $object->setInvoiceData($invoice);
         }
-
-        $invoice = $this->serializer->deserialize($stringInvoiceContent, Invoice::class, 'xml');
-
-        $object->setInvoiceData($invoice);
 
         return $object;
     }
