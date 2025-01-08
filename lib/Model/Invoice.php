@@ -1191,26 +1191,27 @@ class Invoice implements InvoiceInterface
 					<dataValue>A számlán szereplő áruk az ellenérték kiegyenlítéséig az eladó tulajdonát képezik.</dataValue>
 				</additionalInvoiceData>
      */
-    protected $additionalInvoiceData = [];
+    protected array $additionalInvoiceData = [];
 
     /**
-     * setter for additionalInvoiceData
-     *
      * @param mixed
      * @return self
      */
-    public function setAdditionalInvoiceData($value)
+    public function setAdditionalInvoiceData(array $additionalInvoiceData)
     {
-        $this->additionalInvoiceData = $value;
+        $this->additionalInvoiceData = $additionalInvoiceData;
         return $this;
     }
 
     /**
-     * getter for additionalInvoiceData
-     *
-     * @return mixed return value for
+     * @return array{
+     *     string: array{
+     *         description: string,
+     *         value: string
+     *     }
+     * }
      */
-    public function getAdditionalInvoiceData()
+    public function getAdditionalInvoiceData(): array
     {
         return $this->additionalInvoiceData;
     }

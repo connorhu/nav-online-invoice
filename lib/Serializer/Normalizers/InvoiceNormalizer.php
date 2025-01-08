@@ -166,7 +166,13 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         }
 
         if (count($invoice->getAdditionalInvoiceData()) > 0) {
-            $invoiceData['additionalInvoiceData'] = $invoice->getAdditionalInvoiceData();
+            foreach ($invoice->getAdditionalInvoiceData() as $key => $data) {
+                $invoiceData['additionalInvoiceData'][] = [
+                    'dataName' => $key,
+                    'dataDescription' => $data['description'],
+                    'dataValue' => $data['value'],
+                ];
+            }
         }
 
         return $invoiceData;
