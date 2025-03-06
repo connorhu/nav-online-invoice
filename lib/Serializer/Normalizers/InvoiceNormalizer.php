@@ -244,12 +244,12 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         $invoiceNode = [];
 
-        if ($invoice->getOriginalInvoiceNumber()) {
+        if ($invoice->getOriginalInvoiceNumber() !== null) {
             $reference = [
                 'originalInvoiceNumber' => $invoice->getOriginalInvoiceNumber(),
             ];
 
-            if ($invoice->getModifyWithoutMaster() !== null) {
+            if ($invoice->getModifyWithoutMaster() !== false) {
                 $reference['modifyWithoutMaster'] = $invoice->getModifyWithoutMaster();
             }
 
