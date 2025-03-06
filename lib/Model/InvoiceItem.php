@@ -22,30 +22,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 
      */
     protected $itemNumber;
-    
-    /**
-     * setter for itemNumber
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setItemNumber($value)
-    {
-        $this->itemNumber = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for itemNumber
-     * 
-     * @return mixed return value for 
-     */
-    public function getItemNumber()
-    {
-        return $this->itemNumber;
-    }
-
-    // productCodes
 
     /*
      * Módosító számla esetén a tételsorszintű módosítások jelölése
@@ -55,33 +31,10 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
      * node name: lineModificationReference / lineNumberReference
      * xml type: LineModificationReferenceType / xs:nonNegativeInteger
      * simple type: LineModificationReferenceType
-     * pattern: 
+     * pattern:
+     */
+    protected ?int $lineModificationReferenceNumber = null;
 
-     */
-    protected $lineModificationReferenceNumber;
-    
-    /**
-     * setter for lineModificationReferenceNumber
-     *
-     * @param mixed 
-     * @return self
-     */
-    public function setLineModificationReferenceNumber($value)
-    {
-        $this->lineModificationReferenceNumber = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for lineModificationReferenceNumber
-     * 
-     * @return mixed return value for 
-     */
-    public function getLineModificationReferenceNumber()
-    {
-        return $this->lineModificationReferenceNumber;
-    }
-    
     /*
      * A számlatétel módosításának jellege.
      *
@@ -89,34 +42,66 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
      * node name: lineModificationReference / lineNumberReference
      * xml type: LineModificationReferenceType
      * simple type: LineModificationReferenceType
-     * pattern: 
+     * pattern:
      * enum: CREATE MODIFY
+     */
+    protected $lineModificationReferenceOperation = 'CREATE';
 
-     */
-    protected $lineModificationReferenceOperation;
-    
     /**
-     * setter for lineModificationReferenceOperation
-     *
-     * @param mixed 
-     * @return self
+     * @return mixed
      */
-    public function setLineModificationReferenceOperation($value)
+    public function getItemNumber()
     {
-        $this->lineModificationReferenceOperation = $value;
+        return $this->itemNumber;
+    }
+
+    /**
+     * @param mixed $itemNumber
+     */
+    public function setItemNumber($itemNumber): void
+    {
+        $this->itemNumber = $itemNumber;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getLineModificationReferenceNumber(): ?int
+    {
+        return $this->lineModificationReferenceNumber;
+    }
+
+    /**
+     * @param int|null $lineModificationReferenceNumber
+     * @return InvoiceItemInterface
+     */
+    public function setLineModificationReferenceNumber(?int $lineModificationReferenceNumber): InvoiceItemInterface
+    {
+        $this->lineModificationReferenceNumber = $lineModificationReferenceNumber;
+
         return $this;
     }
-    
+
     /**
-     * getter for lineModificationReferenceOperation
-     * 
-     * @return mixed return value for 
+     * @return mixed
      */
     public function getLineModificationReferenceOperation()
     {
         return $this->lineModificationReferenceOperation;
     }
-    
+
+    /**
+     * @param mixed $lineModificationReferenceOperation
+     */
+    public function setLineModificationReferenceOperation($lineModificationReferenceOperation): InvoiceItemInterface
+    {
+        $this->lineModificationReferenceOperation = $lineModificationReferenceOperation;
+
+        return $this;
+    }
+
+    // productCodes
+
     /*
      * Hivatkozások kapcsolódó tételekre, ha ez az ÁFA törvény alapján szükséges
      *

@@ -158,6 +158,12 @@ class Invoice implements InvoiceInterface
      */
     protected ?string $supplierBankAccountNumber = null;
 
+    protected ?string $originalInvoiceNumber = null;
+
+    protected bool $modifyWithoutMaster = false;
+
+    protected ?int $modificationIndex = null;
+
     public function __construct()
     {
         $this->supplierAddress = new Address();
@@ -1525,75 +1531,60 @@ class Invoice implements InvoiceInterface
         return $this->vatRateSummaries;
     }
 
-    protected $originalInvoiceNumber;
-
     /**
-     * setter for originalInvoiceNumber
-     *
-     * @param mixed
-     * @return self
+     * @return string|null
      */
-    public function setOriginalInvoiceNumber($value)
-    {
-        $this->originalInvoiceNumber = $value;
-        return $this;
-    }
-
-    /**
-     * getter for originalInvoiceNumber
-     *
-     * @return mixed return value for
-     */
-    public function getOriginalInvoiceNumber()
+    public function getOriginalInvoiceNumber(): ?string
     {
         return $this->originalInvoiceNumber;
     }
 
-    protected $modifyWithoutMaster = false;
-
     /**
-     * setter for modifyWithoutMaster
-     *
-     * @param mixed
-     * @return self
+     * @param string|null $originalInvoiceNumber
+     * @return InvoiceInterface
      */
-    public function setModifyWithoutMaster($value)
+    public function setOriginalInvoiceNumber(?string $originalInvoiceNumber): InvoiceInterface
     {
-        $this->modifyWithoutMaster = $value;
+        $this->originalInvoiceNumber = $originalInvoiceNumber;
+
         return $this;
     }
 
     /**
-     * getter for modifyWithoutMaster
-     *
-     * @return mixed return value for
+     * @return bool
      */
-    public function getModifyWithoutMaster()
+    public function isModifyWithoutMaster(): bool
     {
         return $this->modifyWithoutMaster;
     }
 
-    protected $modificationIndex;
-
     /**
-     * setter for modificationIndex
-     *
-     * @param mixed
-     * @return self
+     * @param bool $modifyWithoutMaster
+     * @return InvoiceInterface
      */
-    public function setModificationIndex($value)
+    public function setModifyWithoutMaster(bool $modifyWithoutMaster): InvoiceInterface
     {
-        $this->modificationIndex = $value;
+        $this->modifyWithoutMaster = $modifyWithoutMaster;
+
         return $this;
     }
 
     /**
-     * getter for modificationIndex
-     *
-     * @return mixed return value for
+     * @return int|null
      */
-    public function getModificationIndex()
+    public function getModificationIndex(): ?int
     {
         return $this->modificationIndex;
+    }
+
+    /**
+     * @param int|null $modificationIndex
+     * @return InvoiceInterface
+     */
+    public function setModificationIndex(?int $modificationIndex): InvoiceInterface
+    {
+        $this->modificationIndex = $modificationIndex;
+
+        return $this;
     }
 }
