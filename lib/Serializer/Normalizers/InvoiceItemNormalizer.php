@@ -55,7 +55,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $buffer['productCodes'][] = $this->normalizer->normalize($code, $format, $context);
         }
 
-        $buffer['lineExpressionIndicator'] = $object->getLineExpressionIndicator() === true ? 'true' : 'false';
+        $buffer['lineExpressionIndicator'] = BooleanNormalizer::normalize($object->getLineExpressionIndicator());
 
         if ($object->getLineDescription()) {
             $buffer['lineDescription'] = $object->getLineDescription();
@@ -141,7 +141,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
         $object->setQuantity($data[$keyPrefix.'quantity']);
         $object->setUnitOfMeasure($data[$keyPrefix.'unitOfMeasure']);
         $object->setUnitPrice($data[$keyPrefix.'unitPrice']);
-        $object->setIntermediatedService($data[$keyPrefix.'unitPrice'] === 'true');
+        $object->setIntermediatedService(BooleanNormalizer::denormalize($data[$keyPrefix.'unitPrice']));
 
         $netAmountData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineNetAmountData'];
         $object->setNetAmount($netAmountData[$keyPrefix.'lineNetAmount']);

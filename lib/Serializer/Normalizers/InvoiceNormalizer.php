@@ -247,7 +247,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         $buffer['invoiceNumber'] = $invoice->getInvoiceNumber();
         $buffer['invoiceIssueDate'] = $this->serializer->normalize($invoice->getInvoiceIssueDate(), $format, $context);
-        $buffer['completenessIndicator'] = $invoice->isCompletenessIndicator();
+        $buffer['completenessIndicator'] = BooleanNormalizer::normalize($invoice->isCompletenessIndicator());
 
         $invoiceNode = [];
 
@@ -257,7 +257,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
             ];
 
             if ($invoice->isModifyWithoutMaster() !== false) {
-                $reference['modifyWithoutMaster'] = $invoice->isModifyWithoutMaster();
+                $reference['modifyWithoutMaster'] = BooleanNormalizer::normalize($invoice->isModifyWithoutMaster());
             }
 
             if ($invoice->getModificationIndex() !== null) {
@@ -273,7 +273,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
             'invoiceDetail' => $this->normalizeDetailInfo($invoice, $format, $context),
         ];
         $invoiceNode['invoiceLines'] = [
-            'mergedItemIndicator' => false,
+            'mergedItemIndicator' => BooleanNormalizer::normalize(false),
             'line' => $this->normalizeLines($invoice, $format, $context),
         ];
         $invoiceNode['invoiceSummary'] = $this->normalizeSummary($invoice, $format, $context);
@@ -329,7 +329,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         $object->setInvoiceNumber($data[$dataKeyPrefix.'invoiceNumber']);
         $object->setInvoiceIssueDate(new \DateTime($data[$dataKeyPrefix.'invoiceIssueDate']));
-        $object->setCompletenessIndicator($data[$dataKeyPrefix.'completenessIndicator'] === 'true');
+        $object->setCompletenessIndicator(BooleanNormalizer::denormalize($data[$dataKeyPrefix.'completenessIndicator']));
 
         $invoiceHead = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceHead'];
         $supplierInfo = $invoiceHead[$dataKeyPrefix.'supplierInfo'];
@@ -365,10 +365,10 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         $object->setInvoiceDeliveryDate(new \DateTime($invoiceDetail[$dataKeyPrefix.'invoiceDeliveryDate']));
         $object->setCurrencyCode($invoiceDetail[$dataKeyPrefix.'currencyCode']);
         $object->setExchangeRate($invoiceDetail[$dataKeyPrefix.'exchangeRate']);
-        $object->setSelfBillingIndicator($invoiceDetail[$dataKeyPrefix.'selfBillingIndicator'] === 'true');
+        $object->setSelfBillingIndicator(BooleanNormalizer::denormalize($invoiceDetail[$dataKeyPrefix.'selfBillingIndicator']));
         $object->setPaymentMethod($invoiceDetail[$dataKeyPrefix.'paymentMethod']);
         $object->setPaymentDate(new \DateTime($invoiceDetail[$dataKeyPrefix.'paymentDate']));
-        $object->setCashAccountingIndicator($invoiceDetail[$dataKeyPrefix.'cashAccountingIndicator'] === 'true');
+        $object->setCashAccountingIndicator(BooleanNormalizer::denormalize($invoiceDetail[$dataKeyPrefix.'cashAccountingIndicator']));
         $object->setInvoiceAppearance($invoiceDetail[$dataKeyPrefix.'invoiceAppearance']);
 
         $invoiceLines = $data[$dataKeyPrefix.'invoiceMain'][$dataKeyPrefix.'invoice'][$dataKeyPrefix.'invoiceLines'];
