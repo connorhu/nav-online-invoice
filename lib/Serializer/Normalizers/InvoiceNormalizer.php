@@ -256,13 +256,8 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
                 'originalInvoiceNumber' => $invoice->getOriginalInvoiceNumber(),
             ];
 
-            if ($invoice->isModifyWithoutMaster() !== false) {
-                $reference['modifyWithoutMaster'] = BooleanNormalizer::normalize($invoice->isModifyWithoutMaster());
-            }
-
-            if ($invoice->getModificationIndex() !== null) {
-                $reference['modificationIndex'] = $invoice->getModificationIndex();
-            }
+            $reference['modifyWithoutMaster'] = BooleanNormalizer::normalize($invoice->isModifyWithoutMaster());
+            $reference['modificationIndex'] = $invoice->getModificationIndex();
 
             $invoiceNode['invoiceReference'] = $reference;
         }
