@@ -5,6 +5,7 @@ namespace NAV\OnlineInvoice\Serializer\Normalizers;
 use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Model\Address;
 use NAV\OnlineInvoice\Model\Enums\CustomerVatStatusEnum;
+use NAV\OnlineInvoice\Model\Interfaces\InvoiceInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateSummaryInterface;
 use NAV\OnlineInvoice\Model\Invoice;
 use NAV\OnlineInvoice\Model\InvoiceItem;
@@ -213,6 +214,12 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $invoiceSummary;
     }
 
+    /**
+     * @param Invoice|InvoiceInterface $invoice
+     * @param $format
+     * @param array $context
+     * @return float|int|bool|\ArrayObject|array|string|null
+     */
     public function normalize($invoice, $format = null, array $context = []): float|int|bool|\ArrayObject|array|string|null
     {
         $context[DateTimeNormalizer::FORMAT_KEY] = 'Y-m-d';
@@ -249,8 +256,8 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
                 'originalInvoiceNumber' => $invoice->getOriginalInvoiceNumber(),
             ];
 
-            if ($invoice->getModifyWithoutMaster() !== false) {
-                $reference['modifyWithoutMaster'] = $invoice->getModifyWithoutMaster();
+            if ($invoice->isModifyWithoutMaster() !== false) {
+                $reference['modifyWithoutMaster'] = $invoice->isModifyWithoutMaster();
             }
 
             if ($invoice->getModificationIndex() !== null) {
