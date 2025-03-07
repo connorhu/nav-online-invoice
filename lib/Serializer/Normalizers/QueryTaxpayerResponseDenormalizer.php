@@ -18,7 +18,7 @@ class QueryTaxpayerResponseDenormalizer implements DenormalizerInterface
         $baseKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
 
         $taxpayerResponse = new QueryTaxpayerResponse();
-        $taxpayerResponse->setValidity($data[$apiKeyPrefix.'taxpayerValidity'] === 'true');
+        $taxpayerResponse->setValidity(BooleanNormalizer::denormalize($data[$apiKeyPrefix.'taxpayerValidity']));
 
         if ($taxpayerResponse->getValidity()) {
 

@@ -52,7 +52,7 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
             ]);
 
             $object->setAudit($audit);
-            $object->setCompressedContentIndicator($invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator'] === 'true');
+            $object->setCompressedContentIndicator(BooleanNormalizer::denormalize($invoiceDataResult[$apiKeyPrefix.'compressedContentIndicator']));
 
             $stringInvoiceContent = base64_decode($invoiceDataResult[$apiKeyPrefix.'invoiceData']);
             if ($object->getCompressedContentIndicator()) {

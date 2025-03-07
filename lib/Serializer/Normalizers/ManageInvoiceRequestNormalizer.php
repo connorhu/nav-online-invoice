@@ -72,7 +72,7 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
         $contentToSign = [
             'exchangeToken' => $object->getExchangeToken(),
             'invoiceOperations' => [
-                'compressedContent' => $object->isContentCompressed(),
+                'compressedContent' => BooleanNormalizer::normalize($object->isContentCompressed()),
                 'invoiceOperation' => []
             ],
         ];
