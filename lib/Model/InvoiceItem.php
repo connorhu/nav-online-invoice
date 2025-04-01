@@ -47,6 +47,239 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
      */
     protected $lineModificationReferenceOperation = 'CREATE';
 
+    // productCodes
+
+    /*
+     * Hivatkozások kapcsolódó tételekre, ha ez az ÁFA törvény alapján szükséges
+     *
+     * requirements: not required
+     * node name: referencesToOtherLines / referenceToOtherLine[]
+     * xml type: ReferencesToOtherLinesType / xs:nonNegativeInteger[]
+     * simple type: ReferencesToOtherLinesType / LineNumberType
+     * pattern:
+     */
+    protected $referencesToOtherLines;
+
+    /*
+     * Értéke true, ha a számla tétel előleg jellegű.
+     *
+     * requirements: not required
+     * node name: advanceIndicator
+     * xml type: xs:boolean
+     * simple type: boolean
+     * pattern:
+     * default: false
+
+     */
+    protected $advanceIndicator = false;
+
+    /*
+     * Termékkódok
+     *
+     * requirements: required
+     * node name: productCodes
+     * xml type: ProductCodesType
+     * simple type: ProductCodesType
+     * pattern:
+
+<line>
+	<productCodes>
+     */
+    protected $productCodes = [];
+
+    /*
+     * Értéke true, ha a tétel mennyiségi egysége természetes mértékegységben kifejezhető
+     *
+     * requirements: required
+     * node name: lineExpressionIndicator
+     * xml type: xs:boolean
+     * simple type: boolean
+
+<line>
+	<lineExpressionIndicator>true</lineExpressionIndicator>
+     */
+    protected $lineExpressionIndicator;
+
+    /*
+     * A termék vagy szolgáltatás megnevezése
+     *
+     * requirements: not required
+     * node name: lineDescription
+     * xml type: xs:string
+     * simple type: SimpleText255NotBlankType
+     * pattern: .*[^\s].*
+
+<line>
+	<lineDescription>Hűtött házi sertés (fél)</lineDescription>
+     */
+    protected $lineDescription;
+
+    /*
+     * Mennyiség
+     *
+     * requirements: not required
+     * node name: quantity
+     * xml type: xs:decimal
+     * simple type: QuantityType
+     * pattern:
+
+<line>
+	<quantity>1500.00</quantity>
+     */
+    protected $quantity;
+
+    /**
+     * Mennyiségi egység
+     *
+     * requirements: not required
+     * node name: unitOfMeasure
+     * xml type: xs:string
+     * simple type: SimpleText50NotBlankType
+     * pattern: .*[^\s].*
+
+    <line>
+    <unitOfMeasure>kg</unitOfMeasure>
+     */
+    protected ?UnitOfMeasureEnum $unitOfMeasure = null;
+
+    /*
+     * Mennyiségi egység
+     *
+     * requirements: not required
+     * node name: unitOfMeasureOwn
+     * xml type: xs:string
+     * simple type: UnitOfMeasureType
+     * pattern: -
+     * enum:
+        - PIECE
+        - KILOGRAM
+        - TON
+        - KWH
+        - DAY
+        - HOUR
+        - MINUTE
+        - MONTH
+        - LITER
+        - KILOMETER
+        - CUBIC_METER
+        - METER
+        - LINEAR_METER
+        - CARTON
+        - PACK
+        - OWN
+
+<line>
+	<unitOfMeasureOwn>kg</unitOfMeasureOwn>
+     */
+    protected $unitOfMeasureOwn;
+
+    /*
+     * Egységár a számla pénznemében. Egyszerűsített számla esetén bruttó, egyéb esetben nettó egységár.
+     *
+     * requirements: not required
+     * node name: unitPrice
+     * xml type: xs:decimal
+     * simple type: QuantityType
+     * pattern:
+
+<line>
+	<unitPrice>400.00</unitPrice>
+     */
+    protected $unitPrice;
+
+    /*
+     * Tétel nettó összege a számla pénznemében.
+     *
+     * requirements: required
+     * node name: lineNetAmount
+     * xml type: xs:decimal
+     * simple type: MonetaryType
+     * pattern:
+
+<line>
+	<lineAmountsNormal>
+		<lineNetAmount>600000.00</lineNetAmount>
+     */
+    protected $netAmount;
+
+    /*
+     * Tétel nettó összege a számla pénznemében.
+     *
+     * requirements: required
+     * node name: lineNetAmountHUF
+     * xml type: xs:decimal
+     * simple type: MonetaryType
+     * pattern:
+
+<line>
+	<lineAmountsNormal>
+        <lineNetAmountData>
+            <lineNetAmountHUF>600000.00</lineNetAmountHUF>
+     */
+    protected $netAmountHUF;
+
+    /*
+     * Tétel ÁFA összege a számla pénznemében
+     *
+     * requirements: required
+     * node name: lineVatAmount
+     * xml type: xs:decimal
+     * simple type: MonetaryType
+     * pattern:
+
+     */
+    protected $vatAmount;
+
+    /*
+     * Tétel ÁFA összege forintban
+     *
+     * requirements: not required
+     * node name: lineVatAmountHUF
+     * xml type: xs:decimal
+     * simple type: MonetaryType
+     * pattern:
+
+     */
+    protected $vatAmountHUF;
+
+    /*
+     * Tétel bruttó értéke a számla pénznemében
+     *
+     * requirements: not required
+     * node name: lineGrossAmountNormal
+     * xml type: xs:decimal
+     * simple type: MonetaryType
+     * pattern:
+
+     */
+    protected $grossAmountNormal;
+
+    /*
+     * Tétel bruttó értéke a számla pénznemében
+     *
+     * requirements: required
+     * node name: lineGrossAmountNormalHUF
+     * xml type: xs:decimal
+     * simple type: MonetaryType
+     * pattern:
+
+     */
+    protected $grossAmountNormalHUF;
+
+    /*
+     *
+     *
+     * requirements: required
+     * node name:
+     * xml type:
+     * simple type:
+     * pattern:
+
+     */
+    protected $intermediatedService;
+
+    private $additionalItemData = [];
+
     /**
      * @return mixed
      */
@@ -100,19 +333,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this;
     }
 
-    // productCodes
-
-    /*
-     * Hivatkozások kapcsolódó tételekre, ha ez az ÁFA törvény alapján szükséges
-     *
-     * requirements: not required
-     * node name: referencesToOtherLines / referenceToOtherLine[]
-     * xml type: ReferencesToOtherLinesType / xs:nonNegativeInteger[]
-     * simple type: ReferencesToOtherLinesType / LineNumberType
-     * pattern: 
-     */
-    protected $referencesToOtherLines;
-    
     /**
      * setter for referencesToOtherLines
      *
@@ -134,20 +354,7 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->referencesToOtherLines;
     }
-    
-    /*
-     * Értéke true, ha a számla tétel előleg jellegű.
-     *
-     * requirements: not required
-     * node name: advanceIndicator
-     * xml type: xs:boolean
-     * simple type: boolean
-     * pattern: 
-     * default: false
 
-     */
-    protected $advanceIndicator = false;
-    
     /**
      * setter for advanceIndicator
      *
@@ -169,20 +376,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->advanceIndicator;
     }
-    
-    /*
-     * Termékkódok
-     *
-     * requirements: required
-     * node name: productCodes
-     * xml type: ProductCodesType
-     * simple type: ProductCodesType
-     * pattern: 
-
-<line>
-	<productCodes>
-     */
-    protected $productCodes = [];
     
     /**
      * Add productCode
@@ -226,19 +419,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->productCodes;
     }
-
-    /*
-     * Értéke true, ha a tétel mennyiségi egysége természetes mértékegységben kifejezhető
-     *
-     * requirements: required
-     * node name: lineExpressionIndicator
-     * xml type: xs:boolean
-     * simple type: boolean
-
-<line>
-	<lineExpressionIndicator>true</lineExpressionIndicator>
-     */
-    protected $lineExpressionIndicator;
     
     /**
      * setter for lineExpressionIndicator
@@ -261,20 +441,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->lineExpressionIndicator;
     }
-
-    /*
-     * A termék vagy szolgáltatás megnevezése
-     *
-     * requirements: not required
-     * node name: lineDescription
-     * xml type: xs:string
-     * simple type: SimpleText255NotBlankType
-     * pattern: .*[^\s].*
-
-<line>
-	<lineDescription>Hűtött házi sertés (fél)</lineDescription>
-     */
-    protected $lineDescription;
     
     /**
      * setter for lineDescription
@@ -298,20 +464,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->lineDescription;
     }
     
-    /*
-     * Mennyiség
-     *
-     * requirements: not required
-     * node name: quantity
-     * xml type: xs:decimal
-     * simple type: QuantityType
-     * pattern: 
-
-<line>
-	<quantity>1500.00</quantity>
-     */
-    protected $quantity;
-    
     /**
      * setter for quantity
      *
@@ -333,20 +485,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->quantity;
     }
-    
-    /**
-     * Mennyiségi egység
-     *
-     * requirements: not required
-     * node name: unitOfMeasure
-     * xml type: xs:string
-     * simple type: SimpleText50NotBlankType
-     * pattern: .*[^\s].*
-
-<line>
-	<unitOfMeasure>kg</unitOfMeasure>
-     */
-    protected ?UnitOfMeasureEnum $unitOfMeasure = null;
 
     /**
      * @return UnitOfMeasureEnum|null
@@ -367,37 +505,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         $this->unitOfMeasure = $unitOfMeasure;
         return $this;
     }
-
-    /*
-     * Mennyiségi egység
-     *
-     * requirements: not required
-     * node name: unitOfMeasureOwn
-     * xml type: xs:string
-     * simple type: UnitOfMeasureType
-     * pattern: -
-     * enum:
-        - PIECE
-        - KILOGRAM
-        - TON
-        - KWH
-        - DAY
-        - HOUR
-        - MINUTE
-        - MONTH
-        - LITER
-        - KILOMETER
-        - CUBIC_METER
-        - METER
-        - LINEAR_METER
-        - CARTON
-        - PACK
-        - OWN 
-
-<line>
-	<unitOfMeasureOwn>kg</unitOfMeasureOwn>
-     */
-    protected $unitOfMeasureOwn;
     
     /**
      * setter for unitOfMeasureOwn
@@ -421,20 +528,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->unitOfMeasureOwn;
     }
     
-    /*
-     * Egységár a számla pénznemében. Egyszerűsített számla esetén bruttó, egyéb esetben nettó egységár.
-     *
-     * requirements: not required
-     * node name: unitPrice
-     * xml type: xs:decimal
-     * simple type: QuantityType
-     * pattern: 
-
-<line>
-	<unitPrice>400.00</unitPrice>
-     */
-    protected $unitPrice;
-    
     /**
      * setter for unitPrice
      *
@@ -456,21 +549,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->unitPrice;
     }
-    
-    /*
-     * Tétel nettó összege a számla pénznemében.
-     *
-     * requirements: required
-     * node name: lineNetAmount
-     * xml type: xs:decimal 
-     * simple type: MonetaryType
-     * pattern: 
-
-<line>
-	<lineAmountsNormal>
-		<lineNetAmount>600000.00</lineNetAmount>
-     */
-    protected $netAmount;
     
     /**
      * setter for itemNetAmount
@@ -494,23 +572,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->netAmount;
     }
     
-    
-    /*
-     * Tétel nettó összege a számla pénznemében.
-     *
-     * requirements: required
-     * node name: lineNetAmountHUF
-     * xml type: xs:decimal 
-     * simple type: MonetaryType
-     * pattern: 
-
-<line>
-	<lineAmountsNormal>
-        <lineNetAmountData>
-            <lineNetAmountHUF>600000.00</lineNetAmountHUF>
-     */
-    protected $netAmountHUF;
-    
     /**
      * setter for itemNetAmount
      *
@@ -532,18 +593,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->netAmountHUF;
     }
-    
-    /*
-     * Tétel ÁFA összege a számla pénznemében
-     *
-     * requirements: required
-     * node name: lineVatAmount
-     * xml type: xs:decimal
-     * simple type: MonetaryType
-     * pattern: 
-
-     */
-    protected $vatAmount;
     
     /**
      * setter for vatAmount
@@ -567,18 +616,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->vatAmount;
     }
     
-    /*
-     * Tétel ÁFA összege forintban
-     *
-     * requirements: not required
-     * node name: lineVatAmountHUF
-     * xml type: xs:decimal
-     * simple type: MonetaryType
-     * pattern: 
-
-     */
-    protected $vatAmountHUF;
-    
     /**
      * setter for vatAmountHUF
      *
@@ -600,18 +637,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->vatAmountHUF;
     }
-    
-    /*
-     * Tétel bruttó értéke a számla pénznemében 
-     *
-     * requirements: not required
-     * node name: lineGrossAmountNormal
-     * xml type: xs:decimal
-     * simple type: MonetaryType
-     * pattern: 
-
-     */
-    protected $grossAmountNormal;
     
     /**
      * setter for grossAmountNormal
@@ -635,18 +660,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->grossAmountNormal;
     }
     
-    /*
-     * Tétel bruttó értéke a számla pénznemében 
-     *
-     * requirements: required
-     * node name: lineGrossAmountNormalHUF
-     * xml type: xs:decimal
-     * simple type: MonetaryType
-     * pattern: 
-
-     */
-    protected $grossAmountNormalHUF;
-    
     /**
      * setter for grossAmountNormal
      *
@@ -669,18 +682,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
         return $this->grossAmountNormalHUF;
     }
     
-    /*
-     * 
-     *
-     * requirements: required
-     * node name: 
-     * xml type: 
-     * simple type: 
-     * pattern: 
-
-     */
-    protected $intermediatedService;
-    
     /**
      * setter for intermediatedService
      *
@@ -702,8 +703,6 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->intermediatedService;
     }
-    
-    private $additionalItemData = [];
     
     public function addAdditionalItemData($key, $description, $value)
     {
