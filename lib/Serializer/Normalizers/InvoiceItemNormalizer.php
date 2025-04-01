@@ -76,6 +76,24 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $buffer['unitPrice'] = $object->getUnitPrice();
         }
 
+        if ($object->getUnitPriceHuf()) {
+            $buffer['unitPriceHUF'] = $object->getUnitPriceHuf();
+        }
+
+        if ($object->getDiscountValue() !== null || $object->getDiscountRate() !== null) {
+            $buffer['lineDiscountData'] = [];
+
+            if ($object->getDiscountDescription() !== null) {
+                $buffer['lineDiscountData']['discountDescription'] = $object->getDiscountDescription();
+            }
+            if ($object->getDiscountValue() !== null) {
+                $buffer['lineDiscountData']['discountValue'] = $object->getDiscountValue();
+            }
+            if ($object->getDiscountRate() !== null) {
+                $buffer['lineDiscountData']['discountRate'] = $object->getDiscountRate();
+            }
+        }
+
         $buffer['lineAmountsNormal']['lineNetAmountData'] = [
             'lineNetAmount' => $object->getNetAmount(),
             'lineNetAmountHUF' => $object->getNetAmountHUF(),
