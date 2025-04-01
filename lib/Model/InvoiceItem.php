@@ -173,7 +173,7 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
      */
     protected $unitOfMeasureOwn;
 
-    /*
+    /**
      * Egységár a számla pénznemében. Egyszerűsített számla esetén bruttó, egyéb esetben nettó egységár.
      *
      * requirements: not required
@@ -186,6 +186,31 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 	<unitPrice>400.00</unitPrice>
      */
     protected $unitPrice;
+
+    protected $unitPriceHuf;
+
+    /**
+     * optional
+     * SimpleText255NotBlankType
+     */
+    protected ?string $discountDescription = null;
+
+    /**
+     * optional
+     * MonetaryType
+     * total digits:18, fraction digits:2
+     */
+    protected ?float $discountValue = null;
+
+    /**
+     * optional
+     * RateType
+     * minInclusive value="0"
+     * maxInclusive value="1"
+     * totalDigits value="5"
+     * fractionDigits value="4"
+     */
+    protected ?float $discountRate = null;
 
     /*
      * Tétel nettó összege a számla pénznemében.
@@ -548,6 +573,70 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     public function getUnitPrice()
     {
         return $this->unitPrice;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUnitPriceHuf()
+    {
+        return $this->unitPriceHuf;
+    }
+
+    /**
+     * @param mixed $unitPriceHuf
+     */
+    public function setUnitPriceHuf($unitPriceHuf): void
+    {
+        $this->unitPriceHuf = $unitPriceHuf;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getDiscountDescription(): ?string
+    {
+        return $this->discountDescription;
+    }
+
+    /**
+     * @param string|null $discountDescription
+     */
+    public function setDiscountDescription(?string $discountDescription): void
+    {
+        $this->discountDescription = $discountDescription;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getDiscountValue(): ?float
+    {
+        return $this->discountValue;
+    }
+
+    /**
+     * @param float|null $discountValue
+     */
+    public function setDiscountValue(?float $discountValue): void
+    {
+        $this->discountValue = $discountValue;
+    }
+
+    /**
+     * @return float|null
+     */
+    public function getDiscountRate(): ?float
+    {
+        return $this->discountRate;
+    }
+
+    /**
+     * @param float|null $discountRate
+     */
+    public function setDiscountRate(?float $discountRate): void
+    {
+        $this->discountRate = $discountRate;
     }
     
     /**
