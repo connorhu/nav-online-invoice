@@ -74,5 +74,58 @@ class InvoiceItemNormalizerTest extends TestCase
                 ],
             ],
         ]];
+
+        $defaultEmptyArray = [
+            'lineNumber' => null,
+            'lineAmountsNormal' => [
+                'lineNetAmountData' => [
+                    'lineNetAmount' => null,
+                    'lineNetAmountHUF' => null,
+                ],
+                'lineVatRate' => [],
+                'lineVatData' => [
+                    'lineVatAmount' => null,
+                    'lineVatAmountHUF' => null,
+                ],
+            ],
+        ];
+
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setAdvanceOriginalInvoice('abc-123');
+        yield [$invoiceItem, $defaultEmptyArray];
+
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setAdvancePaymentDate(new \DateTimeImmutable('2024-01-01'));
+        yield [$invoiceItem, $defaultEmptyArray];
+
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setAdvanceExchangeRate('123.45');
+        yield [$invoiceItem, $defaultEmptyArray];
+
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setAdvanceOriginalInvoice('abc-123');
+        $invoiceItem->setAdvancePaymentDate(new \DateTimeImmutable('2024-01-01'));
+        $invoiceItem->setAdvanceExchangeRate('123.45');
+        yield [$invoiceItem, [
+            'lineNumber' => null,
+            'advanceData' => [
+                'advancePaymentData' => [
+                    'advancePaymentDate' => '2024-01-01',
+                    'advanceOriginalInvoice' => 'abc-123',
+                    'advanceExchangeRate' => '123.45',
+                ],
+            ],
+            'lineAmountsNormal' => [
+                'lineNetAmountData' => [
+                    'lineNetAmount' => null,
+                    'lineNetAmountHUF' => null,
+                ],
+                'lineVatRate' => [],
+                'lineVatData' => [
+                    'lineVatAmount' => null,
+                    'lineVatAmountHUF' => null,
+                ],
+            ],
+        ]];
     }
 }

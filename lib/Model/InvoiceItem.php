@@ -6,6 +6,7 @@ use NAV\OnlineInvoice\Model\Enums\UnitOfMeasureEnum;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Model\Traits\VatRateTrait;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 {
@@ -72,6 +73,30 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 
      */
     protected bool $advanceIndicator = false;
+
+    /**
+     * Az előlegszámla sorszáma, amelyben az előlegfizetés történt
+     *
+     * @var string|null
+     */
+    #[Assert\NotBlank(groups: ['advance_payment_data'])]
+    protected ?string $advanceOriginalInvoice = null;
+
+    /**
+     * Az előleg fizetésének dátuma
+     *
+     * @var \DateTimeImmutable|null
+     */
+    #[Assert\NotBlank(groups: ['advance_payment_data'])]
+    protected ?\DateTimeImmutable $advancePaymentDate = null;
+
+    /**
+     * Az előlegfizetéskor alkalmazott árfolyam
+     *
+     * @var string|null
+     */
+    #[Assert\NotBlank(groups: ['advance_payment_data'])]
+    protected ?string/*Number*/ $advanceExchangeRate = null;
 
     /*
      * Termékkódok
@@ -382,6 +407,68 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 
         return $this;
     }
+
+    /**
+     * @return string|null
+     */
+    public function getAdvanceOriginalInvoice(): ?string
+    {
+        return $this->advanceOriginalInvoice;
+    }
+
+    /**
+     * @param string|null $advanceOriginalInvoice
+     *
+     * @return InvoiceItemInterface
+     */
+    public function setAdvanceOriginalInvoice(?string $advanceOriginalInvoice): static
+    {
+        $this->advanceOriginalInvoice = $advanceOriginalInvoice;
+
+        return $this;
+    }
+
+    /**
+     * @return \DateTimeImmutable|null
+     */
+    public function getAdvancePaymentDate(): ?\DateTimeImmutable
+    {
+        return $this->advancePaymentDate;
+    }
+
+    /**
+     * @param \DateTimeImmutable|null $advancePaymentDate
+     *
+     * @return InvoiceItemInterface
+     */
+    public function setAdvancePaymentDate(?\DateTimeImmutable $advancePaymentDate): static
+    {
+        $this->advancePaymentDate = $advancePaymentDate;
+
+        return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getAdvanceExchangeRate(): ?string
+    {
+        return $this->advanceExchangeRate;
+    }
+
+    /**
+     * @param string|null $advanceExchangeRate
+     *
+     * @return InvoiceItemInterface
+     */
+    public function setAdvanceExchangeRate(?string $advanceExchangeRate): static
+    {
+        $this->advanceExchangeRate = $advanceExchangeRate;
+
+        return $this;
+    }
+
+
     
     /**
      * Add productCode
