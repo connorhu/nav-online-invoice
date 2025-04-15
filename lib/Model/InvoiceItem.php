@@ -71,7 +71,7 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
      * default: false
 
      */
-    protected $advanceIndicator = false;
+    protected bool $advanceIndicator = false;
 
     /*
      * Termékkódok
@@ -356,25 +356,31 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     }
 
     /**
-     * setter for advanceIndicator
-     *
-     * @param mixed 
-     * @return self
+     * @return bool
      */
-    public function setAdvanceIndicator($value)
-    {
-        $this->advanceIndicator = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for advanceIndicator
-     * 
-     * @return mixed return value for 
-     */
-    public function getAdvanceIndicator()
+    public function getAdvanceIndicator(): bool
     {
         return $this->advanceIndicator;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isAdvanceIndicator(): bool
+    {
+        return $this->advanceIndicator;
+    }
+
+    /**
+     * @param bool $advanceIndicator
+     *
+     * @return InvoiceItemInterface
+     */
+    public function setAdvanceIndicator(bool $advanceIndicator): static
+    {
+        $this->advanceIndicator = $advanceIndicator;
+
+        return $this;
     }
     
     /**

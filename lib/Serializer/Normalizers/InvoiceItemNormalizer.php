@@ -47,7 +47,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
 
         if ($object->getAdvanceIndicator()) {
             $buffer['advanceData'] = [
-                'advanceIndicator' => $object->getAdvanceIndicator(),
+                'advanceIndicator' => BooleanNormalizer::normalize($object->getAdvanceIndicator()),
             ];
         }
 
