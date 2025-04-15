@@ -112,7 +112,7 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
      */
     protected $productCodes = [];
 
-    /*
+    /**
      * Értéke true, ha a tétel mennyiségi egysége természetes mértékegységben kifejezhető
      *
      * requirements: required
@@ -123,7 +123,7 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
 <line>
 	<lineExpressionIndicator>true</lineExpressionIndicator>
      */
-    protected $lineExpressionIndicator;
+    protected ?bool $lineExpressionIndicator = null;
 
     /*
      * A termék vagy szolgáltatás megnevezése
@@ -512,27 +512,25 @@ class InvoiceItem implements InvoiceItemInterface, VatRateInterface
     {
         return $this->productCodes;
     }
-    
+
     /**
-     * setter for lineExpressionIndicator
-     *
-     * @param mixed 
-     * @return self
+     * @return bool|null
      */
-    public function setLineExpressionIndicator($value)
-    {
-        $this->lineExpressionIndicator = $value;
-        return $this;
-    }
-    
-    /**
-     * getter for lineExpressionIndicator
-     * 
-     * @return mixed return value for 
-     */
-    public function getLineExpressionIndicator()
+    public function getLineExpressionIndicator(): ?bool
     {
         return $this->lineExpressionIndicator;
+    }
+
+    /**
+     * @param bool|null $lineExpressionIndicator
+     *
+     * @return InvoiceItemInterface
+     */
+    public function setLineExpressionIndicator(bool $lineExpressionIndicator): static
+    {
+        $this->lineExpressionIndicator = $lineExpressionIndicator;
+
+        return $this;
     }
     
     /**

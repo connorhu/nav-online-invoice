@@ -63,7 +63,9 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $buffer['productCodes'][] = $this->normalizer->normalize($code, $format, $context);
         }
 
-        $buffer['lineExpressionIndicator'] = BooleanNormalizer::normalize($object->getLineExpressionIndicator());
+        if ($object->getLineExpressionIndicator() !== null) {
+            $buffer['lineExpressionIndicator'] = BooleanNormalizer::normalize($object->getLineExpressionIndicator());
+        }
 
         if ($object->getLineDescription()) {
             $buffer['lineDescription'] = $object->getLineDescription();
