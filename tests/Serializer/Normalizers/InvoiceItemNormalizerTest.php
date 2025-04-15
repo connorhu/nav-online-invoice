@@ -57,5 +57,22 @@ class InvoiceItemNormalizerTest extends TestCase
                 ],
             ],
         ]];
+
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setAdvanceIndicator(false);
+        yield [$invoiceItem, [
+            'lineNumber' => null,
+            'lineAmountsNormal' => [
+                'lineNetAmountData' => [
+                    'lineNetAmount' => null,
+                    'lineNetAmountHUF' => null,
+                ],
+                'lineVatRate' => [],
+                'lineVatData' => [
+                    'lineVatAmount' => null,
+                    'lineVatAmountHUF' => null,
+                ],
+            ],
+        ]];
     }
 }
