@@ -47,7 +47,15 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
 
         if ($object->getAdvanceIndicator()) {
             $buffer['advanceData'] = [
-                'advanceIndicator' => $object->getAdvanceIndicator(),
+                'advanceIndicator' => BooleanNormalizer::normalize($object->getAdvanceIndicator()),
+            ];
+        }
+
+        if ($object->getAdvanceOriginalInvoice() !== null && $object->getAdvancePaymentDate() !== null && $object->getAdvanceExchangeRate() !== null) {
+            $buffer['advanceData']['advancePaymentData'] = [
+                'advancePaymentDate' => $object->getAdvancePaymentDate()->format('Y-m-d'),
+                'advanceOriginalInvoice' => $object->getAdvanceOriginalInvoice(),
+                'advanceExchangeRate' => $object->getAdvanceExchangeRate(),
             ];
         }
 
@@ -55,7 +63,9 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $buffer['productCodes'][] = $this->normalizer->normalize($code, $format, $context);
         }
 
-        $buffer['lineExpressionIndicator'] = BooleanNormalizer::normalize($object->getLineExpressionIndicator());
+        if ($object->getLineExpressionIndicator() !== null) {
+            $buffer['lineExpressionIndicator'] = BooleanNormalizer::normalize($object->getLineExpressionIndicator());
+        }
 
         if ($object->getLineDescription()) {
             $buffer['lineDescription'] = $object->getLineDescription();
