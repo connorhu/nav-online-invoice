@@ -53,8 +53,8 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
 
         if ($object->getAdvanceOriginalInvoice() !== null && $object->getAdvancePaymentDate() !== null && $object->getAdvanceExchangeRate() !== null) {
             $buffer['advanceData']['advancePaymentData'] = [
-                'advancePaymentDate' => $object->getAdvancePaymentDate()->format('Y-m-d'),
                 'advanceOriginalInvoice' => $object->getAdvanceOriginalInvoice(),
+                'advancePaymentDate' => $object->getAdvancePaymentDate()->format('Y-m-d'),
                 'advanceExchangeRate' => $object->getAdvanceExchangeRate(),
             ];
         }
