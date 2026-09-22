@@ -12,9 +12,9 @@
                 "ns2:invoiceStatus": "DONE",
                 "ns2:technicalValidationMessages": [
                     {
-                        "ns2:validationResultCode": "CRITICAL",
-                        "ns2:validationErrorCode": "1234",
-                        "ns2:message": "Technical Validation Message"
+                        "validationResultCode": "CRITICAL",
+                        "validationErrorCode": "1234",
+                        "message": "Technical Validation Message"
                     }
                 ],
                 "ns2:businessValidationMessages": [

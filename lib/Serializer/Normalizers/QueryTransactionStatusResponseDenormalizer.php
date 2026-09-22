@@ -47,24 +47,20 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
             $resultObject->compressedContent = $processingResult[$apiKeyPrefix.'compressedContentIndicator'];
 
             if (isset($processingResult[$apiKeyPrefix.'technicalValidationMessages'])) {
-                foreach ($processingResult[$apiKeyPrefix.'technicalValidationMessages'] as $message) {
+                // TechnicalValidationResultType is declared in the common schema, so its fields
+                // are qualified with the common namespace, not with the api one.
+                foreach (self::asMessageList($processingResult[$apiKeyPrefix.'technicalValidationMessages']) as $message) {
                     $technicalValidationMessage = new TechnicalValidationMessage();
-                    $technicalValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$apiKeyPrefix.'validationResultCode']);
-                    $technicalValidationMessage->errorCode = $message[$apiKeyPrefix.'validationErrorCode'];
-                    $technicalValidationMessage->message = $message[$apiKeyPrefix.'message'];
+                    $technicalValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$commonKeyPrefix.'validationResultCode']);
+                    $technicalValidationMessage->errorCode = $message[$commonKeyPrefix.'validationErrorCode'];
+                    $technicalValidationMessage->message = $message[$commonKeyPrefix.'message'];
 
                     $resultObject->technicalValidationMessages[] = $technicalValidationMessage;
                 }
             }
 
             if (isset($processingResult[$apiKeyPrefix.'businessValidationMessages'])) {
-                if (isset($processingResult[$apiKeyPrefix.'businessValidationMessages'][$apiKeyPrefix.'validationResultCode'])) {
-                    $businessValidationMessages = [$processingResult[$apiKeyPrefix.'businessValidationMessages']];
-                } else {
-                    $businessValidationMessages = $processingResult[$apiKeyPrefix.'businessValidationMessages'];
-                }
-
-                foreach ($businessValidationMessages as $message) {
+                foreach (self::asMessageList($processingResult[$apiKeyPrefix.'businessValidationMessages']) as $message) {
                     $businessValidationMessage = new BusinessValidationMessage();
                     $businessValidationMessage->resultCode = ValidationResultCodeEnum::initWithRawString($message[$apiKeyPrefix.'validationResultCode']);
                     $businessValidationMessage->errorCode = $message[$apiKeyPrefix.'validationErrorCode'];
@@ -91,6 +87,24 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
         }
 
         return $response;
+    }
+
+    /**
+     * The XmlEncoder decodes a repeated element into a list only when it occurs more than once.
+     * A single occurrence is decoded into the fields of that one element, so it has to be wrapped
+     * back into a list before iterating over the messages.
+     *
+     * @param array $rawMessages
+     *
+     * @return array<int, array>
+     */
+    private static function asMessageList(array $rawMessages): array
+    {
+        if ($rawMessages === []) {
+            return [];
+        }
+
+        return isset($rawMessages[0]) ? $rawMessages : [$rawMessages];
     }
 
     public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
