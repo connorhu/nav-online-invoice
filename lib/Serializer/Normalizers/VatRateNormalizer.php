@@ -22,7 +22,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         $buffer = [];
 
         if (!$object instanceof VatRateInterface) {
-            exit;
+            throw new \InvalidArgumentException(sprintf('Expected an instance of "%s", got "%s".', VatRateInterface::class, get_debug_type($object)));
         }
 
         if ($object->getVatRatePercentage() !== null) {
