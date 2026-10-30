@@ -56,7 +56,7 @@ class GeneralErrorResponse extends Response implements ErrorResponse
     
     public function getTechnicalValidationMessages(): array
     {
-        return $this->technicalValidationMessage;
+        return $this->technicalValidationMessages;
     }
     
     

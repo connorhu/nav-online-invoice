@@ -169,9 +169,7 @@ class OnlineInvoiceRestClient
         }
         catch (ServerException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
-            
-            dump($responseXmlString);
-            
+
             if ($this->logger) {
                 $this->logger->info('ServerException: '. $responseXmlString);
             }
@@ -181,8 +179,6 @@ class OnlineInvoiceRestClient
         }
         catch (ClientException $e) {
             $responseXmlString = $e->getResponse()->getContent(false);
-            
-            dump($responseXmlString);
 
             if ($this->logger) {
                 $this->logger->info('ClientException: '. $responseXmlString);
@@ -192,16 +188,16 @@ class OnlineInvoiceRestClient
             $response = $this->serializer->deserialize($responseXmlString, $responseClass, 'xml');
         }
         catch (InvalidXMLException $exception) {
-            dump($exception->getLibXmlErrors());
-            dump($exception->getXmlContent());
-            exit;
+            if ($this->logger) {
+                $this->logger->info('InvalidXMLException: '. $exception->getMessage());
+            }
+
+            throw $exception;
         }
         catch (\Exception $e) {
             if ($this->logger) {
                 $this->logger->info('Unknown exception: '. $e->getMessage());
             }
-            
-            dump($e);
 
             throw $e;
         }
