@@ -21,14 +21,14 @@
         "ext-libxml": "*",
         "doctrine/collections": "^1.7 | ^2.0",
         "symfony/deprecation-contracts": "^3.4",
-        "symfony/intl": "^6.4 | ^7.2"
+        "symfony/intl": "^6.4 | ^7.2 | ^8.0"
     },
     "require-dev": {
-        "symfony/serializer": "^6.4 | ^7.2",
-        "symfony/validator": "^6.4 | ^7.2",
-        "symfony/var-dumper": "^6.4 | ^7.2",
-        "symfony/http-client": "^6.4 | ^7.2",
-        "symfony/config": "^6.4 | ^7.2"
+        "symfony/serializer": "^6.4 | ^7.2 | ^8.0",
+        "symfony/validator": "^6.4 | ^7.2 | ^8.0",
+        "symfony/var-dumper": "^6.4 | ^7.2 | ^8.0",
+        "symfony/http-client": "^6.4 | ^7.2 | ^8.0",
+        "symfony/config": "^6.4 | ^7.2 | ^8.0"
     },
     "config": {
         "sort-packages": true
