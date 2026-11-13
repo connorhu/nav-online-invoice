@@ -11,7 +11,7 @@ class GeneralErrorResponse extends Response implements ErrorResponse
     private $message;
     private $technicalValidationMessages = [];
     
-    public function setFunctionCode(string $functionCode): self
+    public function setFunctionCode(?string $functionCode): self
     {
         $this->functionCode = $functionCode;
         
@@ -23,7 +23,7 @@ class GeneralErrorResponse extends Response implements ErrorResponse
         return $this->functionCode;
     }
     
-    public function setErrorCode(string $errorCode): self
+    public function setErrorCode(?string $errorCode): self
     {
         $this->errorCode = $errorCode;
         
@@ -35,7 +35,7 @@ class GeneralErrorResponse extends Response implements ErrorResponse
         return $this->errorCode;
     }
     
-    public function setMessage(string $message): self
+    public function setMessage(?string $message): self
     {
         $this->message = $message;
         
