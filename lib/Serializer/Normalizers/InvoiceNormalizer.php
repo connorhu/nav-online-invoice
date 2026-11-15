@@ -162,7 +162,9 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
 
         $invoiceData['invoiceAppearance'] = $invoice->getInvoiceAppearance()->rawString();
 
-        if ($invoice->getElectronicInvoiceHash()) {
+        // From 3.0 the hash is not part of the invoice data: ManageInvoiceRequestNormalizer
+        // sends it in the invoice operation (InvoiceOperationType in invoiceApi.xsd).
+        if (($context['request_version'] ?? null) === RequestVersionEnum::v20 && $invoice->getElectronicInvoiceHash()) {
             $invoiceData['electronicInvoiceHash'] = $invoice->getElectronicInvoiceHash();
         }
 
