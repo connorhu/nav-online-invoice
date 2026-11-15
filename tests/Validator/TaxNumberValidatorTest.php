@@ -7,6 +7,8 @@ use NAV\OnlineInvoice\Validator\Constraints\TaxNumberValidator;
 use Symfony\Component\Validator\ConstraintValidatorInterface;
 use Symfony\Component\Validator\Test\ConstraintValidatorTestCase;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\IgnoreDeprecations;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
 
 class TaxNumberValidatorTest extends ConstraintValidatorTestCase
 {
@@ -56,9 +58,9 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testInvalidTaxNumberLength()
     {
         $taxNumber = '111111111111';
-        $constraint = new TaxNumber([
-            'messageLength' => 'myMessage',
-        ]);
+        $constraint = new TaxNumber(
+            messageLength: 'myMessage',
+        );
 
         $this->validator->validate($taxNumber, $constraint);
 
@@ -71,9 +73,9 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     #[DataProvider('shortTaxNumbersDataProvider')]
     public function testShortTaxPayerId(string $taxNumber)
     {
-        $constraint = new TaxNumber([
-            'messageTaxpayerIdShort' => 'myMessage',
-        ]);
+        $constraint = new TaxNumber(
+            messageTaxpayerIdShort: 'myMessage',
+        );
 
         $this->validator->validate($taxNumber, $constraint);
 
@@ -92,9 +94,9 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     #[DataProvider('invalidTaxNumbersDataProvider')]
     public function testInvalidTaxPayerId(string $taxNumber)
     {
-        $constraint = new TaxNumber([
-            'messageTaxpayerId' => 'myMessage',
-        ]);
+        $constraint = new TaxNumber(
+            messageTaxpayerId: 'myMessage',
+        );
 
         $this->validator->validate($taxNumber, $constraint);
 
@@ -113,9 +115,9 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     #[DataProvider('invalidVatCodesDataProvider')]
     public function testInvalidVatCodes(string $taxNumber, string $expectedVatCode)
     {
-        $constraint = new TaxNumber([
-            'messageVatCodeInvalid' => 'myMessage',
-        ]);
+        $constraint = new TaxNumber(
+            messageVatCodeInvalid: 'myMessage',
+        );
 
         $this->validator->validate($taxNumber, $constraint);
 
@@ -136,9 +138,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testMissingVatCode()
     {
         $constraint = new TaxNumber(
-            options: [
-                'messageVatCodeMissing' => 'myMessage',
-            ],
+            messageVatCodeMissing: 'myMessage',
             vatCodeRequired: true);
 
         $this->validator->validate('12345678', $constraint);
@@ -152,9 +152,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testNotAllowedVatCode()
     {
         $constraint = new TaxNumber(
-            options: [
-                'messageVatCodeNotAllowed' => 'myMessage',
-            ],
+            messageVatCodeNotAllowed: 'myMessage',
             vatCodeRequired: true,
             allowedVatCodes: [1, 2]
         );
@@ -172,9 +170,9 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     #[DataProvider('invalidCountyCodesDataProvider')]
     public function testInvalidCountyCodes(string $taxNumber, string $expectedCountyCode)
     {
-        $constraint = new TaxNumber([
-            'messageCountyCodeInvalid' => 'myMessage',
-        ]);
+        $constraint = new TaxNumber(
+            messageCountyCodeInvalid: 'myMessage',
+        );
 
         $this->validator->validate($taxNumber, $constraint);
 
@@ -195,9 +193,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testMissingCountyCode()
     {
         $constraint = new TaxNumber(
-            options: [
-                'messageCountyCodeMissing' => 'myMessage',
-            ],
+            messageCountyCodeMissing: 'myMessage',
             countyCodeRequired: true,
         );
 
@@ -212,9 +208,7 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testNotAllowedCountyCode()
     {
         $constraint = new TaxNumber(
-            options: [
-                'messageCountyCodeNotAllowed' => 'myMessage',
-            ],
+            messageCountyCodeNotAllowed: 'myMessage',
             vatCodeRequired: true,
             countyCodeRequired: true,
             allowedVatCodes: [1, 2],
@@ -234,10 +228,8 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
     public function testNotAllowedCountyAndVatCode()
     {
         $constraint = new TaxNumber(
-            options: [
-                'messageCountyCodeNotAllowed' => 'myMessage',
-                'messageVatCodeNotAllowed' => 'myMessage2',
-            ],
+            messageCountyCodeNotAllowed: 'myMessage',
+            messageVatCodeNotAllowed: 'myMessage2',
             vatCodeRequired: true,
             countyCodeRequired: true,
             allowedVatCodes: [1, 2],
@@ -260,5 +252,53 @@ class TaxNumberValidatorTest extends ConstraintValidatorTestCase
             ->setCode(TaxNumber::NOT_ALLOWED_COUNTY_CODE_ERROR)
 
             ->assertRaised();
+    }
+
+    #[IgnoreDeprecations]
+    public function testLegacyOptionsArrayIsStillApplied()
+    {
+        $this->expectUserDeprecationMessage('Since connorhu/nav-online-invoice 1.0: Passing an array of options to configure the "NAV\\OnlineInvoice\\Validator\\Constraints\\TaxNumber" constraint is deprecated, use named arguments instead.');
+
+        $constraint = new TaxNumber([
+            'messageVatCodeMissing' => 'myMessage',
+            'vatCodeRequired' => true,
+            'groups' => ['v2.0'],
+        ]);
+
+        $this->assertSame('myMessage', $constraint->messageVatCodeMissing);
+        $this->assertTrue($constraint->vatCodeRequired);
+        $this->assertSame(['v2.0'], $constraint->groups);
+
+        $this->validator->validate('12345678', $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '12345678')
+            ->setCode(TaxNumber::MISSING_VAT_CODE_ERROR)
+            ->assertRaised();
+    }
+
+    #[IgnoreDeprecations]
+    public function testNamedArgumentWinsOverLegacyOption()
+    {
+        $constraint = new TaxNumber(['messageLength' => 'fromArray'], messageLength: 'fromNamed');
+
+        $this->assertSame('fromNamed', $constraint->messageLength);
+    }
+
+    #[IgnoreDeprecations]
+    public function testUnknownLegacyOptionIsRejected()
+    {
+        $this->expectException(InvalidOptionsException::class);
+
+        new TaxNumber(['messageTypo' => 'x']);
+    }
+
+    public function testNamedArgumentsTriggerNoDeprecation()
+    {
+        $constraint = new TaxNumber(messageLength: 'myMessage', groups: ['v2.0']);
+
+        $this->assertSame('myMessage', $constraint->messageLength);
+        $this->assertSame(['v2.0'], $constraint->groups);
+        $this->assertFalse($constraint->vatCodeRequired);
     }
 }
