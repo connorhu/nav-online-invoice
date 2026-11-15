@@ -10,7 +10,7 @@ use NAV\OnlineInvoice\Http\Request\User;
 use NAV\OnlineInvoice\Http\Request\Software;
 
 
-class CompactDataProvider implements SoftwareProviderInterface, UserProviderInterface, RequestIdProviderInterface, ApiEndpointUrlProviderInterface, CryptoToolsProviderInterface
+class CompactDataProvider implements SoftwareProviderInterface, UserProviderInterface, RequestIdProviderInterface, ApiEndpointUrlProviderInterface, ContentAwareCryptoToolsProviderInterface
 {
     /**
      * @var array{
@@ -102,7 +102,7 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
         return 'SHA-512';
     }
     
-    public function signRequest(Request $request, iterable $content = null): string
+    public function signRequest(Request $request, ?iterable $content = null): string
     {
         if (!$request instanceof Request\UserAwareRequest) {
             throw new UnexpectedTypeException($request, Request\UserAwareRequest::class);

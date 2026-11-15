@@ -7,6 +7,7 @@ use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Http\Request\HeaderAwareRequest;
 use NAV\OnlineInvoice\Http\Request\SoftwareAwareRequest;
 use NAV\OnlineInvoice\Http\Request\SignableContentInterface;
+use NAV\OnlineInvoice\Providers\ContentAwareCryptoToolsProviderInterface;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerAwareInterface;
@@ -68,6 +69,20 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
 
         if ($object instanceof SignableContentInterface) {
             $contentToBeSign = $object->normalizedContentToSignableContent($normalizedRequestContent);
+
+            if (!$this->cryptoTools instanceof ContentAwareCryptoToolsProviderInterface) {
+                trigger_deprecation(
+                    'connorhu/nav-online-invoice',
+                    '1.0',
+                    'Signing "%s" with "%s", which does not implement "%s", is deprecated: the content to be signed is passed as the second argument of signRequest(). Implement "%s"; it will be merged into "%s" in the next major version.',
+                    get_debug_type($object),
+                    get_debug_type($this->cryptoTools),
+                    ContentAwareCryptoToolsProviderInterface::class,
+                    ContentAwareCryptoToolsProviderInterface::class,
+                    CryptoToolsProviderInterface::class,
+                );
+            }
+
             $nodeText = $this->cryptoTools->signRequest($object, $contentToBeSign);
         }
         else {
