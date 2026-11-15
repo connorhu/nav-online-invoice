@@ -10,7 +10,7 @@ class BooleanNormalizer
     }
 
 
-    public static function denormalize(string $value): string
+    public static function denormalize(string $value): bool
     {
         return $value === 'true' || $value === '1';
     }

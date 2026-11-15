@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Model\Enums\UnitOfMeasureEnum;
 use NAV\OnlineInvoice\Model\Interfaces\InvoiceItemInterface;
 use NAV\OnlineInvoice\Model\Interfaces\VatRateInterface;
 use NAV\OnlineInvoice\Model\InvoiceItem;
@@ -146,12 +147,16 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
         ]);
 
         $object->setItemNumber($data[$keyPrefix.'lineNumber']);
-        $object->setLineExpressionIndicator($data[$keyPrefix.'lineExpressionIndicator']);
-        $object->setLineDescription($data[$keyPrefix.'lineDescription']);
-        $object->setQuantity($data[$keyPrefix.'quantity']);
-        $object->setUnitOfMeasure($data[$keyPrefix.'unitOfMeasure']);
-        $object->setUnitPrice($data[$keyPrefix.'unitPrice']);
-        $object->setIntermediatedService(BooleanNormalizer::denormalize($data[$keyPrefix.'unitPrice']));
+        $object->setLineExpressionIndicator(BooleanNormalizer::denormalize($data[$keyPrefix.'lineExpressionIndicator']));
+        $object->setLineDescription($data[$keyPrefix.'lineDescription'] ?? null);
+        $object->setQuantity($data[$keyPrefix.'quantity'] ?? null);
+        if (isset($data[$keyPrefix.'unitOfMeasure'])) {
+            $object->setUnitOfMeasure(UnitOfMeasureEnum::initWithRawString($data[$keyPrefix.'unitOfMeasure']));
+        }
+        $object->setUnitPrice($data[$keyPrefix.'unitPrice'] ?? null);
+        if (isset($data[$keyPrefix.'intermediatedService'])) {
+            $object->setIntermediatedService(BooleanNormalizer::denormalize($data[$keyPrefix.'intermediatedService']));
+        }
 
         $netAmountData = $data[$keyPrefix.'lineAmountsNormal'][$keyPrefix.'lineNetAmountData'];
         $object->setNetAmount($netAmountData[$keyPrefix.'lineNetAmount']);

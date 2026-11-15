@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
+use NAV\OnlineInvoice\Exceptions\UnexpectedTypeException;
 use NAV\OnlineInvoice\Factories\VatRateFactoryInterface;
 use NAV\OnlineInvoice\Model\Enums\VatRateAmountMismatchCase;
 use NAV\OnlineInvoice\Model\Enums\VatRateExemptionCase;
@@ -82,6 +83,14 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
 
     public const XMLNS_CONTEXT_KEY = '_vat_rate_xmlns';
 
+    /**
+     * Context key for a callable that creates the object to denormalize into, e.g.
+     * an InvoiceItem or a VatRateSummary. Without it the VatRateFactoryInterface is used.
+     *
+     * The callable must return a VatRateInterface.
+     */
+    public const ITEM_FACTORY_CONTEXT_KEY = '_vat_rate_item_factory';
+
     public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
@@ -91,7 +100,15 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
 
         $keyPrefix = !empty($context[self::XMLNS_CONTEXT_KEY]) ? ($context[self::XMLNS_CONTEXT_KEY].':') : '';
 
-        $item = $this->vatRateFactory->createVatRate();
+        if (isset($context[self::ITEM_FACTORY_CONTEXT_KEY])) {
+            $item = ($context[self::ITEM_FACTORY_CONTEXT_KEY])();
+
+            if (!$item instanceof VatRateInterface) {
+                throw new UnexpectedTypeException($item, VatRateInterface::class);
+            }
+        } else {
+            $item = $this->vatRateFactory->createVatRate();
+        }
 
         if (isset($data[$keyPrefix.'vatPercentage'])) {
             $item->setVatRatePercentage($data[$keyPrefix.'vatPercentage']);
