@@ -106,7 +106,7 @@ class OnlineInvoiceRestClient
         if ($request instanceof HeaderAwareRequest) {
             // basic request type :: basic header type
             $header = new Header();
-            $header->setTimestamp(new \DateTimeImmutable());
+            $header->setTimestamp(new \DateTimeImmutable('now', new \DateTimeZone('UTC')));
             $request->setHeader($header);
         }
         

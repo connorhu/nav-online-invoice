@@ -90,7 +90,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
             '@root_node_name' => 'QueryTaxpayerRequest',
             'common:header' => [
                 'common:requestId' => 'abc',
-                'common:timestamp' => '2020-01-01T12:12:12.000Z',
+                'common:timestamp' => '2020-01-01T11:12:12.000Z',
                 'common:requestVersion' => '3.0',
                 'common:headerVersion' => '1.0',
             ],
@@ -142,7 +142,7 @@ class QueryTaxpayerRequestNormalizerTest extends TestCase
 <QueryTaxpayerRequest xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common">
   <common:header>
     <common:requestId>abc</common:requestId>
-    <common:timestamp>2020-01-01T12:12:12.000Z</common:timestamp>
+    <common:timestamp>2020-01-01T11:12:12.000Z</common:timestamp>
     <common:requestVersion>3.0</common:requestVersion>
     <common:headerVersion>1.0</common:headerVersion>
   </common:header>
