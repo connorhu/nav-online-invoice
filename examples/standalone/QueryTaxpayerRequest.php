@@ -1,18 +1,18 @@
 <?php
 
-require __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/bootstrap.php';
 
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
+use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 
-try {
-    $request = new QueryTaxpayerRequest();
-    $request->setTaxNumber('69061864133');
+$request = new QueryTaxpayerRequest();
+$request->setTaxNumber('69061864'); // the first 8 digits of the tax number
 
-    $onlineInvoiceRestClient = initClient();
-    $response = $onlineInvoiceRestClient->sendRequest($request);
+$response = initClient()->sendRequest($request);
+
+if ($response instanceof ErrorResponse) {
+    dump($response->getErrorCode(), $response->getMessage(), $response);
+    exit(1);
 }
-catch (GeneralErrorResponse $exception) {
-    
-    dump($exception);
-    
-}
+
+dump($response->getValidity(), $response->getName(), $response->getAddresses());

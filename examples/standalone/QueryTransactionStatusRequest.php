@@ -1,20 +1,28 @@
 <?php
 
-require __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/bootstrap.php';
 
 use NAV\OnlineInvoice\Http\Request\QueryTransactionStatusRequest;
+use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 
-try {
-    $transactionId = SETTHIS;
+// the transaction id returned by ManageInvoiceRequest.php
+$transactionId = $argv[1] ?? null;
 
-    $request = new QueryTransactionStatusRequest();
-    $request->setTransactionId($transactionId);
-
-    $onlineInvoiceRestClient = initClient();
-    $response = $onlineInvoiceRestClient->sendRequest($request);
+if ($transactionId === null) {
+    fwrite(STDERR, 'Usage: php '.basename(__FILE__)." <transactionId>\n");
+    exit(1);
 }
-catch (GeneralErrorResponse $exception) {
 
-    dump($exception);
+$request = new QueryTransactionStatusRequest();
+$request->setTransactionId($transactionId);
 
+$response = initClient()->sendRequest($request);
+
+if ($response instanceof ErrorResponse) {
+    dump($response->getErrorCode(), $response->getMessage(), $response);
+    exit(1);
+}
+
+foreach ($response->getProcessingResults() as $processingResult) {
+    dump($processingResult);
 }

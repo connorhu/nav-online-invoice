@@ -1,21 +1,27 @@
 <?php
 
-require __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/bootstrap.php';
 
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceDigestRequest;
+use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 
-try {
-    $request = new QueryInvoiceDigestRequest();
-    $request->setInvoiceDirection(QueryInvoiceDigestRequest::INVOICE_DIRECTION_INBOUND);
-    $request->setPage(1);
-    $request->setIssueDateFrom(new \DateTime('2021-03-01'));
-    $request->setIssueDateTo(new \DateTime('2021-03-31'));
+$request = new QueryInvoiceDigestRequest();
+$request->setInvoiceDirection(QueryInvoiceDigestRequest::INVOICE_DIRECTION_INBOUND);
+$request->setPage(1);
+$request->setIssueDateFrom(new \DateTime('2021-03-01'));
+$request->setIssueDateTo(new \DateTime('2021-03-31'));
 
-    $onlineInvoiceRestClient = initClient();
-    $response = $onlineInvoiceRestClient->sendRequest($request);
+// Note: successful QueryInvoiceDigestResponses are denormalized only with #85
+// (before it, QueryInvoiceDigestResponseDenormalizer was a dump(); exit; stub).
+$response = initClient()->sendRequest($request);
+
+if ($response instanceof ErrorResponse) {
+    dump($response->getErrorCode(), $response->getMessage(), $response);
+    exit(1);
 }
-catch (GeneralErrorResponse $exception) {
-    
-    dump($exception);
-    
+
+dump($response->getCurrentPage(), $response->getAvailablePage());
+
+foreach ($response->getInvoiceDigests() as $invoiceDigest) {
+    dump($invoiceDigest);
 }

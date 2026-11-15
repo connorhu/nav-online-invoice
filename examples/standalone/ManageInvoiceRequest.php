@@ -1,49 +1,40 @@
 <?php
 
-require __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/invoice.php';
 
+use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
+use NAV\OnlineInvoice\Exceptions\TokenExchangeException;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
-use NAV\OnlineInvoice\Model\Address;
+use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 use NAV\OnlineInvoice\Model\Enums\InvoiceOperationEnum;
-use NAV\OnlineInvoice\Model\Invoice;
 use NAV\OnlineInvoice\Model\InvoiceOperation;
+use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
+
+$request = new ManageInvoiceRequest();
+$request->addInvoiceOperation(new InvoiceOperation(InvoiceOperationEnum::Create, createExampleInvoice()));
 
 try {
-    $request = new ManageInvoiceRequest();
-
-    $invoice = new Invoice();
-    $invoice->setSupplierName('Supplier Name');
-    $invoice->setSupplierTaxNumber('123456789-1-10');
-    $invoice->setSupplierBankAccountNumber('123456789');
-    $invoice->setSupplierAddress((new Address())
-        ->setCountryCode('HU')
-        ->setCity('Budapest')
-        ->setPostalCode('1063')
-        ->setAdditionalAddressDetail('Podmaniczky út 1'));
-
-    $invoice->setCustomerName('Customer Name');
-    $invoice->setCustomerTaxNumber('123456789-1-10');
-    $invoice->setCustomerBankAccountNumber('123456789');
-    $invoice->setCustomerAddress((new Address())
-        ->setCountryCode('HU')
-        ->setCity('Budapest')
-        ->setPostalCode('1063')
-        ->setAdditionalAddressDetail('Podmaniczky út 2'));
-
-    $invoiceOperation = new InvoiceOperation(
-        InvoiceOperationEnum::Create,
-        $invoice,
-    );
-
-    $request->addInvoiceOperation($invoiceOperation);
-
-    $onlineInvoiceRestClient = initClient();
-    $response = $onlineInvoiceRestClient->sendRequest($request);
-
-    dump($response);
-
-} catch (GeneralErrorResponse $exception) {
-    
-    dump($exception);
-    
+    // ManageInvoiceRequest needs an exchange token: the client requests one first.
+    $response = initClient()->sendRequest($request);
+} catch (ConstraintViolationException $exception) {
+    // the request failed the validator (validation.xml) before anything was sent
+    dump((string) $exception->getViolationList());
+    exit(1);
+} catch (InvalidXMLException $exception) {
+    // the invoice data does not match the NAV invoiceData XSD
+    dump($exception->getLibXmlErrors(), $exception->getXmlContent());
+    exit(1);
+} catch (TokenExchangeException $exception) {
+    // NAV refused the token exchange (e.g. wrong credentials)
+    dump($exception->getMessage(), $exception->getResponse());
+    exit(1);
 }
+
+if ($response instanceof ErrorResponse) {
+    dump($response->getErrorCode(), $response->getMessage(), $response);
+    exit(1);
+}
+
+// keep it to query the processing result with QueryTransactionStatusRequest.php
+dump($response->getTransactionId());

@@ -14,7 +14,7 @@
         "password": "password",
         "taxNumber": "00000000-0-00",
         "signKey": "signkey",
-        "xmlExhangeKey": ""
+        "xmlExchangeKey": ""
     },
     "requestPrefix": "CT",
     "test": true
