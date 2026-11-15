@@ -47,9 +47,10 @@ class HeaderNormalizerTest extends TestCase
         
         $normalizer = new HeaderNormalizer();
 
+        // 11:00 CET is 10:00 UTC
         $this->assertSame($normalizer->normalize($header), [
             'common:requestId' => 'abc123',
-            'common:timestamp' => '2020-01-01T11:00:00.000Z',
+            'common:timestamp' => '2020-01-01T10:00:00.000Z',
             'common:requestVersion' => '3.0',
             'common:headerVersion' => '1.0',
         ]);

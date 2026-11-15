@@ -1,0 +1,21 @@
+{
+    "software": {
+        "id": "HU12345678-TEST01",
+        "name": "Test Software",
+        "operation": "LOCAL_SOFTWARE",
+        "mainVersion": "1.0",
+        "devName": "Developer",
+        "devContact": "dev@example.com",
+        "devCountryCode": "HU",
+        "devTaxNumber": "12345678"
+    },
+    "user": {
+        "login": "login",
+        "password": "password",
+        "taxNumber": "12345678",
+        "signKey": "sign-key",
+        "xmlExchangeKey": "exchange-key"
+    },
+    "requestPrefix": "T",
+    "test": true
+}

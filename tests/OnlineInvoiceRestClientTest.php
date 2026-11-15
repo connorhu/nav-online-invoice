@@ -119,4 +119,49 @@ class OnlineInvoiceRestClientTest extends TestCase
             new MockHttpClient($httpResponse),
         );
     }
+
+    public function testHeaderTimestampIsInUtcRegardlessOfTheDefaultTimezone(): void
+    {
+        $validator = $this->createStub(ValidatorInterface::class);
+        $validator->method('validate')->willReturn(new ConstraintViolationList());
+
+        $sentRequest = null;
+        $serializer = $this->createStub(SerializerInterface::class);
+        $serializer->method('serialize')->willReturnCallback(function ($request) use (&$sentRequest) {
+            $sentRequest = $request;
+
+            throw new InvalidXMLException([], '<stop/>');
+        });
+
+        $softwareProvider = $this->createStub(SoftwareProviderInterface::class);
+        $softwareProvider->method('getSoftware')->willReturn(new Software());
+        $userProvider = $this->createStub(UserProviderInterface::class);
+        $userProvider->method('getUser')->willReturn(new User());
+        $requestIdProvider = $this->createStub(RequestIdProviderInterface::class);
+        $requestIdProvider->method('getRequestId')->willReturn('RID1');
+
+        $client = new OnlineInvoiceRestClient(
+            $softwareProvider,
+            $validator,
+            $serializer,
+            $requestIdProvider,
+            $userProvider,
+            $this->createStub(ApiEndpointUrlProviderInterface::class),
+        );
+
+        $defaultTimezone = date_default_timezone_get();
+        date_default_timezone_set('Europe/Budapest');
+
+        try {
+            $client->sendRequest(new TokenExchangeRequest());
+        } catch (InvalidXMLException) {
+            // the request is captured before it would be sent
+        } finally {
+            date_default_timezone_set($defaultTimezone);
+        }
+
+        $timestamp = $sentRequest->getHeader()->getTimestamp();
+        $this->assertSame('UTC', $timestamp->getTimezone()->getName());
+        $this->assertEqualsWithDelta(time(), $timestamp->getTimestamp(), 5);
+    }
 }

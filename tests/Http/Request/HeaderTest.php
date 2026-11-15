@@ -38,4 +38,13 @@ class HeaderTest extends TestCase
         $this->assertEquals($header->getTimestamp(), $date);
         $this->assertEquals($header->getTimestamp()->getTimezone()->getName(), 'UTC');
     }
+
+    public function testTimestampIsConvertedToUtc(): void
+    {
+        $header = new Header();
+        $header->setTimestamp(new \DateTimeImmutable('2020-07-01 12:00:00', new \DateTimeZone('Europe/Budapest')));
+
+        $this->assertSame('UTC', $header->getTimestamp()->getTimezone()->getName());
+        $this->assertSame('2020-07-01 10:00:00', $header->getTimestamp()->format('Y-m-d H:i:s'));
+    }
 }

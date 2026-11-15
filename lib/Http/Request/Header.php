@@ -66,8 +66,9 @@ class Header
      */
     public function setTimestamp(\DateTimeImmutable $timestamp): self
     {
+        // NAV expects the timestamp in UTC (header and requestSignature alike)
         if ($timestamp->getTimezone()->getName() !== 'UTC') {
-            $timestamp->setTimezone(new \DateTimeZone('UTC'));
+            $timestamp = $timestamp->setTimezone(new \DateTimeZone('UTC'));
         }
 
         $this->timestamp = $timestamp;
