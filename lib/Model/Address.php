@@ -425,7 +425,7 @@ class Address implements AddressInterface
      * @param string|null $lotNumber
      * @return self
      */
-    public function setLotNumber(?string $lotNumber): ?string
+    public function setLotNumber(?string $lotNumber): self
     {
         $this->lotNumber = $lotNumber;
         return $this;
