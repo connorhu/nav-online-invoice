@@ -704,12 +704,14 @@ class Invoice implements InvoiceInterface
     /**
      * setter for invoiceIssueDate
      *
-     * @param mixed
+     * A \DateTimeImmutable is converted to \DateTime, the getter keeps returning \DateTime.
+     *
+     * @param \DateTimeInterface|null $value
      * @return self
      */
-    public function setInvoiceIssueDate(?\DateTime $value = null)
+    public function setInvoiceIssueDate(?\DateTimeInterface $value = null)
     {
-        $this->invoiceIssueDate = $value;
+        $this->invoiceIssueDate = self::toMutableDate($value);
         return $this;
     }
 
@@ -742,12 +744,14 @@ class Invoice implements InvoiceInterface
     /**
      * setter for invoiceDeliveryDate
      *
-     * @param mixed
+     * A \DateTimeImmutable is converted to \DateTime, the getter keeps returning \DateTime.
+     *
+     * @param \DateTimeInterface|null $value
      * @return self
      */
-    public function setInvoiceDeliveryDate(?\DateTime $value = null)
+    public function setInvoiceDeliveryDate(?\DateTimeInterface $value = null)
     {
-        $this->invoiceDeliveryDate = $value;
+        $this->invoiceDeliveryDate = self::toMutableDate($value);
         return $this;
     }
 
@@ -857,12 +861,14 @@ class Invoice implements InvoiceInterface
     /**
      * setter for invoiceAccountingDeliveryDate
      *
-     * @param mixed
+     * A \DateTimeImmutable is converted to \DateTime, the getter keeps returning \DateTime.
+     *
+     * @param \DateTimeInterface|null $value
      * @return self
      */
-    public function setInvoiceAccountingDeliveryDate(?\DateTime $value = null)
+    public function setInvoiceAccountingDeliveryDate(?\DateTimeInterface $value = null)
     {
-        $this->invoiceAccountingDeliveryDate = $value;
+        $this->invoiceAccountingDeliveryDate = self::toMutableDate($value);
         return $this;
     }
 
@@ -1586,5 +1592,14 @@ class Invoice implements InvoiceInterface
         $this->modificationIndex = $modificationIndex;
 
         return $this;
+    }
+
+    private static function toMutableDate(?\DateTimeInterface $value): ?\DateTime
+    {
+        if ($value === null || $value instanceof \DateTime) {
+            return $value;
+        }
+
+        return \DateTime::createFromInterface($value);
     }
 }

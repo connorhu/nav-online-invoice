@@ -128,4 +128,44 @@ class InvoiceItemNormalizerTest extends TestCase
             ],
         ]];
     }
+
+    /**
+     * 0 is a valid quantity / unit price / gross amount (free item, correction line);
+     * it must be serialized, only null is left out.
+     */
+    public function testZeroValuesAreSerialized(): void
+    {
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setLineDescription('0');
+        $invoiceItem->setQuantity(0);
+        $invoiceItem->setUnitOfMeasureOwn('0');
+        $invoiceItem->setUnitPrice(0.0);
+        $invoiceItem->setGrossAmountNormal(0);
+        $invoiceItem->setGrossAmountNormalHUF(0);
+
+        $normalized = $this->normalizer->normalize($invoiceItem);
+
+        $this->assertSame('0', $normalized['lineDescription']);
+        $this->assertSame(0, $normalized['quantity']);
+        $this->assertSame('0', $normalized['unitOfMeasureOwn']);
+        $this->assertSame(0.0, $normalized['unitPrice']);
+        $this->assertSame([
+            'lineGrossAmountNormal' => 0,
+            'lineGrossAmountNormalHUF' => 0,
+        ], $normalized['lineAmountsNormal']['lineGrossAmountData']);
+    }
+
+    public function testNullAndEmptyValuesAreLeftOut(): void
+    {
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->setLineDescription('');
+        $invoiceItem->setUnitOfMeasureOwn('');
+
+        $normalized = $this->normalizer->normalize($invoiceItem);
+
+        foreach (['lineDescription', 'quantity', 'unitOfMeasureOwn', 'unitPrice'] as $key) {
+            $this->assertArrayNotHasKey($key, $normalized);
+        }
+        $this->assertArrayNotHasKey('lineGrossAmountData', $normalized['lineAmountsNormal']);
+    }
 }

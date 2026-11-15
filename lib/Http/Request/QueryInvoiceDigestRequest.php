@@ -95,11 +95,13 @@ class QueryInvoiceDigestRequest extends Request implements HeaderAwareRequest, U
     }
 
     /**
-     * @param \DateTime|null $issueDateFrom
+     * A \DateTimeImmutable is converted to \DateTime, the getter keeps returning \DateTime.
+     *
+     * @param \DateTimeInterface|null $issueDateFrom
      */
-    public function setIssueDateFrom(?\DateTime $issueDateFrom): void
+    public function setIssueDateFrom(?\DateTimeInterface $issueDateFrom): void
     {
-        $this->issueDateFrom = $issueDateFrom;
+        $this->issueDateFrom = $issueDateFrom === null || $issueDateFrom instanceof \DateTime ? $issueDateFrom : \DateTime::createFromInterface($issueDateFrom);
     }
 
     /**
@@ -111,11 +113,13 @@ class QueryInvoiceDigestRequest extends Request implements HeaderAwareRequest, U
     }
 
     /**
-     * @param \DateTime|null $issueDateTo
+     * A \DateTimeImmutable is converted to \DateTime, the getter keeps returning \DateTime.
+     *
+     * @param \DateTimeInterface|null $issueDateTo
      */
-    public function setIssueDateTo(?\DateTime $issueDateTo): void
+    public function setIssueDateTo(?\DateTimeInterface $issueDateTo): void
     {
-        $this->issueDateTo = $issueDateTo;
+        $this->issueDateTo = $issueDateTo === null || $issueDateTo instanceof \DateTime ? $issueDateTo : \DateTime::createFromInterface($issueDateTo);
     }
 
     /**
