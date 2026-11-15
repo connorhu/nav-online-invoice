@@ -37,7 +37,7 @@ class SoftwareNormalizer implements NormalizerInterface, DenormalizerInterface
         return $data instanceof Software;
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -66,7 +66,7 @@ class SoftwareNormalizer implements NormalizerInterface, DenormalizerInterface
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return Software::class === $type;
     }

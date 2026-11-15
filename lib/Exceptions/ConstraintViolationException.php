@@ -6,9 +6,11 @@ use Symfony\Component\Validator\ConstraintViolationList;
 
 class ConstraintViolationException extends \Exception
 {
+    private ConstraintViolationList $violationList;
+
     public function __construct($message, ConstraintViolationList $list)
     {
-        $this->message = $message;
+        parent::__construct($message);
         $this->violationList = $list;
     }
     

@@ -707,7 +707,7 @@ class Invoice implements InvoiceInterface
      * @param mixed
      * @return self
      */
-    public function setInvoiceIssueDate(\DateTime $value = null)
+    public function setInvoiceIssueDate(?\DateTime $value = null)
     {
         $this->invoiceIssueDate = $value;
         return $this;
@@ -745,7 +745,7 @@ class Invoice implements InvoiceInterface
      * @param mixed
      * @return self
      */
-    public function setInvoiceDeliveryDate(\DateTime $value = null)
+    public function setInvoiceDeliveryDate(?\DateTime $value = null)
     {
         $this->invoiceDeliveryDate = $value;
         return $this;
@@ -860,7 +860,7 @@ class Invoice implements InvoiceInterface
      * @param mixed
      * @return self
      */
-    public function setInvoiceAccountingDeliveryDate(\DateTime $value = null)
+    public function setInvoiceAccountingDeliveryDate(?\DateTime $value = null)
     {
         $this->invoiceAccountingDeliveryDate = $value;
         return $this;

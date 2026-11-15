@@ -33,7 +33,7 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
         $this->cryptoTools = $cryptoTools;
     }
 
-    public function normalize($object, string $format = null, array $context = []): array
+    public function normalize($object, ?string $format = null, array $context = []): array
     {
         $buffer = [];
         
@@ -103,7 +103,7 @@ class RequestNormalizer implements SerializerAwareInterface, NormalizerInterface
      * @param array $context
      * @return bool
      */
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return false;
     }

@@ -19,7 +19,7 @@ class QueryInvoiceDigestRequestNormalizer implements NormalizerInterface, Normal
     /**
      * @param QueryInvoiceDigestRequest $object
      */
-    public function normalize($object, string $format = null, array $context = []): array
+    public function normalize($object, ?string $format = null, array $context = []): array
     {
         $buffer = [
             'page' => $object->getPage(),
@@ -48,7 +48,7 @@ class QueryInvoiceDigestRequestNormalizer implements NormalizerInterface, Normal
         ]);
     }
 
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof QueryInvoiceDigestRequest;
     }

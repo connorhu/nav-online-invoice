@@ -18,7 +18,7 @@ class ResponseDenormalizer implements DenormalizerInterface, SerializerAwareInte
         return $this->serializer->denormalize($data, $type, $format, $inNormalizerContext);
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         if (isset($context['_in_response_denormalizer']) && $context['_in_response_denormalizer'] === true) {
             return false;

@@ -67,7 +67,7 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
         return $object;
     }
 
-    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === QueryInvoiceDataResponse::class;
     }
