@@ -68,22 +68,22 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             $buffer['lineExpressionIndicator'] = BooleanNormalizer::normalize($object->getLineExpressionIndicator());
         }
 
-        if ($object->getLineDescription()) {
+        if ($object->getLineDescription() !== null && $object->getLineDescription() !== '') {
             $buffer['lineDescription'] = $object->getLineDescription();
         }
 
-        if ($object->getQuantity()) {
+        if ($object->getQuantity() !== null) {
             $buffer['quantity'] = $object->getQuantity();
         }
 
         if ($object->getUnitOfMeasure()) {
             $buffer['unitOfMeasure'] = $object->getUnitOfMeasure()->rawString();
         }
-        if ($object->getUnitOfMeasureOwn()) {
+        if ($object->getUnitOfMeasureOwn() !== null && $object->getUnitOfMeasureOwn() !== '') {
             $buffer['unitOfMeasureOwn'] = $object->getUnitOfMeasureOwn();
         }
 
-        if ($object->getUnitPrice()) {
+        if ($object->getUnitPrice() !== null) {
             $buffer['unitPrice'] = $object->getUnitPrice();
         }
 
@@ -98,7 +98,7 @@ class InvoiceItemNormalizer implements NormalizerInterface, NormalizerAwareInter
             'lineVatAmountHUF' => $object->getVatAmountHUF(),
         ];
 
-        if ($object->getGrossAmountNormal()) {
+        if ($object->getGrossAmountNormal() !== null) {
             $buffer['lineAmountsNormal']['lineGrossAmountData'] = [
                 'lineGrossAmountNormal' => $object->getGrossAmountNormal(),
                 'lineGrossAmountNormalHUF' => $object->getGrossAmountNormalHUF(),
