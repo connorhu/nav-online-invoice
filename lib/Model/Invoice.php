@@ -1148,35 +1148,42 @@ class Invoice implements InvoiceInterface
     }
 
     /*
-     * Elektronikus számla vagy módosító okirat állomány SHA256 lenyomata.
+     * Elektronikus számla vagy módosító okirat állomány lenyomata.
      *
-     * requirements: not required
-     * node name: electronicInvoiceHash
-     * xml type: xs:string
-     * simple type: SHA256Type
-     * pattern: [0-9A-F]{64}
-
-	<invoiceExchange>
-		<invoiceHead>
-			<invoiceData>
-				<electronicInvoiceHash>...</electronicInvoiceHash>
+     * In the 3.0 API this is not part of the invoice data: it is sent next to it, in the
+     * invoice operation (InvoiceOperationType/electronicInvoiceHash in invoiceApi.xsd).
+     * Use InvoiceOperation::setElectronicInvoiceHash() instead.
      */
     protected $electronicInvoiceHash;
 
     /**
      * setter for electronicInvoiceHash
      *
+     * @deprecated since 1.0, use InvoiceOperation::setElectronicInvoiceHash()
+     *
      * @param mixed
      * @return self
      */
     public function setElectronicInvoiceHash($value)
     {
+        if ($value !== null) {
+            trigger_deprecation(
+                'connorhu/nav-online-invoice',
+                '1.0',
+                'Calling "%s()" is deprecated: the electronic invoice hash belongs to the invoice operation, not to the invoice data. Use "%s::setElectronicInvoiceHash()" instead, which also takes the hash algorithm (cryptoType).',
+                __METHOD__,
+                InvoiceOperation::class,
+            );
+        }
+
         $this->electronicInvoiceHash = $value;
         return $this;
     }
 
     /**
      * getter for electronicInvoiceHash
+     *
+     * @deprecated since 1.0, use InvoiceOperation::getElectronicInvoiceHash()
      *
      * @return mixed return value for
      */

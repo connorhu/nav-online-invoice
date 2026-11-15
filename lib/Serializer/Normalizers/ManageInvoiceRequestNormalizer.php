@@ -6,6 +6,8 @@ use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
 use NAV\OnlineInvoice\Logger\InvoiceLoggerInterface;
 use NAV\OnlineInvoice\Logger\NullInvoiceLogger;
+use NAV\OnlineInvoice\Model\Invoice;
+use NAV\OnlineInvoice\Model\InvoiceOperation;
 use NAV\OnlineInvoice\Providers\CryptoToolsProviderInterface;
 use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
 use NAV\OnlineInvoice\Validator\XSDValidator;
@@ -93,16 +95,50 @@ class ManageInvoiceRequestNormalizer implements NormalizerInterface, SerializerA
 
             $encodedInvoiceData = $this->cryptoTools->encodeInvoiceData($serializedInvoice);
 
-            $contentToSign['invoiceOperations']['invoiceOperation'][] = [
+            $operation = [
                 'index' => $index + 1,
                 'invoiceOperation' => $invoiceOperation->getOperation()->value,
                 'invoiceData' => $encodedInvoiceData,
             ];
+
+            // InvoiceOperationType: after invoiceData, outside of the request signature
+            if (($electronicInvoiceHash = self::electronicInvoiceHash($invoiceOperation)) !== null) {
+                $operation['electronicInvoiceHash'] = [
+                    '@cryptoType' => $electronicInvoiceHash[1],
+                    '#' => $electronicInvoiceHash[0],
+                ];
+            }
+
+            $contentToSign['invoiceOperations']['invoiceOperation'][] = $operation;
         }
 
         return $this->requestNormalizer->normalize($object, $format, [
             RequestNormalizer::REQUEST_CONTENT_KEY => $contentToSign,
         ]);
+    }
+
+    /**
+     * @return array{string, string}|null the hash and its cryptoType
+     */
+    private static function electronicInvoiceHash(InvoiceOperation $invoiceOperation): ?array
+    {
+        if (($hash = $invoiceOperation->getElectronicInvoiceHash()) !== null && $hash !== '') {
+            return [$hash, $invoiceOperation->getElectronicInvoiceHashCryptoType()];
+        }
+
+        // BC: the hash set with the deprecated Invoice::setElectronicInvoiceHash(). That API
+        // had no algorithm; it was documented as a SHA-256 hash, so a 64 character value is
+        // sent as SHA-256 and anything else as SHA3-512.
+        $invoice = $invoiceOperation->getInvoice();
+        if ($invoice instanceof Invoice && ($hash = (string) $invoice->getElectronicInvoiceHash()) !== '') {
+            $cryptoType = strlen($hash) === 64
+                ? InvoiceOperation::ELECTRONIC_INVOICE_HASH_SHA_256
+                : InvoiceOperation::ELECTRONIC_INVOICE_HASH_SHA3_512;
+
+            return [$hash, $cryptoType];
+        }
+
+        return null;
     }
 
     /**

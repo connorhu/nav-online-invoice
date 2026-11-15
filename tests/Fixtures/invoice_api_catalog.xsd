@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Validates whole 3.0 API requests (e.g. ManageInvoiceRequest) against the NAV schemas shipped with the library. -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:import namespace="http://schemas.nav.gov.hu/NTCA/1.0/common" schemaLocation="../../lib/Resources/XSD/common.xsd"/>
+    <xs:import namespace="http://schemas.nav.gov.hu/OSA/3.0/base" schemaLocation="../../lib/Resources/XSD/v3/invoiceBase.xsd"/>
+    <xs:import namespace="http://schemas.nav.gov.hu/OSA/3.0/api" schemaLocation="../../lib/Resources/XSD/v3/invoiceApi.xsd"/>
+</xs:schema>
