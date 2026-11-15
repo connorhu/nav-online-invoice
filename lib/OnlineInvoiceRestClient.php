@@ -6,6 +6,8 @@ use NAV\OnlineInvoice\Http\Enums\RequestVersionEnum;
 use NAV\OnlineInvoice\Validator\Exceptions\InvalidXMLException;
 use Psr\Log\LoggerInterface;
 use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
+use NAV\OnlineInvoice\Exceptions\TokenExchangeException;
+use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use NAV\OnlineInvoice\Http\Request;
 use NAV\OnlineInvoice\Providers\ApiEndpointUrlProviderInterface;
 use NAV\OnlineInvoice\Providers\RequestIdProviderInterface;
@@ -205,6 +207,9 @@ class OnlineInvoiceRestClient
         return $response;
     }
     
+    /**
+     * @throws TokenExchangeException if NAV answers with an error response
+     */
     public function getExhangeToken(): string
     {
         $request = new TokenExchangeRequest();
@@ -212,7 +217,11 @@ class OnlineInvoiceRestClient
         $request->setUser($this->userProvider->getUser());
         
         $response = $this->sendRequest($request);
-        
+
+        if (!$response instanceof TokenExchangeResponse) {
+            throw new TokenExchangeException($response);
+        }
+
         return $response->getExchangeToken();
     }
 }
