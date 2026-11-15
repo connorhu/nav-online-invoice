@@ -23,11 +23,18 @@ class XSDValidator
      */
     public function validate(string $xmlString): void
     {
-        libxml_use_internal_errors(true);
+        $previous = libxml_use_internal_errors(true);
+        libxml_clear_errors();
+        $this->errors = [];
 
-        $this->domHandler->loadXML($xmlString, LIBXML_NOBLANKS);
-        if (!@$this->domHandler->schemaValidate($this->schemaFile)) {
-            $this->errors = libxml_get_errors();
+        try {
+            $this->domHandler->loadXML($xmlString, LIBXML_NOBLANKS);
+            if (!$this->domHandler->schemaValidate($this->schemaFile)) {
+                $this->errors = libxml_get_errors();
+            }
+        } finally {
+            libxml_clear_errors();
+            libxml_use_internal_errors($previous);
         }
     }
 
