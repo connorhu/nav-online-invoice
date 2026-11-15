@@ -77,7 +77,7 @@ class VatRateSummaryNormalizer implements NormalizerInterface, DenormalizerInter
         $object->setNetAmount($data[$keyPrefix.'vatRateNetData'][$keyPrefix.'vatRateNetAmount']);
         $object->setNetAmountHUF($data[$keyPrefix.'vatRateNetData'][$keyPrefix.'vatRateNetAmountHUF']);
         $object->setVatAmount($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmount']);
-        $object->setVatAmountHUF($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmount']);
+        $object->setVatAmountHUF($data[$keyPrefix.'vatRateVatData'][$keyPrefix.'vatRateVatAmountHUF']);
         $object->setGrossAmount($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmount']);
         $object->setGrossAmountHUF($data[$keyPrefix.'vatRateGrossData'][$keyPrefix.'vatRateGrossAmountHUF']);
 
