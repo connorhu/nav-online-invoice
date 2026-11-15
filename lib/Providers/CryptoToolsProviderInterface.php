@@ -15,7 +15,7 @@ interface CryptoToolsProviderInterface
     
     public function getRequestSignatureHashAlgo(Request $request): string;
     
-    public function encodeInvoiceData(string $invoiceData, Request $request = null): string;
+    public function encodeInvoiceData(string $invoiceData, ?Request $request = null): string;
     
     public function decodeExchangeToken(string $encodedToken): string;
 }

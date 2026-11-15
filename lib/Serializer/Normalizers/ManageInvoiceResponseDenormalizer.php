@@ -24,7 +24,7 @@ class ManageInvoiceResponseDenormalizer implements DenormalizerInterface
         throw new \LogicException('Unknown response version.');
     }
 
-    public function supportsDenormalization($data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization($data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === ManageInvoiceResponse::class;
     }

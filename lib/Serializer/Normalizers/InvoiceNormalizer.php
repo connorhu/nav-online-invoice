@@ -29,7 +29,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
     ) {
     }
 
-    protected function normalizeSupplierInfo(Invoice $invoice, string $format = null, array $context = []): array
+    protected function normalizeSupplierInfo(Invoice $invoice, ?string $format = null, array $context = []): array
     {
         $taxNumber = $invoice->getSupplierTaxNumber();
 
@@ -63,7 +63,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $supplierInfo;
     }
 
-    protected function normalizeCustomerInfo(Invoice $invoice, string $format = null, array $context = []): array
+    protected function normalizeCustomerInfo(Invoice $invoice, ?string $format = null, array $context = []): array
     {
         $customerInfo = [];
 
@@ -115,7 +115,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $customerInfo;
     }
 
-    protected function normalizeDetailInfo(Invoice $invoice, string $format = null, array $context = []): array
+    protected function normalizeDetailInfo(Invoice $invoice, ?string $format = null, array $context = []): array
     {
         $invoiceData = [];
         $invoiceData['invoiceCategory'] = $invoice->getInvoiceCategory();
@@ -179,7 +179,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $invoiceData;
     }
 
-    protected function normalizeLines(Invoice $invoice, string $format = null, array $context = []): array
+    protected function normalizeLines(Invoice $invoice, ?string $format = null, array $context = []): array
     {
         $lines = [];
         foreach ($invoice->getItems() as $item) {
@@ -189,7 +189,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $lines;
     }
 
-    protected function normalizeSummary(Invoice $invoice, string $format = null, array $context = []): array
+    protected function normalizeSummary(Invoice $invoice, ?string $format = null, array $context = []): array
     {
         $invoiceSummary = [];
 
@@ -315,7 +315,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $address;
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         $object = new Invoice();
 
@@ -393,7 +393,7 @@ class InvoiceNormalizer implements NormalizerInterface, SerializerAwareInterface
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return Invoice::class === $type;
     }

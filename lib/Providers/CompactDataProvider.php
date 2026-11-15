@@ -138,7 +138,7 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
         return 'SHA3-512';
     }
     
-    public function encodeInvoiceData(string $invoiceData, Request $request = null): string
+    public function encodeInvoiceData(string $invoiceData, ?Request $request = null): string
     {
         return base64_encode($invoiceData);
     }

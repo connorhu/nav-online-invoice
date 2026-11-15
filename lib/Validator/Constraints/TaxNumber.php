@@ -62,12 +62,12 @@ class TaxNumber extends Constraint
     public ?array $allowedCountyCodes = null;
 
     public function __construct(
-        array $options = null,
+        ?array $options = null,
         bool $vatCodeRequired = false,
         bool $countyCodeRequired = false,
         ?array $allowedVatCodes = null,
         ?array $allowedCountyCodes = null,
-        array $groups = null,
+        ?array $groups = null,
         mixed $payload = null)
     {
         parent::__construct($options ?? [], $groups, $payload);

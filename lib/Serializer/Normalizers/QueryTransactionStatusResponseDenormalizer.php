@@ -118,7 +118,7 @@ class QueryTransactionStatusResponseDenormalizer implements DenormalizerInterfac
         throw new \LogicException('Unknown response interface.');
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === QueryTransactionStatusResponse::class;
     }

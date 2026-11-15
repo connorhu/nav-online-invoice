@@ -80,7 +80,7 @@ class OnlineInvoiceRestClient
      */
     private ?HttpClientInterface $httpClient;
 
-    public function __construct(SoftwareProviderInterface $softwareProvider, ValidatorInterface $validator, SerializerInterface $serializer, RequestIdProviderInterface $requestIdProvider, UserProviderInterface $userProvider, ApiEndpointUrlProviderInterface $urlProvider, LoggerInterface $logger = null, HttpClientInterface $httpClient = null)
+    public function __construct(SoftwareProviderInterface $softwareProvider, ValidatorInterface $validator, SerializerInterface $serializer, RequestIdProviderInterface $requestIdProvider, UserProviderInterface $userProvider, ApiEndpointUrlProviderInterface $urlProvider, ?LoggerInterface $logger = null, ?HttpClientInterface $httpClient = null)
     {
         $this->validator = $validator;
         $this->serializer = $serializer;

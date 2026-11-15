@@ -37,7 +37,7 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
         return $data instanceof Header;
     }
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -53,7 +53,7 @@ class HeaderNormalizer implements NormalizerInterface, DenormalizerInterface
         return $object;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return $type === Header::class;
     }

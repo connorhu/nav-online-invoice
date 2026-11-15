@@ -76,7 +76,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         return $buffer;
     }
 
-    public function supportsNormalization(mixed $data, string $format = null, array $context = []): bool
+    public function supportsNormalization(mixed $data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof VatRateInterface;
     }
@@ -91,7 +91,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
      */
     public const ITEM_FACTORY_CONTEXT_KEY = '_vat_rate_item_factory';
 
-    public function denormalize(mixed $data, string $type, string $format = null, array $context = []): mixed
+    public function denormalize(mixed $data, string $type, ?string $format = null, array $context = []): mixed
     {
         if (!key_exists(self::XMLNS_CONTEXT_KEY, $context)) {
             // TODO create exception type
@@ -148,7 +148,7 @@ class VatRateNormalizer implements NormalizerInterface, DenormalizerInterface
         return $item;
     }
 
-    public function supportsDenormalization(mixed $data, string $type, string $format = null, array $context = []): bool
+    public function supportsDenormalization(mixed $data, string $type, ?string $format = null, array $context = []): bool
     {
         return in_array(VatRateInterface::class, class_implements($type))
             || VatRateInterface::class === $type;

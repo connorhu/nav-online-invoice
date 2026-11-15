@@ -8,7 +8,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class ProductCodeNormalizer implements NormalizerInterface
 {
-    public function normalize($object, string $format = null, array $context = []): array
+    public function normalize($object, ?string $format = null, array $context = []): array
     {
         $buffer = [];
 
@@ -26,7 +26,7 @@ class ProductCodeNormalizer implements NormalizerInterface
         return ['productCode' => $buffer];
     }
     
-    public function supportsNormalization($data, string $format = null, array $context = []): bool
+    public function supportsNormalization($data, ?string $format = null, array $context = []): bool
     {
         return $data instanceof ProductCodeInterface;
     }
