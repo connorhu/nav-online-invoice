@@ -2,7 +2,9 @@
 
 namespace NAV\OnlineInvoice\Validator\Constraints;
 
+use Symfony\Component\Validator\Attribute\HasNamedArguments;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\Exception\InvalidOptionsException;
 
 /**
  * @Annotation
@@ -61,21 +63,97 @@ class TaxNumber extends Constraint
      */
     public ?array $allowedCountyCodes = null;
 
+    private const OPTIONS = [
+        'messageLength',
+        'messageTaxpayerId',
+        'messageTaxpayerIdShort',
+        'messageVatCodeInvalid',
+        'messageVatCodeMissing',
+        'messageVatCodeNotAllowed',
+        'messageCountyCodeInvalid',
+        'messageCountyCodeMissing',
+        'messageCountyCodeNotAllowed',
+        'vatCodeRequired',
+        'countyCodeRequired',
+        'allowedVatCodes',
+        'allowedCountyCodes',
+    ];
+
+    /**
+     * Symfony 8 ignores the $options array of Constraint::__construct(), and
+     * Symfony 7.3+ deprecates it, so the options are named arguments here and
+     * the legacy array is applied by this class itself.
+     *
+     * @param array<string, mixed>|null $options deprecated, use the named arguments
+     */
+    #[HasNamedArguments]
     public function __construct(
         ?array $options = null,
-        bool $vatCodeRequired = false,
-        bool $countyCodeRequired = false,
+        ?bool $vatCodeRequired = null,
+        ?bool $countyCodeRequired = null,
         ?array $allowedVatCodes = null,
         ?array $allowedCountyCodes = null,
         ?array $groups = null,
-        mixed $payload = null)
-    {
-        parent::__construct($options ?? [], $groups, $payload);
+        mixed $payload = null,
+        ?string $messageLength = null,
+        ?string $messageTaxpayerId = null,
+        ?string $messageTaxpayerIdShort = null,
+        ?string $messageVatCodeInvalid = null,
+        ?string $messageVatCodeMissing = null,
+        ?string $messageVatCodeNotAllowed = null,
+        ?string $messageCountyCodeInvalid = null,
+        ?string $messageCountyCodeMissing = null,
+        ?string $messageCountyCodeNotAllowed = null,
+    ) {
+        if (null !== $options && [] !== $options) {
+            trigger_deprecation(
+                'connorhu/nav-online-invoice',
+                '1.0',
+                'Passing an array of options to configure the "%s" constraint is deprecated, use named arguments instead.',
+                static::class,
+            );
 
-        $this->vatCodeRequired = $vatCodeRequired;
-        $this->countyCodeRequired = $countyCodeRequired;
-        $this->allowedVatCodes = $allowedVatCodes;
-        $this->allowedCountyCodes = $allowedCountyCodes;
+            if (\array_key_exists('groups', $options)) {
+                $groups ??= (array) $options['groups'];
+                unset($options['groups']);
+            }
+
+            if (\array_key_exists('payload', $options)) {
+                $payload ??= $options['payload'];
+                unset($options['payload']);
+            }
+
+            $invalidOptions = array_diff(array_keys($options), self::OPTIONS);
+            if ([] !== $invalidOptions) {
+                throw new InvalidOptionsException(\sprintf('The options "%s" do not exist in constraint "%s".', implode('", "', $invalidOptions), static::class), $invalidOptions);
+            }
+        }
+
+        parent::__construct(null, $groups, $payload);
+
+        $namedArguments = [
+            'messageLength' => $messageLength,
+            'messageTaxpayerId' => $messageTaxpayerId,
+            'messageTaxpayerIdShort' => $messageTaxpayerIdShort,
+            'messageVatCodeInvalid' => $messageVatCodeInvalid,
+            'messageVatCodeMissing' => $messageVatCodeMissing,
+            'messageVatCodeNotAllowed' => $messageVatCodeNotAllowed,
+            'messageCountyCodeInvalid' => $messageCountyCodeInvalid,
+            'messageCountyCodeMissing' => $messageCountyCodeMissing,
+            'messageCountyCodeNotAllowed' => $messageCountyCodeNotAllowed,
+            'vatCodeRequired' => $vatCodeRequired,
+            'countyCodeRequired' => $countyCodeRequired,
+            'allowedVatCodes' => $allowedVatCodes,
+            'allowedCountyCodes' => $allowedCountyCodes,
+        ];
+
+        // A named argument wins over the same key of the legacy options array.
+        foreach ($namedArguments + ($options ?? []) as $name => $_) {
+            $value = $namedArguments[$name] ?? $options[$name] ?? null;
+            if (null !== $value) {
+                $this->$name = $value;
+            }
+        }
     }
 
     public function validatedBy(): string
