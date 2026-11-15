@@ -145,6 +145,16 @@ class CompactDataProvider implements SoftwareProviderInterface, UserProviderInte
     
     public function decodeExchangeToken(string $encodedToken): string
     {
-        return openssl_decrypt($encodedToken, 'AES-128-ECB', $this->infoJson['user']['xmlExchangeKey']);
+        if (!isset($this->infoJson['user']['xmlExchangeKey']) || $this->infoJson['user']['xmlExchangeKey'] === '') {
+            throw new InvalidArgumentException('The "user.xmlExchangeKey" key is missing or empty in the info JSON, the exchange token cannot be decoded.');
+        }
+
+        $token = openssl_decrypt($encodedToken, 'AES-128-ECB', $this->infoJson['user']['xmlExchangeKey']);
+
+        if ($token === false) {
+            throw new InvalidArgumentException('The exchange token cannot be decoded with "user.xmlExchangeKey".');
+        }
+
+        return $token;
     }
 }

@@ -1,19 +1,19 @@
 <?php
 
-require __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/bootstrap.php';
 
 use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
+use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 
-try {
-    $request = new TokenExchangeRequest();
+// sendRequest() returns NAV's error answer (GeneralErrorResponse / GeneralExceptionResponse,
+// both implement ErrorResponse) instead of throwing it.
+// To only get the token, use initClient()->getExhangeToken(): it throws a
+// NAV\OnlineInvoice\Exceptions\TokenExchangeException on an error answer.
+$response = initClient()->sendRequest(new TokenExchangeRequest());
 
-    $onlineInvoiceRestClient = initClient();
-    $response = $onlineInvoiceRestClient->sendRequest($request);
-
-    dump($response->getExchangeToken(), $response->getValidFrom(), $response->getValidTo());
+if ($response instanceof ErrorResponse) {
+    dump($response->getErrorCode(), $response->getMessage(), $response);
+    exit(1);
 }
-catch (GeneralErrorResponse $exception) {
-    
-    dump($exception);
-    
-}
+
+dump($response->getExchangeToken(), $response->getValidFrom(), $response->getValidTo());

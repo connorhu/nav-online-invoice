@@ -1,19 +1,19 @@
 <?php
 
-require __DIR__ .'/bootstrap.php';
+require_once __DIR__ .'/bootstrap.php';
 
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceDataRequest;
+use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 
-try {
-    $request = new QueryInvoiceDataRequest();
-    $request->setInvoiceDirection(QueryInvoiceDataRequest::INVOICE_DIRECTION_INBOUND);
-    $request->setInvoiceNumber('AHH/2021/0017024');
+$request = new QueryInvoiceDataRequest();
+$request->setInvoiceDirection(QueryInvoiceDataRequest::INVOICE_DIRECTION_INBOUND);
+$request->setInvoiceNumber('AHH/2021/0017024');
 
-    $onlineInvoiceRestClient = initClient();
-    $response = $onlineInvoiceRestClient->sendRequest($request);
+$response = initClient()->sendRequest($request);
+
+if ($response instanceof ErrorResponse) {
+    dump($response->getErrorCode(), $response->getMessage(), $response);
+    exit(1);
 }
-catch (GeneralErrorResponse $exception) {
-    
-    dump($exception);
-    
-}
+
+dump($response);
