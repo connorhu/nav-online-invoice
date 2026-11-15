@@ -2,8 +2,10 @@
 
 namespace NAV\OnlineInvoice\Tests\Examples;
 
+use NAV\OnlineInvoice\Exceptions\ConstraintViolationException;
 use NAV\OnlineInvoice\Exceptions\TokenExchangeException;
 use NAV\OnlineInvoice\Http\Request\ManageInvoiceRequest;
+use NAV\OnlineInvoice\Http\Request\QueryInvoiceCheckRequest;
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceDataRequest;
 use NAV\OnlineInvoice\Http\Request\QueryInvoiceDigestRequest;
 use NAV\OnlineInvoice\Http\Request\QueryTaxpayerRequest;
@@ -12,6 +14,7 @@ use NAV\OnlineInvoice\Http\Request\TokenExchangeRequest;
 use NAV\OnlineInvoice\Http\Response\ErrorResponse;
 use NAV\OnlineInvoice\Http\Response\GeneralErrorResponse;
 use NAV\OnlineInvoice\Http\Response\ManageInvoiceResponse;
+use NAV\OnlineInvoice\Http\Response\QueryInvoiceCheckResponse;
 use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use NAV\OnlineInvoice\Model\Enums\InvoiceOperationEnum;
 use NAV\OnlineInvoice\Model\InvoiceOperation;
@@ -37,7 +40,7 @@ class StandaloneExamplesTest extends TestCase
     /** @var list<array{url: string, body: string}> */
     private array $sent = [];
 
-    private function createClient(callable $responder): OnlineInvoiceRestClient
+    private function createClient(callable $responder, ?string $infoJsonPath = null): OnlineInvoiceRestClient
     {
         $httpClient = new MockHttpClient(function (string $method, string $url, array $options) use ($responder) {
             $this->sent[] = ['url' => $url, 'body' => $options['body']];
@@ -45,7 +48,23 @@ class StandaloneExamplesTest extends TestCase
             return $responder($url);
         });
 
-        return initClient($httpClient, __DIR__.'/../Fixtures/compact_data_provider_info.json');
+        return initClient($httpClient, $infoJsonPath ?? __DIR__.'/../Fixtures/compact_data_provider_info.json');
+    }
+
+    /**
+     * The shared fixture's login and software id do not satisfy the XSD facets; whole
+     * request bodies validated against invoiceApi.xsd need values that do.
+     */
+    private function createSchemaValidInfoJson(): string
+    {
+        $info = json_decode(file_get_contents(__DIR__.'/../Fixtures/compact_data_provider_info.json'), true, flags: JSON_THROW_ON_ERROR);
+        $info['software']['id'] = 'HU12345678-TEST001';
+        $info['user']['login'] = 'testlogin';
+
+        $path = tempnam(sys_get_temp_dir(), 'nav-info-');
+        file_put_contents($path, json_encode($info, JSON_THROW_ON_ERROR));
+
+        return $path;
     }
 
     private static function errorResponse(): MockResponse
@@ -87,6 +106,14 @@ class StandaloneExamplesTest extends TestCase
 
             return $request;
         }, '/invoiceService/v3/queryInvoiceData', 'QueryInvoiceDataRequest'];
+
+        yield 'QueryInvoiceCheck.php' => [function () {
+            $request = new QueryInvoiceCheckRequest();
+            $request->setInvoiceDirection(QueryInvoiceCheckRequest::INVOICE_DIRECTION_OUTBOUND);
+            $request->setInvoiceNumber('AHH/2021/0017024');
+
+            return $request;
+        }, '/invoiceService/v3/queryInvoiceCheck', 'QueryInvoiceCheckRequest'];
 
         yield 'QueryInvoiceDigest.php' => [function () {
             $request = new QueryInvoiceDigestRequest();
@@ -188,6 +215,51 @@ class StandaloneExamplesTest extends TestCase
         $validator->validate($invoiceXml);
         $this->assertSame([], array_map(fn (\LibXMLError $error) => trim($error->message), $validator->getErrors()));
         $this->assertStringContainsString('<invoiceNumber>EXAMPLE/2024/0001</invoiceNumber>', $invoiceXml);
+    }
+
+    public function testQueryInvoiceCheck(): void
+    {
+        $infoJsonPath = $this->createSchemaValidInfoJson();
+        $client = $this->createClient(fn () => new MockResponse(
+            '<?xml version="1.0" encoding="UTF-8"?><QueryInvoiceCheckResponse '.self::API.'>'.self::HEADER
+            .'<common:result><common:funcCode>OK</common:funcCode></common:result><invoiceCheckResult>true</invoiceCheckResult></QueryInvoiceCheckResponse>',
+        ), $infoJsonPath);
+        unlink($infoJsonPath);
+
+        $request = new QueryInvoiceCheckRequest();
+        $request->setInvoiceDirection(QueryInvoiceCheckRequest::INVOICE_DIRECTION_INBOUND);
+        $request->setInvoiceNumber('INV/2024/0002');
+        $request->setBatchIndex(2);
+        $request->setSupplierTaxNumber('87654321');
+
+        $response = $client->sendRequest($request);
+
+        $this->assertInstanceOf(QueryInvoiceCheckResponse::class, $response);
+        $this->assertTrue($response->getInvoiceCheckResult());
+
+        // no token exchange: the operation is not ExchangeTokenAware
+        $this->assertCount(1, $this->sent);
+        $this->assertStringEndsWith('/invoiceService/v3/queryInvoiceCheck', $this->sent[0]['url']);
+
+        $validator = new XSDValidator(__DIR__.'/../Fixtures/invoice_api_catalog.xsd');
+        $validator->validate($this->sent[0]['body']);
+        $this->assertSame([], array_map(fn (\LibXMLError $error) => trim($error->message), $validator->getErrors()));
+    }
+
+    public function testQueryInvoiceCheckRejectsAnInvalidRequestBeforeSending(): void
+    {
+        $client = $this->createClient(fn () => self::errorResponse());
+
+        $request = new QueryInvoiceCheckRequest();
+        $request->setInvoiceNumber('INV/2024/0002');
+        $request->setBatchIndex(0);
+
+        try {
+            $client->sendRequest($request);
+            $this->fail('an invalid batchIndex must be rejected by the validator');
+        } catch (ConstraintViolationException) {
+            $this->assertSame([], $this->sent);
+        }
     }
 
     public function testInfoJsonDistHasTheKeysCompactDataProviderReads(): void
