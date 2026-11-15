@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<QueryInvoiceCheckResponse xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common" xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" xmlns:ns3="http://schemas.nav.gov.hu/OSA/3.0/base" xmlns:ns4="http://schemas.nav.gov.hu/OSA/3.0/data">
+    <common:header>
+        <common:requestId>RID231225145012</common:requestId>
+        <common:timestamp>2024-02-01T10:00:01.123Z</common:timestamp>
+        <common:requestVersion>3.0</common:requestVersion>
+        <common:headerVersion>1.0</common:headerVersion>
+    </common:header>
+    <common:result>
+        <common:funcCode>OK</common:funcCode>
+    </common:result>
+    <software>
+        <softwareId>HU12345678-TEST001</softwareId>
+        <softwareName>Test Software</softwareName>
+        <softwareOperation>LOCAL_SOFTWARE</softwareOperation>
+        <softwareMainVersion>1.0</softwareMainVersion>
+        <softwareDevName>Developer</softwareDevName>
+        <softwareDevContact>dev@example.com</softwareDevContact>
+        <softwareDevCountryCode>HU</softwareDevCountryCode>
+        <softwareDevTaxNumber>12345678</softwareDevTaxNumber>
+    </software>
+    <invoiceCheckResult>true</invoiceCheckResult>
+</QueryInvoiceCheckResponse>

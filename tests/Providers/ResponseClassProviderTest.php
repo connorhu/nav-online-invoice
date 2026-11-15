@@ -2,6 +2,7 @@
 
 namespace NAV\OnlineInvoice\Tests\Providers;
 
+use NAV\OnlineInvoice\Http\Response\QueryInvoiceCheckResponse;
 use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
 use NAV\OnlineInvoice\Http\Response\TokenExchangeResponse;
 use NAV\OnlineInvoice\Providers\ResponseClassProvider;
@@ -22,6 +23,7 @@ class ResponseClassProviderTest extends TestCase
             ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><ns2:QueryTaxpayerResponse xmlns="http:...', QueryTaxpayerResponse::class],
             ['<?xml version="1.0" encoding="UTF-8"?><QueryTaxpayerResponse ...>...', QueryTaxpayerResponse::class],
             ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><TokenExchangeResponse xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" ...', TokenExchangeResponse::class],
+            ['<?xml version="1.0" encoding="UTF-8" standalone="yes"?><QueryInvoiceCheckResponse xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common" xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" ...', QueryInvoiceCheckResponse::class],
         ];
     }
 }
