@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<QueryInvoiceDigestResponse xmlns:common="http://schemas.nav.gov.hu/NTCA/1.0/common" xmlns="http://schemas.nav.gov.hu/OSA/3.0/api" xmlns:ns3="http://schemas.nav.gov.hu/OSA/3.0/base" xmlns:ns4="http://schemas.nav.gov.hu/OSA/3.0/data">
+    <common:header>
+        <common:requestId>RID231225145012</common:requestId>
+        <common:timestamp>2024-02-01T10:00:01.123Z</common:timestamp>
+        <common:requestVersion>3.0</common:requestVersion>
+        <common:headerVersion>1.0</common:headerVersion>
+    </common:header>
+    <common:result>
+        <common:funcCode>OK</common:funcCode>
+    </common:result>
+    <software>
+        <softwareId>HU12345678-TEST001</softwareId>
+        <softwareName>Test Software</softwareName>
+        <softwareOperation>LOCAL_SOFTWARE</softwareOperation>
+        <softwareMainVersion>1.0</softwareMainVersion>
+        <softwareDevName>Developer</softwareDevName>
+        <softwareDevContact>dev@example.com</softwareDevContact>
+        <softwareDevCountryCode>HU</softwareDevCountryCode>
+        <softwareDevTaxNumber>12345678</softwareDevTaxNumber>
+    </software>
+    <invoiceDigestResult>
+        <currentPage>1</currentPage>
+        <availablePage>1</availablePage>
+        <invoiceDigest>
+            <invoiceNumber>INV/2024/0001</invoiceNumber>
+            <invoiceOperation>CREATE</invoiceOperation>
+            <invoiceCategory>NORMAL</invoiceCategory>
+            <invoiceIssueDate>2024-01-15</invoiceIssueDate>
+            <supplierTaxNumber>12345678</supplierTaxNumber>
+            <supplierName>Supplier Ltd.</supplierName>
+            <customerTaxNumber>87654321</customerTaxNumber>
+            <customerName>Customer Ltd.</customerName>
+            <paymentMethod>TRANSFER</paymentMethod>
+            <paymentDate>2024-01-30</paymentDate>
+            <invoiceAppearance>ELECTRONIC</invoiceAppearance>
+            <source>OSZ</source>
+            <invoiceDeliveryDate>2024-01-15</invoiceDeliveryDate>
+            <currency>HUF</currency>
+            <invoiceNetAmount>20000</invoiceNetAmount>
+            <invoiceNetAmountHUF>20000</invoiceNetAmountHUF>
+            <invoiceVatAmount>5400</invoiceVatAmount>
+            <invoiceVatAmountHUF>5400</invoiceVatAmountHUF>
+            <transactionId>4ABCDEF123456789</transactionId>
+            <index>1</index>
+            <insDate>2024-01-15T09:30:00.000Z</insDate>
+            <completenessIndicator>false</completenessIndicator>
+        </invoiceDigest>
+    </invoiceDigestResult>
+</QueryInvoiceDigestResponse>

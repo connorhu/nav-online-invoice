@@ -2,139 +2,110 @@
 
 namespace NAV\OnlineInvoice\Serializer\Normalizers;
 
-use NAV\OnlineInvoice\Http\Response\QueryTaxpayerResponse;
 use NAV\OnlineInvoice\Http\Response\QueryInvoiceDigestResponse;
+use NAV\OnlineInvoice\Model\Enums\InvoiceAppearanceEnum;
+use NAV\OnlineInvoice\Model\Enums\InvoiceOperationEnum;
+use NAV\OnlineInvoice\Model\Enums\PaymentMethodEnum;
+use NAV\OnlineInvoice\Model\InvoiceDigest;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
 
 class QueryInvoiceDigestResponseDenormalizer implements DenormalizerInterface
 {
     use ResponseDenormalizerTrait;
 
-    protected function denormalizeV3($data): QueryTaxpayerResponse
+    protected function denormalizeV3(array $data): QueryInvoiceDigestResponse
     {
-        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
-        $apiKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
+        $p = self::getNamespaceKeyPrefix(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
 
-        $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::BASE_SCHEMAS_URL_V30, $data);
-        $baseKeyPrefix = $namespace !== '' ? $namespace.':' : $namespace;
+        $result = $data[$p.'invoiceDigestResult'];
 
-        $taxpayerResponse = new QueryTaxpayerResponse();
-        $taxpayerResponse->setValidity(BooleanNormalizer::denormalize($data[$apiKeyPrefix.'taxpayerValidity']));
+        $response = new QueryInvoiceDigestResponse();
+        $response->setCurrentPage((int) $result[$p.'currentPage']);
+        $response->setAvailablePage((int) $result[$p.'availablePage']);
 
-        if ($taxpayerResponse->getValidity()) {
-
-            if (isset($data['infoDate'])) {
-                $taxpayerResponse->setLastUpdate(new \DateTime($data[$apiKeyPrefix.'infoDate']));
-            }
-
-            $taxpayerData = $data[$apiKeyPrefix.'taxpayerData'];
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerName'])) {
-                $taxpayerResponse->setName($taxpayerData[$apiKeyPrefix.'taxpayerName']);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerShortName'])) {
-                $taxpayerResponse->setShortName($taxpayerData[$apiKeyPrefix.'taxpayerShortName']);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'taxpayerId'];
-                $taxpayerResponse->setTaxpayerId($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'vatCode'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'vatCode'];
-                $taxpayerResponse->setVatCode($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'countryCode'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'taxNumberDetail'][$baseKeyPrefix.'countryCode'];
-                $taxpayerResponse->setCountryCode($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'vatGroupMembership'])) {
-                $value = (int) $taxpayerData[$apiKeyPrefix.'vatGroupMembership'];
-                $taxpayerResponse->setVatGroupMembership($value);
-            }
-
-            if (isset($taxpayerData[$apiKeyPrefix.'taxpayerAddressList'])) {
-                $items = $taxpayerData[$apiKeyPrefix.'taxpayerAddressList'][$apiKeyPrefix.'taxpayerAddressItem'];
-
-                if (isset($items[$apiKeyPrefix.'taxpayerAddressType'])) {
-                    $items = [$items];
-                }
-
-                foreach ($items as $item) {
-                    $buffer = [
-                        'type' => $item[$apiKeyPrefix.'taxpayerAddressType'],
-                    ];
-
-                    $address = $item[$apiKeyPrefix.'taxpayerAddress'];
-
-                    // TODO Address denormalizer
-
-                    if (isset($address[$baseKeyPrefix.'countryCode'])) {
-                        $buffer['countryCode'] = $address[$baseKeyPrefix.'countryCode'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'region'])) {
-                        $buffer['region'] = $address[$baseKeyPrefix.'region'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'postalCode'])) {
-                        $buffer['postalCode'] = $address[$baseKeyPrefix.'postalCode'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'city'])) {
-                        $buffer['city'] = $address[$baseKeyPrefix.'city'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'streetName'])) {
-                        $buffer['streetName'] = $address[$baseKeyPrefix.'streetName'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'publicPlaceCategory'])) {
-                        $buffer['publicPlaceCategory'] = $address[$baseKeyPrefix.'publicPlaceCategory'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'number'])) {
-                        $buffer['number'] = $address[$baseKeyPrefix.'number'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'building'])) {
-                        $buffer['building'] = $address[$baseKeyPrefix.'building'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'staircase'])) {
-                        $buffer['staircase'] = $address[$baseKeyPrefix.'staircase'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'floor'])) {
-                        $buffer['floor'] = $address[$baseKeyPrefix.'floor'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'door'])) {
-                        $buffer['door'] = $address[$baseKeyPrefix.'door'];
-                    }
-
-                    if (isset($address[$baseKeyPrefix.'lotNumber'])) {
-                        $buffer['lotNumber'] = $address[$baseKeyPrefix.'lotNumber'];
-                    }
-
-                    $taxpayerResponse->addAddress($buffer);
-                }
-            }
+        foreach (self::asList($result[$p.'invoiceDigest'] ?? []) as $rawDigest) {
+            $response->addInvoiceDigest(self::denormalizeDigest($rawDigest, $p));
         }
 
-        return $taxpayerResponse;
+        return $response;
+    }
+
+    private static function denormalizeDigest(array $raw, string $p): InvoiceDigest
+    {
+        $digest = new InvoiceDigest();
+        $digest->invoiceNumber = $raw[$p.'invoiceNumber'];
+        $digest->batchIndex = self::int($raw, $p.'batchIndex');
+        $digest->invoiceOperation = InvoiceOperationEnum::from($raw[$p.'invoiceOperation']);
+        $digest->invoiceCategory = $raw[$p.'invoiceCategory'];
+        $digest->invoiceIssueDate = new \DateTimeImmutable($raw[$p.'invoiceIssueDate']);
+        $digest->supplierTaxNumber = $raw[$p.'supplierTaxNumber'];
+        $digest->supplierGroupMemberTaxNumber = $raw[$p.'supplierGroupMemberTaxNumber'] ?? null;
+        $digest->supplierName = $raw[$p.'supplierName'];
+        $digest->customerTaxNumber = $raw[$p.'customerTaxNumber'] ?? null;
+        $digest->customerGroupMemberTaxNumber = $raw[$p.'customerGroupMemberTaxNumber'] ?? null;
+        $digest->customerName = $raw[$p.'customerName'] ?? null;
+
+        if (isset($raw[$p.'paymentMethod'])) {
+            $digest->paymentMethod = PaymentMethodEnum::initWithRawString($raw[$p.'paymentMethod']);
+        }
+
+        $digest->paymentDate = self::date($raw, $p.'paymentDate');
+
+        if (isset($raw[$p.'invoiceAppearance'])) {
+            $digest->invoiceAppearance = InvoiceAppearanceEnum::initWithRawString($raw[$p.'invoiceAppearance']);
+        }
+
+        $digest->source = $raw[$p.'source'] ?? null;
+        $digest->invoiceDeliveryDate = self::date($raw, $p.'invoiceDeliveryDate');
+        $digest->currency = $raw[$p.'currency'] ?? null;
+        $digest->invoiceNetAmount = self::float($raw, $p.'invoiceNetAmount');
+        $digest->invoiceNetAmountHUF = self::float($raw, $p.'invoiceNetAmountHUF');
+        $digest->invoiceVatAmount = self::float($raw, $p.'invoiceVatAmount');
+        $digest->invoiceVatAmountHUF = self::float($raw, $p.'invoiceVatAmountHUF');
+        $digest->transactionId = $raw[$p.'transactionId'] ?? null;
+        $digest->index = self::int($raw, $p.'index');
+        $digest->originalInvoiceNumber = $raw[$p.'originalInvoiceNumber'] ?? null;
+        $digest->modificationIndex = self::int($raw, $p.'modificationIndex');
+        $digest->insDate = new \DateTimeImmutable($raw[$p.'insDate']);
+
+        if (isset($raw[$p.'completenessIndicator'])) {
+            $digest->completenessIndicator = BooleanNormalizer::denormalize($raw[$p.'completenessIndicator']);
+        }
+
+        return $digest;
+    }
+
+    /**
+     * The XmlEncoder decodes a repeated element into a list only when it occurs more than once;
+     * a single invoiceDigest is decoded into its own fields.
+     */
+    private static function asList(array $raw): array
+    {
+        if ($raw === []) {
+            return [];
+        }
+
+        return array_is_list($raw) ? $raw : [$raw];
+    }
+
+    private static function int(array $raw, string $key): ?int
+    {
+        return isset($raw[$key]) ? (int) $raw[$key] : null;
+    }
+
+    private static function float(array $raw, string $key): ?float
+    {
+        return isset($raw[$key]) ? (float) $raw[$key] : null;
+    }
+
+    private static function date(array $raw, string $key): ?\DateTimeImmutable
+    {
+        return isset($raw[$key]) ? new \DateTimeImmutable($raw[$key]) : null;
     }
 
     public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $namespace = self::getNamespaceWithUrl(ResponseDenormalizerInterface::API_SCHEMAS_URL_V30, $data);
-
-        dump($data);
-        exit;
 
         if ($namespace !== null) { // v3
             return $this->denormalizeV3($data);

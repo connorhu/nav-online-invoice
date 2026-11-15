@@ -19,12 +19,6 @@ class QueryInvoiceDataResponseDenormalizer implements DenormalizerInterface, Den
     use DenormalizerAwareTrait;
     use SerializerAwareTrait;
 
-    protected function denormalizeV3($data): QueryInvoiceDataResponse
-    {
-        dump($data);
-        exit;
-    }
-
     public function denormalize($data, string $type, ?string $format = null, array $context = []): mixed
     {
         $commonNamespacePrefix = self::getNamespaceWithUrl(ResponseDenormalizerInterface::COMMON_SCHEMAS_URL_V10, $data);
