@@ -93,5 +93,15 @@ class AddressTest extends TestCase
         $errors = $this->validator->validate($address, null, 'v3.0');
         $this->assertCount(0, $errors);
     }
-}
 
+    public function testLotNumber(): void
+    {
+        $address = new Address();
+
+        $this->assertSame($address, $address->setLotNumber('1234/5'));
+        $this->assertSame('1234/5', $address->getLotNumber());
+
+        $address->setLotNumber(null);
+        $this->assertNull($address->getLotNumber());
+    }
+}
